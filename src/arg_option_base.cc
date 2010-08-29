@@ -1,10 +1,10 @@
 #include <getopt.h>
-#include "arg_option.h"
+#include "arg_option_base.h"
 
 using namespace libgetopt;
 using std::string;
 
-const string arg_option::get_optstring() const
+const string arg_option_base::get_optstring() const
 {
     string optstring = option_base::get_optstring();
 
@@ -16,7 +16,7 @@ const string arg_option::get_optstring() const
     return optstring;
 }
 
-struct option* arg_option::get_option()
+struct option* arg_option_base::get_option()
 {
     struct ::option* opt = option_base::get_option();
 
