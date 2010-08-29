@@ -1,27 +1,27 @@
 #ifndef __ARG_OPTION_H__
 #define __ARG_OPTION_H__
 
-#include "option.h"
+#include "option_base.h"
 
 
 namespace libgetopt
 {
-    class arg_option : public option
+    class arg_option : public option_base
     {
 	public:
 
-	    arg_option(char short_char, bool use_flag = false);
+	    arg_option(char opt);
+	    arg_option(const std::string name, int val, bool use_flag = false);
+	    arg_option(const std::string name, char opt);
 
-	    arg_option(char std::string name, int val, bool use_flag = false);
-
-	    arg_option(const std::string name, int val, char short_char,
-		       bool use_flag = false);
-
-	    virtual ~arg_option();
+	    virtual ~arg_option(){}
 
 	    bool set(const char* const optarg);
 
+	protected:
+
 	    const std::string get_optstring() const;
+	    struct ::option* get_option();
 
 	private:
 
@@ -29,39 +29,26 @@ namespace libgetopt
     };
 }
 
-inline libgetopt::arg_option::arg_option(char short_char, bool use_flag = false):
-    option(short_char, use_flag)
-{}
-
-
-inline libgetopt::arg_option::arg_option(char std::string name, int val,
-					 bool use_flag = false):
-    option(name, val, use_flag)
+inline libgetopt::arg_option::arg_option(char opt):
+    option_base(opt)
 {}
 
 
 inline libgetopt::arg_option::arg_option(const std::string name, int val,
-					 char short_char, bool use_flag = false):
-    option(name, val, short_char, use_flag)
+					 bool use_flag):
+    option_base(name, val, use_flag)
 {}
 
 
-inline libgetopt::arg_option::set(const char* const optarg)
+inline libgetopt::arg_option::arg_option(const std::string name, char opt):
+    option_base(name, opt)
+{}
+
+
+inline bool libgetopt::arg_option::set(const char* const optarg)
 {
-    m_is_set = true;
+    libgetopt::option_base::set();
     return parse_arg(optarg);
-}
-
-inline std::string libgetopt::arg_option::get_optstring() const
-{
-    string optstring = option::get_optstring();
-
-    if( optstring != "" )
-    {
-	optstring += ':';
-    }
-
-    return optstring;
 }
 
 #endif
