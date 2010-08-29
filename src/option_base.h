@@ -1,5 +1,5 @@
-#ifndef __OPTION_H__
-#define __OPTION_H__
+#ifndef __OPTION_BASE_H__
+#define __OPTION_BASE_H__
 
 #include <string>
 
@@ -8,13 +8,15 @@ struct option;
 
 namespace libgetopt
 {
-    class option
+    class option_base
     {
 	public:
 
-	    option(char short_char, bool use_flag);
-	    option(const std::string name, int val, bool use_flag);
-	    option(const std::string name, int val, char short_char, bool use_flag);
+	    option_base(char opt);
+	    option_base(const std::string name, int val, bool use_flag);
+	    option_base(const std::string name, char opt);
+
+	    virtual ~option_base(){}
 
 	    bool is_set() const;
 	    bool matches(int check_val) const;
@@ -22,68 +24,76 @@ namespace libgetopt
 
 	    int get_flag() const;
 
-
 	protected:
-
-	    int m_val;
-	    std::string m_name;
-	    char m_short;
-	    bool m_use_flag;
-	    int m_flag;
-	    bool m_is_set;
 
 	    virtual struct ::option* get_option();
 	    virtual const std::string get_optstring() const;
+	    void set();
 
 	private:
+
+	    int m_val;
+	    std::string m_name;
+	    char m_opt;
+	    bool m_use_flag;
+	    int m_flag;
+	    bool m_is_set;
 
 	    void set_defaults();
     };
 }
 
-inline libgetopt::option::option(char short_char, bool use_flag):
-    m_val(short_char),
+inline libgetopt::option_base::option_base(char opt):
+    m_val(0),
     m_name(""),
-    m_short(short_char),
-    m_use_flag(use_flag)
+    m_opt(opt),
+    m_use_flag(false)
 {
     set_defaults();
 }
 
-inline libgetopt::option::option(const std::string name, int val, bool use_flag):
+inline libgetopt::option_base::option_base(const std::string name, int val, bool use_flag):
     m_val(val),
     m_name(name),
-    m_short('\0'),
+    m_opt('\0'),
     m_use_flag(use_flag)
 {
     set_defaults();
 }
 
-inline libgetopt::option::option(const std::string name, int val, char short_char,
-				 bool use_flag):
-    m_val(val),
+inline libgetopt::option_base::option_base(const std::string name, char opt):
+    m_val(opt),
     m_name(name),
-    m_short(short_char),
-    m_use_flag(use_flag)
+    m_opt(opt),
+    m_use_flag(false)
 {
     set_defaults();
 }
 
-inline void libgetopt::option::set_defaults()
+inline void libgetopt::option_base::set_defaults()
 {
-    m_flag = 0;
+    m_flag = ~m_val;
     m_is_set = false;
 }
 
-inline bool libgetopt::option::is_set() const
-{ return m_is_set; }
-
-
-inline bool libgetopt::option::matches(int val) const
+inline bool libgetopt::option_base::is_set() const
 {
-    int short_char = m_short;
+    if( m_val == m_flag )
+    {
+	return true;
+    }
+    else
+    {
+	return m_is_set;
+    }
+}
 
-    if( val == m_val || val == short_char )
+
+inline bool libgetopt::option_base::matches(int val) const
+{
+    int opt = m_opt;
+
+    if( val == m_val || val == opt )
     {
 	return true;
     }
@@ -93,12 +103,15 @@ inline bool libgetopt::option::matches(int val) const
     }
 }
 
-inline bool libgetopt::option::use_flag() const
+
+inline bool libgetopt::option_base::use_flag() const
 { return m_use_flag; }
 
 
-inline int libgetopt::option::get_flag() const
+inline int libgetopt::option_base::get_flag() const
 { return m_flag; }
 
+inline void libgetopt::option_base::set()
+{ m_is_set = true; }
 
 #endif

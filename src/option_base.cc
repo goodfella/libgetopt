@@ -1,9 +1,9 @@
 #include <getopt.h>
-#include "option.h"
+#include "option_base.h"
 
 using std::string;
 
-struct ::option* libgetopt::option::get_option()
+struct ::option* libgetopt::option_base::get_option()
 {
     struct ::option* opt = NULL;
 
@@ -18,6 +18,7 @@ struct ::option* libgetopt::option::get_option()
 	opt->name = name;
 	opt->flag = &m_flag;
 	opt->val = m_val;
+	opt->has_arg = no_argument;
     }
     else
     {
@@ -27,13 +28,13 @@ struct ::option* libgetopt::option::get_option()
     return opt;
 }
 
-const string libgetopt::option::get_optstring() const
+const string libgetopt::option_base::get_optstring() const
 {
     string optstring = "";
 
-    if( m_short != '\0' )
+    if( m_opt != '\0' )
     {
-	optstring = m_short;
+	optstring = m_opt;
     }
 
     return optstring;
