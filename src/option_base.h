@@ -13,16 +13,13 @@ namespace libgetopt
 	public:
 
 	    option_base(char opt);
-	    option_base(const std::string name, int val, bool use_flag);
-	    option_base(const std::string name, char opt);
+	    option_base(const std::string& name, int val);
+	    option_base(const std::string& name, char opt);
 
 	    virtual ~option_base(){}
 
-	    bool is_set() const;
+	    virtual bool is_set() const;
 	    bool matches(int check_val) const;
-	    bool use_flag() const;
-
-	    int get_flag() const;
 
 	protected:
 
@@ -32,60 +29,37 @@ namespace libgetopt
 
 	private:
 
-	    int m_val;
-	    std::string m_name;
 	    char m_opt;
-	    bool m_use_flag;
-	    int m_flag;
+	    std::string m_name;
+	    int m_val;
 	    bool m_is_set;
-
-	    void set_defaults();
     };
 }
 
 inline libgetopt::option_base::option_base(char opt):
-    m_val(0),
+    m_opt(opt),
     m_name(""),
-    m_opt(opt),
-    m_use_flag(false)
-{
-    set_defaults();
-}
+    m_val(0),
+    m_is_set(false)
+{}
 
-inline libgetopt::option_base::option_base(const std::string name, int val, bool use_flag):
-    m_val(val),
-    m_name(name),
+inline libgetopt::option_base::option_base(const std::string& name, int val):
     m_opt('\0'),
-    m_use_flag(use_flag)
-{
-    set_defaults();
-}
-
-inline libgetopt::option_base::option_base(const std::string name, char opt):
-    m_val(opt),
     m_name(name),
-    m_opt(opt),
-    m_use_flag(false)
-{
-    set_defaults();
-}
+    m_val(val),
+    m_is_set(false)
+{}
 
-inline void libgetopt::option_base::set_defaults()
-{
-    m_flag = ~m_val;
-    m_is_set = false;
-}
+inline libgetopt::option_base::option_base(const std::string& name, char opt):
+    m_opt(opt),
+    m_name(name),
+    m_val(opt),
+    m_is_set(false)
+{}
 
 inline bool libgetopt::option_base::is_set() const
 {
-    if( m_val == m_flag )
-    {
-	return true;
-    }
-    else
-    {
-	return m_is_set;
-    }
+    return m_is_set;
 }
 
 
@@ -93,7 +67,7 @@ inline bool libgetopt::option_base::matches(int val) const
 {
     int opt = m_opt;
 
-    if( val == m_val || val == opt )
+    if( val == opt )
     {
 	return true;
     }
@@ -104,14 +78,8 @@ inline bool libgetopt::option_base::matches(int val) const
 }
 
 
-inline bool libgetopt::option_base::use_flag() const
-{ return m_use_flag; }
-
-
-inline int libgetopt::option_base::get_flag() const
-{ return m_flag; }
-
 inline void libgetopt::option_base::set()
 { m_is_set = true; }
+
 
 #endif

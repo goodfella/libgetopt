@@ -11,8 +11,8 @@ namespace libgetopt
 	public:
 
 	    arg_option(char opt);
-	    arg_option(const std::string name, int val, bool use_flag = false);
-	    arg_option(const std::string name, char opt);
+	    arg_option(const std::string& name, int val);
+	    arg_option(const std::string& name, char opt);
 
 	    virtual ~arg_option(){}
 
@@ -34,13 +34,12 @@ inline libgetopt::arg_option::arg_option(char opt):
 {}
 
 
-inline libgetopt::arg_option::arg_option(const std::string name, int val,
-					 bool use_flag):
-    option_base(name, val, use_flag)
+inline libgetopt::arg_option::arg_option(const std::string& name, int val):
+    option_base(name, val)
 {}
 
 
-inline libgetopt::arg_option::arg_option(const std::string name, char opt):
+inline libgetopt::arg_option::arg_option(const std::string& name, char opt):
     option_base(name, opt)
 {}
 

@@ -15,8 +15,8 @@ struct ::option* libgetopt::option_base::get_option()
 
 	opt = new ::option();
 
+	opt->flag = NULL;
 	opt->name = name;
-	opt->flag = &m_flag;
 	opt->val = m_val;
 	opt->has_arg = no_argument;
     }
