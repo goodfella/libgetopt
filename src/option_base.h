@@ -3,71 +3,76 @@
 
 #include <string>
 
-// forward declaration so we don't have to include
-struct option;
-
 namespace libgetopt
 {
+    enum argument_policy_t
+    {
+	arg_policy_none,
+	arg_policy_required,
+	arg_policy_optional
+    };
+
     class option_base
     {
+	    friend class getopt_option;
+
 	public:
 
-	    option_base(char opt);
-	    option_base(const std::string& name, int val);
-	    option_base(const std::string& name, char opt);
+	    explicit option_base(char short_opt);
+	    option_base(const std::string& long_opt, int val);
+	    option_base(const std::string& long_opt, char opt);
 
-	    virtual ~option_base(){}
+	    virtual ~option_base();
 
 	    virtual bool is_set() const;
 	    bool matches(int check_val) const;
+	    bool has_long_option() const;
+	    bool has_short_option() const;
+
+	    const std::string& long_option() const;
+	    const char short_option() const;
+	    int val() const;
+
+	    virtual argument_policy_t arg_policy() const = 0;
 
 	protected:
 
-	    virtual struct ::option* get_option();
-	    virtual const std::string get_optstring() const;
 	    void set();
+	    virtual int* flag_ptr();
 
 	private:
 
-	    char m_opt;
-	    std::string m_name;
+	    char m_short_opt;
+	    std::string m_long_opt;
 	    int m_val;
 	    bool m_is_set;
     };
 }
 
-inline libgetopt::option_base::option_base(char opt):
-    m_opt(opt),
-    m_name(""),
-    m_val(0),
+inline libgetopt::option_base::option_base(char short_opt):
+    m_short_opt(short_opt),
+    m_long_opt(""),
+    m_val(short_opt),
     m_is_set(false)
 {}
 
-inline libgetopt::option_base::option_base(const std::string& name, int val):
-    m_opt('\0'),
-    m_name(name),
+inline libgetopt::option_base::option_base(const std::string& long_opt, int val):
+    m_short_opt('\0'),
+    m_long_opt(long_opt),
     m_val(val),
     m_is_set(false)
 {}
 
-inline libgetopt::option_base::option_base(const std::string& name, char opt):
-    m_opt(opt),
-    m_name(name),
-    m_val(opt),
+inline libgetopt::option_base::option_base(const std::string& long_opt, char short_opt):
+    m_short_opt(short_opt),
+    m_long_opt(long_opt),
+    m_val(short_opt),
     m_is_set(false)
 {}
 
-inline bool libgetopt::option_base::is_set() const
-{
-    return m_is_set;
-}
-
-
 inline bool libgetopt::option_base::matches(int val) const
 {
-    int opt = m_opt;
-
-    if( val == opt )
+    if( val == m_val )
     {
 	return true;
     }
@@ -75,6 +80,31 @@ inline bool libgetopt::option_base::matches(int val) const
     {
 	return false;
     }
+}
+
+inline bool libgetopt::option_base::has_long_option() const
+{
+    return ( m_long_opt != "" );
+}
+
+inline bool libgetopt::option_base::has_short_option() const
+{
+    return ( m_short_opt != '\0' );
+}
+
+inline const std::string& libgetopt::option_base::long_option() const
+{
+    return m_long_opt;
+}
+
+inline const char libgetopt::option_base::short_option() const
+{
+    return m_short_opt;
+}
+
+inline int libgetopt::option_base::val() const
+{
+    return m_val;
 }
 
 

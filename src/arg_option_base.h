@@ -10,18 +10,15 @@ namespace libgetopt
     {
 	public:
 
-	    arg_option_base(char opt);
-	    arg_option_base(const std::string& name, int val);
-	    arg_option_base(const std::string& name, char opt);
+	    arg_option_base(char short_opt);
+	    arg_option_base(const std::string& long_opt, int val);
+	    arg_option_base(const std::string& long_opt, char opt);
 
-	    virtual ~arg_option_base(){}
+	    virtual ~arg_option_base();
 
-	    bool set(const char* const optarg);
+	    bool set(char const * const optarg);
 
-	protected:
-
-	    const std::string get_optstring() const;
-	    struct ::option* get_option();
+	    argument_policy_t arg_policy() const;
 
 	private:
 
@@ -29,27 +26,25 @@ namespace libgetopt
     };
 }
 
-inline libgetopt::arg_option_base::arg_option_base(char opt):
-    option_base(opt)
+inline libgetopt::arg_option_base::arg_option_base(char short_opt):
+    option_base(short_opt)
 {}
 
 
-inline libgetopt::arg_option_base::arg_option_base(const std::string& name, int val):
-    option_base(name, val)
+inline libgetopt::arg_option_base::arg_option_base(const std::string& long_opt, int val):
+    option_base(long_opt, val)
 {}
 
 
-inline libgetopt::arg_option_base::arg_option_base(const std::string& name, char opt):
-    option_base(name, opt)
+inline libgetopt::arg_option_base::arg_option_base(const std::string& long_opt, char short_opt):
+    option_base(long_opt, short_opt)
 {}
 
 
-inline bool libgetopt::arg_option_base::set(const char* const optarg)
+inline bool libgetopt::arg_option_base::set(char const * const optarg)
 {
-    libgetopt::option_base::set();
+    option_base::set();
     return parse_arg(optarg);
 }
 
 #endif
-
-

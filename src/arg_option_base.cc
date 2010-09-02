@@ -1,26 +1,10 @@
-#include <getopt.h>
 #include "arg_option_base.h"
 
 using namespace libgetopt;
-using std::string;
 
-const string arg_option_base::get_optstring() const
+arg_option_base::~arg_option_base(){}
+
+argument_policy_t arg_option_base::arg_policy() const
 {
-    string optstring = option_base::get_optstring();
-
-    if( optstring != "" )
-    {
-	optstring += ':';
-    }
-
-    return optstring;
-}
-
-struct option* arg_option_base::get_option()
-{
-    struct ::option* opt = option_base::get_option();
-
-    opt->has_arg = required_argument;
-
-    return opt;
+    return arg_policy_required;
 }
