@@ -63,17 +63,36 @@ void cmdline_parser::parse(int argc, char* const argv[])
 	    break;
 	}
 
-	// find the matching option
+	// zero was returned, but no long option was found
+	assert( (opt != 0 || optind != -1) );
+
 	vector<arg_option_base*>::iterator option = m_arg_options.end();
 
-	option = find_if(m_arg_options.begin(),
-			 m_arg_options.end(),
-			 bind2nd(mem_fun(&arg_option_base::matches),opt));
+	// long option with no short option found check if its an arg_option
+	if( opt == 0 && optind != -1 )
+	{
+	    bool (arg_option_base::*pred)(char const *) const =
+		&arg_option_base::matches;
 
-	/* by definition an arg option must be found because
-	 * getopt_long returned a value other than -1, '?', or 0
-	 */
-	assert(option != m_arg_options.end());
+	    option = find_if(m_arg_options.begin(),
+			     m_arg_options.end(),
+			     bind2nd(mem_fun(pred),longopts[optind].name));
+	}
+	// long option with short option found check if its an arg_option
+	else if( opt != 0 )
+	{
+	    bool (arg_option_base::*pred)(int) const = &arg_option_base::matches;
+
+	    option = find_if(m_arg_options.begin(),
+			     m_arg_options.end(),
+			     bind2nd(mem_fun(pred),opt));
+	}
+
+	// no arg_option found, just a flag
+	if( option == m_arg_options.end() )
+	{
+	    continue;
+	}
 
 	arg_option_base* arg_opt = *option;
 

@@ -28,6 +28,7 @@ namespace libgetopt
 	    void set();
 	    virtual bool is_set() const;
 	    bool matches(int check_val) const;
+	    bool matches(char const * name) const;
 	    bool has_long_option() const;
 	    bool has_short_option() const;
 
@@ -88,6 +89,11 @@ inline bool libgetopt::option_base::matches(int val) const
     {
 	return false;
     }
+}
+
+inline bool libgetopt::option_base::matches(char const * name) const
+{
+    return m_long_opt == name;
 }
 
 inline bool libgetopt::option_base::has_long_option() const

@@ -11,7 +11,7 @@ namespace libgetopt
 	public:
 
 	    arg_option_base(const char short_opt);
-	    arg_option_base(const std::string& long_opt, int val);
+	    arg_option_base(const std::string& long_opt);
 	    arg_option_base(const std::string& long_opt, const char opt);
 
 	    virtual ~arg_option_base();
@@ -36,8 +36,8 @@ inline libgetopt::arg_option_base::arg_option_base(const char short_opt):
 {}
 
 
-inline libgetopt::arg_option_base::arg_option_base(const std::string& long_opt, int val):
-    option_base(long_opt, val),
+inline libgetopt::arg_option_base::arg_option_base(const std::string& long_opt):
+    option_base(long_opt, 0),
     m_valid_arg(true)
 {}
 

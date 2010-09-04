@@ -13,7 +13,7 @@ namespace libgetopt
 	public:
 
 	    explicit option(char short_opt);
-	    option(const std::string& long_opt, int val);
+	    option(const std::string& long_opt);
 	    option(const std::string& long_opt, char opt);
 
 	    operator const Type& () const;
@@ -34,8 +34,8 @@ namespace libgetopt
     {}
 
     template<class Type>
-    inline option<Type>::option(const std::string& long_opt, int val):
-	arg_option_base(long_opt, val)
+    inline option<Type>::option(const std::string& long_opt):
+	arg_option_base(long_opt)
     {}
 
     template<class Type>
