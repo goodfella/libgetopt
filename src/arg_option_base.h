@@ -20,7 +20,7 @@ namespace libgetopt
 
 	    argument_policy_t arg_policy() const;
 
-	    bool has_valid_arg() const;
+	    bool arg_is_valid() const;
 
 	private:
 
@@ -60,7 +60,7 @@ inline bool libgetopt::arg_option_base::set(char const * const optarg)
     return m_valid_arg;
 }
 
-inline bool libgetopt::arg_option_base::has_valid_arg() const
+inline bool libgetopt::arg_option_base::arg_is_valid() const
 {
     return m_valid_arg;
 }
