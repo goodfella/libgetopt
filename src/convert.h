@@ -1,42 +1,53 @@
 #ifndef __CONVERT_H__
 #define __CONVERT_H__
 
+#include <cassert>
 #include <cstdlib>
 #include <string>
 
 namespace libgetopt
 {
     template<class Type>
-    Type convert(char const * const optarg);
+    bool convert(char const * const optarg, Type* argp);
 
     template<>
-    inline int convert(char const* const optarg)
+    inline bool convert(char const* const optarg, int* argp)
     {
-	return atoi(optarg);
+	assert(argp != NULL);
+	*argp = atoi(optarg);
+	return true;
     }
 
     template<>
-    inline double convert(char const * const optarg)
+    inline bool convert(char const * const optarg, double* argp)
     {
- 	return atof(optarg);
+	assert(argp != NULL);
+	*argp = atof(optarg);
+	return true;
     }
 
     template<>
-    inline long convert(char const * const optarg)
+    inline bool convert(char const * const optarg, long* argp)
     {
-	return atol(optarg);
+	assert(argp != NULL);
+	*argp = atol(optarg);
+	return true;
     }
 
     template<>
-    inline long long convert(char const * const optarg)
+    inline bool convert(char const * const optarg, long long* argp)
     {
-	return atoll(optarg);
+	assert(argp != NULL);
+	*argp = atoll(optarg);
+	return true;
     }
 
     template<>
-    inline std::string convert(char const * const optarg)
+    inline bool convert(char const * const optarg, std::string* argp)
     {
-	return optarg;
+	assert(argp != NULL);
+	*argp = optarg;
+	return true;
     }
 }
 

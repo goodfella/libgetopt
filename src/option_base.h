@@ -1,6 +1,7 @@
 #ifndef __OPTION_BASE_H__
 #define __OPTION_BASE_H__
 
+#include <cassert>
 #include <string>
 
 namespace libgetopt
@@ -24,6 +25,7 @@ namespace libgetopt
 
 	    virtual ~option_base();
 
+	    void set();
 	    virtual bool is_set() const;
 	    bool matches(int check_val) const;
 	    bool has_long_option() const;
@@ -37,14 +39,13 @@ namespace libgetopt
 
 	protected:
 
-	    void set();
 	    virtual int* flag_ptr();
 
 	private:
 
-	    char m_short_opt;
-	    std::string m_long_opt;
-	    int m_val;
+	    const char m_short_opt;
+	    const std::string m_long_opt;
+	    const int m_val;
 	    bool m_is_set;
     };
 }
@@ -54,21 +55,28 @@ inline libgetopt::option_base::option_base(char short_opt):
     m_long_opt(""),
     m_val(short_opt),
     m_is_set(false)
-{}
+{
+    assert(short_opt != '\0');
+}
 
 inline libgetopt::option_base::option_base(const std::string& long_opt, int val):
     m_short_opt('\0'),
     m_long_opt(long_opt),
     m_val(val),
     m_is_set(false)
-{}
+{
+    assert(long_opt != "");
+}
 
 inline libgetopt::option_base::option_base(const std::string& long_opt, char short_opt):
     m_short_opt(short_opt),
     m_long_opt(long_opt),
     m_val(short_opt),
     m_is_set(false)
-{}
+{
+    assert(long_opt != "");
+    assert(short_opt != '\0');
+}
 
 inline bool libgetopt::option_base::matches(int val) const
 {

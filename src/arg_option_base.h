@@ -10,41 +10,59 @@ namespace libgetopt
     {
 	public:
 
-	    arg_option_base(char short_opt);
+	    arg_option_base(const char short_opt);
 	    arg_option_base(const std::string& long_opt, int val);
-	    arg_option_base(const std::string& long_opt, char opt);
+	    arg_option_base(const std::string& long_opt, const char opt);
 
 	    virtual ~arg_option_base();
 
-	    bool set(char const * const optarg);
+	    virtual bool set(char const * const optarg);
 
 	    argument_policy_t arg_policy() const;
+
+	    bool has_valid_arg() const;
 
 	private:
 
 	    virtual bool parse_arg(const char* const optarg) = 0;
+
+	    bool m_valid_arg;
     };
 }
 
-inline libgetopt::arg_option_base::arg_option_base(char short_opt):
-    option_base(short_opt)
+inline libgetopt::arg_option_base::arg_option_base(const char short_opt):
+    option_base(short_opt),
+    m_valid_arg(true)
 {}
 
 
 inline libgetopt::arg_option_base::arg_option_base(const std::string& long_opt, int val):
-    option_base(long_opt, val)
+    option_base(long_opt, val),
+    m_valid_arg(true)
 {}
 
 
-inline libgetopt::arg_option_base::arg_option_base(const std::string& long_opt, char short_opt):
-    option_base(long_opt, short_opt)
+inline libgetopt::arg_option_base::arg_option_base(const std::string& long_opt, const char short_opt):
+    option_base(long_opt, short_opt),
+    m_valid_arg(true)
 {}
 
 
 inline bool libgetopt::arg_option_base::set(char const * const optarg)
 {
     option_base::set();
-    return parse_arg(optarg);
+
+    if( optarg != NULL )
+    {
+	m_valid_arg = parse_arg(optarg);
+    }
+
+    return m_valid_arg;
+}
+
+inline bool libgetopt::arg_option_base::has_valid_arg() const
+{
+    return m_valid_arg;
 }
 
 #endif
