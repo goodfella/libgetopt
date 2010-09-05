@@ -5,7 +5,7 @@
 #include <functional>
 
 #include "cmdline_parser.h"
-#include "arg_option_base.h"
+#include "arg_option.h"
 #include "getopt_option.h"
 
 using namespace libgetopt;
@@ -66,35 +66,35 @@ void cmdline_parser::parse(int argc, char* const argv[])
 	// zero was returned, but no long option was found
 	assert( (opt != 0 || optind != -1) );
 
-	arg_option_list_t::iterator arg_option = m_arg_options.end();
+	arg_option_list_t::iterator option = m_arg_options.end();
 
 	// long option with no short option found check if it's an arg_option
 	if( opt == 0 && optind != -1 )
 	{
-	    bool (arg_option_base::*pred)(char const *) const =
-		&arg_option_base::matches;
+	    bool (arg_option::*pred)(char const *) const =
+		&arg_option::matches;
 
-	    arg_option = find_if(m_arg_options.begin(),
-				 m_arg_options.end(),
-				 bind2nd(mem_fun(pred),longopts[optind].name));
+	    option = find_if(m_arg_options.begin(),
+			     m_arg_options.end(),
+			     bind2nd(mem_fun(pred),longopts[optind].name));
 	}
 	// short option found check if it's an arg_option
 	else if( opt != 0 )
 	{
-	    bool (arg_option_base::*pred)(int) const = &arg_option_base::matches;
+	    bool (arg_option::*pred)(int) const = &arg_option::matches;
 
-	    arg_option = find_if(m_arg_options.begin(),
-				 m_arg_options.end(),
-				 bind2nd(mem_fun(pred),opt));
+	    option = find_if(m_arg_options.begin(),
+			     m_arg_options.end(),
+			     bind2nd(mem_fun(pred),opt));
 	}
 
 	// no arg_option found, just a flag
-	if( arg_option == m_arg_options.end() )
+	if( option == m_arg_options.end() )
 	{
 	    continue;
 	}
 
-	arg_option_base* arg_opt = *arg_option;
+	arg_option* arg_opt = *option;
 
 	arg_opt->set(optarg);
     }

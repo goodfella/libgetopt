@@ -3,19 +3,18 @@
 
 #include <vector>
 
-#include "option_base.h"
-#include "arg_option_base.h"
+#include "arg_option.h"
 
 namespace libgetopt
 {
     typedef std::vector<option_base*> option_list_t;
-    typedef std::vector<arg_option_base*> arg_option_list_t;
+    typedef std::vector<arg_option*> arg_option_list_t;
 
     class cmdline_parser
     {
 	public:
 
-	    void add_option(arg_option_base*);
+	    void add_option(arg_option* arg_opt);
 	    void parse(int argc, char* const argv[]);
 
 	    void clear();
@@ -26,7 +25,7 @@ namespace libgetopt
 	    option_list_t m_options;
     };
 
-    inline void cmdline_parser::add_option(arg_option_base* opt)
+    inline void cmdline_parser::add_option(arg_option* opt)
     {
 	m_options.push_back(opt);
 	m_arg_options.push_back(opt);

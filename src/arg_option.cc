@@ -1,15 +1,15 @@
-#include "arg_option_base.h"
+#include "arg_option.h"
 
 using namespace libgetopt;
 
-arg_option_base::~arg_option_base(){}
+arg_option::~arg_option(){}
 
-argument_policy_t arg_option_base::arg_policy() const
+argument_policy_t arg_option::arg_policy() const
 {
     return arg_policy_required;
 }
 
-bool arg_option_base::set(char const * const optarg)
+bool arg_option::set(char const * const optarg)
 {
     present();
 

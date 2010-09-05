@@ -1,14 +1,14 @@
 #ifndef __OPTION_H__
 #define __OPTION_H__
 
-#include "arg_option_base.h"
+#include "arg_option.h"
 #include "convert.h"
 
 
 namespace libgetopt
 {
     template<class Type>
-    class option : public arg_option_base
+    class option : public arg_option
     {
 	public:
 
@@ -30,17 +30,17 @@ namespace libgetopt
 
     template<class Type>
     inline option<Type>::option(char short_opt):
-	arg_option_base(short_opt)
+	arg_option(short_opt)
     {}
 
     template<class Type>
     inline option<Type>::option(const std::string& long_opt):
-	arg_option_base(long_opt)
+	arg_option(long_opt)
     {}
 
     template<class Type>
     inline option<Type>::option(const std::string& long_opt, char short_opt):
-	arg_option_base(long_opt, short_opt)
+	arg_option(long_opt, short_opt)
     {}
 
     template<class Type>
@@ -64,7 +64,7 @@ namespace libgetopt
     template<class Type>
     void option<Type>::set(const Type& arg)
     {
-	arg_option_base::present();
+	arg_option::present();
 	m_valid_arg = true;
 	m_arg = arg;
     }
