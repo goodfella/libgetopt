@@ -8,6 +8,9 @@
 
 namespace libgetopt
 {
+    typedef std::vector<option_base*> option_list_t;
+    typedef std::vector<arg_option_base*> arg_option_list_t;
+
     class cmdline_parser
     {
 	public:
@@ -19,8 +22,8 @@ namespace libgetopt
 
 	private:
 
-	    std::vector<arg_option_base*> m_arg_options;
-	    std::vector<option_base*> m_options;
+	    arg_option_list_t m_arg_options;
+	    option_list_t m_options;
     };
 
     inline void cmdline_parser::add_option(arg_option_base* opt)

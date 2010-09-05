@@ -23,7 +23,7 @@ void cmdline_parser::parse(int argc, char* const argv[])
     string optstring;
 
     // generate the longopts and optstring
-    for(vector<option_base*>::const_iterator i = m_options.begin();
+    for(option_list_t::const_iterator i = m_options.begin();
 	i != m_options.end();
 	++i)
     {
@@ -66,35 +66,35 @@ void cmdline_parser::parse(int argc, char* const argv[])
 	// zero was returned, but no long option was found
 	assert( (opt != 0 || optind != -1) );
 
-	vector<arg_option_base*>::iterator option = m_arg_options.end();
+	arg_option_list_t::iterator arg_option = m_arg_options.end();
 
-	// long option with no short option found check if its an arg_option
+	// long option with no short option found check if it's an arg_option
 	if( opt == 0 && optind != -1 )
 	{
 	    bool (arg_option_base::*pred)(char const *) const =
 		&arg_option_base::matches;
 
-	    option = find_if(m_arg_options.begin(),
-			     m_arg_options.end(),
-			     bind2nd(mem_fun(pred),longopts[optind].name));
+	    arg_option = find_if(m_arg_options.begin(),
+				 m_arg_options.end(),
+				 bind2nd(mem_fun(pred),longopts[optind].name));
 	}
-	// long option with short option found check if its an arg_option
+	// short option found check if it's an arg_option
 	else if( opt != 0 )
 	{
 	    bool (arg_option_base::*pred)(int) const = &arg_option_base::matches;
 
-	    option = find_if(m_arg_options.begin(),
-			     m_arg_options.end(),
-			     bind2nd(mem_fun(pred),opt));
+	    arg_option = find_if(m_arg_options.begin(),
+				 m_arg_options.end(),
+				 bind2nd(mem_fun(pred),opt));
 	}
 
 	// no arg_option found, just a flag
-	if( option == m_arg_options.end() )
+	if( arg_option == m_arg_options.end() )
 	{
 	    continue;
 	}
 
-	arg_option_base* arg_opt = *option;
+	arg_option_base* arg_opt = *arg_option;
 
 	arg_opt->set(optarg);
     }
