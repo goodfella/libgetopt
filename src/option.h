@@ -13,7 +13,7 @@ namespace libgetopt
 	public:
 
 	    explicit option(char short_opt);
-	    option(const std::string& long_opt);
+	    explicit option(const std::string& long_opt);
 	    option(const std::string& long_opt, char opt);
 
 	    operator const Type& () const;
@@ -44,19 +44,19 @@ namespace libgetopt
     {}
 
     template<class Type>
-    bool option<Type>::parse_arg(char const * const optarg)
+    inline bool option<Type>::parse_arg(char const * const optarg)
     {
 	return convert<Type>(optarg, &m_arg);
     }
 
     template<class Type>
-    const Type& option<Type>::get() const
+    inline const Type& option<Type>::get() const
     {
 	return m_arg;
     }
 
     template<class Type>
-    option<Type>::operator const Type& () const
+    inline option<Type>::operator const Type& () const
     {
 	return m_arg;
     }
@@ -64,7 +64,8 @@ namespace libgetopt
     template<class Type>
     void option<Type>::set(const Type& arg)
     {
-	arg_option_base::set();
+	arg_option_base::present();
+	m_valid_arg = true;
 	m_arg = arg;
     }
 }

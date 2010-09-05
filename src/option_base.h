@@ -25,8 +25,6 @@ namespace libgetopt
 
 	    virtual ~option_base();
 
-	    void set();
-	    virtual bool is_set() const;
 	    bool matches(int check_val) const;
 	    bool matches(char const * name) const;
 	    bool has_long_option() const;
@@ -47,15 +45,13 @@ namespace libgetopt
 	    const char m_short_opt;
 	    const std::string m_long_opt;
 	    const int m_val;
-	    bool m_is_set;
     };
 }
 
 inline libgetopt::option_base::option_base(char short_opt):
     m_short_opt(short_opt),
     m_long_opt(""),
-    m_val(short_opt),
-    m_is_set(false)
+    m_val(short_opt)
 {
     assert(short_opt != '\0');
 }
@@ -63,8 +59,7 @@ inline libgetopt::option_base::option_base(char short_opt):
 inline libgetopt::option_base::option_base(const std::string& long_opt, int val):
     m_short_opt('\0'),
     m_long_opt(long_opt),
-    m_val(val),
-    m_is_set(false)
+    m_val(val)
 {
     assert(long_opt != "");
 }
@@ -72,8 +67,7 @@ inline libgetopt::option_base::option_base(const std::string& long_opt, int val)
 inline libgetopt::option_base::option_base(const std::string& long_opt, char short_opt):
     m_short_opt(short_opt),
     m_long_opt(long_opt),
-    m_val(short_opt),
-    m_is_set(false)
+    m_val(short_opt)
 {
     assert(long_opt != "");
     assert(short_opt != '\0');
@@ -120,10 +114,5 @@ inline int libgetopt::option_base::val() const
 {
     return m_val;
 }
-
-
-inline void libgetopt::option_base::set()
-{ m_is_set = true; }
-
 
 #endif

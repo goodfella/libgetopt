@@ -10,54 +10,66 @@ namespace libgetopt
     {
 	public:
 
-	    arg_option_base(const char short_opt);
-	    arg_option_base(const std::string& long_opt);
+	    explicit arg_option_base(const char short_opt);
+	    explicit arg_option_base(const std::string& long_opt);
 	    arg_option_base(const std::string& long_opt, const char opt);
 
 	    virtual ~arg_option_base();
 
+	    void present();
+	    bool is_present() const;
+
 	    virtual bool set(char const * const optarg);
+	    bool is_set() const;
 
 	    argument_policy_t arg_policy() const;
 
 	    bool arg_is_valid() const;
 
-	private:
-
-	    virtual bool parse_arg(const char* const optarg) = 0;
+	protected:
 
 	    bool m_valid_arg;
+	    bool m_is_present;
+
+
+	private:
+
+	    virtual bool parse_arg(char const * const optarg) = 0;
     };
 }
 
 inline libgetopt::arg_option_base::arg_option_base(const char short_opt):
     option_base(short_opt),
-    m_valid_arg(true)
+    m_valid_arg(false),
+    m_is_present(false)
 {}
 
 
 inline libgetopt::arg_option_base::arg_option_base(const std::string& long_opt):
     option_base(long_opt, 0),
-    m_valid_arg(true)
+    m_valid_arg(false),
+    m_is_present(false)
 {}
 
 
-inline libgetopt::arg_option_base::arg_option_base(const std::string& long_opt, const char short_opt):
+inline libgetopt::arg_option_base::arg_option_base(const std::string& long_opt,
+						   const char short_opt):
     option_base(long_opt, short_opt),
-    m_valid_arg(true)
+    m_valid_arg(false),
+    m_is_present(false)
 {}
 
+inline void libgetopt::arg_option_base::present()
+{ m_is_present = true; }
 
-inline bool libgetopt::arg_option_base::set(char const * const optarg)
+inline bool libgetopt::arg_option_base::is_present() const
 {
-    option_base::set();
+    return m_is_present;
+}
 
-    if( optarg != NULL )
-    {
-	m_valid_arg = parse_arg(optarg);
-    }
-
-    return m_valid_arg;
+inline bool libgetopt::arg_option_base::is_set() const
+{
+    return (m_is_present == true && m_valid_arg == true);
 }
 
 inline bool libgetopt::arg_option_base::arg_is_valid() const
