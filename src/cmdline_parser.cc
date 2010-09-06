@@ -68,20 +68,19 @@ void cmdline_parser::parse(int argc, char* const argv[])
 
 	arg_option_list_t::iterator option = m_arg_options.end();
 
-	// long option with no short option found check if it's an arg_option
+	// long option found
 	if( opt == 0 && optind != -1 )
 	{
-	    bool (arg_option::*pred)(char const *) const =
-		&arg_option::matches;
+	    option_base::long_opt_predicate_t pred = &option_base::matches;
 
 	    option = find_if(m_arg_options.begin(),
 			     m_arg_options.end(),
 			     bind2nd(mem_fun(pred),longopts[optind].name));
 	}
-	// short option found check if it's an arg_option
+	// short option found
 	else if( opt != 0 )
 	{
-	    bool (arg_option::*pred)(int) const = &arg_option::matches;
+	    option_base::val_predicate_t pred = &option_base::matches;
 
 	    option = find_if(m_arg_options.begin(),
 			     m_arg_options.end(),

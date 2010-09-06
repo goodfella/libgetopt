@@ -19,6 +19,10 @@ namespace libgetopt
 
 	public:
 
+	    typedef bool (option_base::*val_predicate_t)(int) const;
+	    typedef bool (option_base::*long_opt_predicate_t)(char const *) const;
+	    typedef bool (option_base::*short_opt_predicate_t)(char) const;
+
 	    explicit option_base(char short_opt);
 	    option_base(const std::string& long_opt, int val);
 	    option_base(const std::string& long_opt, char opt);
@@ -27,6 +31,8 @@ namespace libgetopt
 
 	    bool matches(int check_val) const;
 	    bool matches(char const * name) const;
+	    bool matches(char short_opt) const;
+
 	    bool has_long_option() const;
 	    bool has_short_option() const;
 
@@ -75,14 +81,7 @@ inline libgetopt::option_base::option_base(const std::string& long_opt, char sho
 
 inline bool libgetopt::option_base::matches(int val) const
 {
-    if( val == m_val )
-    {
-	return true;
-    }
-    else
-    {
-	return false;
-    }
+    return val == m_val;
 }
 
 inline bool libgetopt::option_base::matches(char const * name) const
@@ -90,14 +89,19 @@ inline bool libgetopt::option_base::matches(char const * name) const
     return m_long_opt == name;
 }
 
+inline bool libgetopt::option_base::matches(char short_opt) const
+{
+    return m_short_opt == short_opt;
+}
+
 inline bool libgetopt::option_base::has_long_option() const
 {
-    return ( m_long_opt != "" );
+    return m_long_opt != "" ;
 }
 
 inline bool libgetopt::option_base::has_short_option() const
 {
-    return ( m_short_opt != '\0' );
+    return m_short_opt != '\0';
 }
 
 inline const std::string& libgetopt::option_base::long_option() const
