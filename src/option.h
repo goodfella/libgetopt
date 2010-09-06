@@ -46,7 +46,7 @@ namespace libgetopt
     template<class Type>
     inline bool option<Type>::parse_arg(char const * const optarg)
     {
-	return convert<Type>(optarg, &m_arg);
+	return convert<Type>(optarg, &m_arg, m_err_str);
     }
 
     template<class Type>

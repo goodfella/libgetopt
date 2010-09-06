@@ -1,5 +1,5 @@
 test: $(wildcard src/*.cc) $(wildcard src/*.h)
-	g++ -g $(filter %.cc,$^) -o $@
+	g++ -g -Wall $(filter %.cc,$^) -o $@
 
 clean:
 	rm -f test

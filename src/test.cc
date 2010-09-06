@@ -20,7 +20,24 @@ int main(int argc, char** argv)
     parser.add_option(&int_opt);
     parser.add_option(&string_opt);
 
-    parser.parse(argc, argv);
+    cmdline_parser::parse_result res;
+
+    res = parser.parse(argc, argv);
+
+    if( res.bad() )
+    {
+	printf("command line parsing failed\n");
+
+	if( res == cmdline_parser::parse_result::result_missing_arg )
+	{
+	    if( res.error_option != NULL )
+	    {
+		printf("option: %s, missing arg\n", res.error_option->long_option().c_str());
+	    }
+	}
+
+	return 1;
+    }
 
     if( double_opt.is_set() == true )
     {
@@ -36,4 +53,6 @@ int main(int argc, char** argv)
     {
 	printf("string option = %s\n", string_opt.get().c_str());
     }
+
+    return 0;
 }

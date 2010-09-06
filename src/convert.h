@@ -8,10 +8,11 @@
 namespace libgetopt
 {
     template<class Type>
-    bool convert(char const * const optarg, Type* argp);
+    bool convert(char const * const optarg, Type* argp, std::string& error_str);
 
     template<>
-    inline bool convert(char const* const optarg, int* argp)
+    inline bool convert(char const* const optarg, int* argp,
+			std::string& error_str)
     {
 	assert(argp != NULL);
 	*argp = atoi(optarg);
@@ -19,7 +20,8 @@ namespace libgetopt
     }
 
     template<>
-    inline bool convert(char const * const optarg, double* argp)
+    inline bool convert(char const * const optarg, double* argp,
+			std::string& error_str)
     {
 	assert(argp != NULL);
 	*argp = atof(optarg);
@@ -27,7 +29,8 @@ namespace libgetopt
     }
 
     template<>
-    inline bool convert(char const * const optarg, long* argp)
+    inline bool convert(char const * const optarg, long* argp,
+			std::string& error_str)
     {
 	assert(argp != NULL);
 	*argp = atol(optarg);
@@ -35,7 +38,8 @@ namespace libgetopt
     }
 
     template<>
-    inline bool convert(char const * const optarg, long long* argp)
+    inline bool convert(char const * const optarg, long long* argp,
+			std::string& error_str)
     {
 	assert(argp != NULL);
 	*argp = atoll(optarg);
@@ -43,7 +47,8 @@ namespace libgetopt
     }
 
     template<>
-    inline bool convert(char const * const optarg, std::string* argp)
+    inline bool convert(char const * const optarg, std::string* argp,
+			std::string& error_str)
     {
 	assert(argp != NULL);
 	*argp = optarg;

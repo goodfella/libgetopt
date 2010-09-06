@@ -23,6 +23,10 @@ namespace libgetopt
 	    typedef bool (option_base::*long_opt_predicate_t)(char const *) const;
 	    typedef bool (option_base::*short_opt_predicate_t)(char) const;
 
+	    static const short_opt_predicate_t short_opt_pred;
+	    static const long_opt_predicate_t long_opt_pred;
+	    static const val_predicate_t val_pred;
+
 	    explicit option_base(char short_opt);
 	    option_base(const std::string& long_opt, int val);
 	    option_base(const std::string& long_opt, char opt);

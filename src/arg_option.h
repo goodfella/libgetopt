@@ -26,10 +26,13 @@ namespace libgetopt
 
 	    bool arg_is_valid() const;
 
+	    const std::string& error_string() const;
+
 	protected:
 
 	    bool m_valid_arg;
 	    bool m_is_present;
+	    std::string m_err_str;
 
 
 	private:
@@ -75,6 +78,11 @@ inline bool libgetopt::arg_option::is_set() const
 inline bool libgetopt::arg_option::arg_is_valid() const
 {
     return m_valid_arg;
+}
+
+inline const std::string& libgetopt::arg_option::error_string() const
+{
+    return m_err_str;
 }
 
 #endif

@@ -14,7 +14,7 @@ using std::vector;
 using std::bind2nd;
 using std::mem_fun;
 
-void cmdline_parser::parse(int argc, char* const argv[])
+cmdline_parser::parse_result cmdline_parser::parse(int argc, char* const argv[])
 {
     vector< ::option> longopts;
 
@@ -49,42 +49,64 @@ void cmdline_parser::parse(int argc, char* const argv[])
     while ( true )
     {
 	int opt;
-	int optind = -1;
+	int opt_index = -1;
 
-	opt = getopt_long(argc, argv, optstring.c_str(), &longopts[0], &optind);
+	opt = getopt_long(argc, argv, optstring.c_str(), &longopts[0], &opt_index);
 
 	// finished parsing args
 	if( opt == -1 )
 	{
 	    break;
 	}
-	else if( opt == '?' )
+	else if( opt == '?' || opt == ':')
 	{
-	    break;
+	    // invalid option given
+	    if( optopt == 0 )
+	    {
+		return parse_result(NULL, parse_result::result_invalid_option);
+	    }
+
+	    // option is missing an argument
+	    else
+	    {
+		arg_option_list_t::iterator option = m_arg_options.end();
+
+		option = find_if(m_arg_options.begin(),
+				 m_arg_options.end(),
+				 bind2nd(mem_fun(option_base::val_pred),
+					 optopt));
+
+		arg_option* arg_opt = NULL;
+
+		if( option != m_arg_options.end() )
+		{
+		    arg_opt = *option;
+		}
+
+		return parse_result(arg_opt, parse_result::result_missing_arg);
+	    }
 	}
 
 	// zero was returned, but no long option was found
-	assert( (opt != 0 || optind != -1) );
+	assert( (opt != 0 || opt_index != -1) );
 
 	arg_option_list_t::iterator option = m_arg_options.end();
 
 	// long option found
 	if( opt == 0 && optind != -1 )
 	{
-	    option_base::long_opt_predicate_t pred = &option_base::matches;
-
 	    option = find_if(m_arg_options.begin(),
 			     m_arg_options.end(),
-			     bind2nd(mem_fun(pred),longopts[optind].name));
+			     bind2nd(mem_fun(option_base::long_opt_pred),
+				     longopts[optind].name));
 	}
 	// short option found
 	else if( opt != 0 )
 	{
-	    option_base::val_predicate_t pred = &option_base::matches;
-
 	    option = find_if(m_arg_options.begin(),
 			     m_arg_options.end(),
-			     bind2nd(mem_fun(pred),opt));
+			     bind2nd(mem_fun(option_base::val_pred),
+				     opt));
 	}
 
 	// no arg_option found, just a flag
@@ -95,6 +117,11 @@ void cmdline_parser::parse(int argc, char* const argv[])
 
 	arg_option* arg_opt = *option;
 
-	arg_opt->set(optarg);
+	if( arg_opt->set(optarg) == false )
+	{
+	    return parse_result(arg_opt, parse_result::result_invalid_arg);
+	}
     }
+
+    return parse_result();
 }
