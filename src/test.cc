@@ -30,10 +30,7 @@ int main(int argc, char** argv)
 
 	if( res == cmdline_parser::parse_result::result_missing_arg )
 	{
-	    if( res.error_option != NULL )
-	    {
-		printf("option: %s, missing arg\n", res.error_option->long_option().c_str());
-	    }
+	    printf("option: %s, missing arg\n", res.error_option->long_option().c_str());
 	}
 
 	return 1;

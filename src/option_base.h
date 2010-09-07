@@ -3,6 +3,8 @@
 
 #include <cassert>
 #include <string>
+#include <stdexcept>
+
 
 namespace libgetopt
 {
@@ -11,6 +13,15 @@ namespace libgetopt
 	arg_policy_none,
 	arg_policy_required,
 	arg_policy_optional
+    };
+
+    class invalid_option: public std::logic_error
+    {
+	public:
+
+	    invalid_option(const std::string& option):
+		std::logic_error("invalid option: " + option)
+	    {}
     };
 
     class option_base
@@ -65,7 +76,10 @@ inline libgetopt::option_base::option_base(const char short_opt):
     m_long_opt(""),
     m_val(short_opt)
 {
-    assert(short_opt != '\0');
+    if( short_opt == '\0' )
+    {
+	throw invalid_option("null short option");
+    }
 }
 
 inline libgetopt::option_base::option_base(const std::string& long_opt, int val):
@@ -73,7 +87,10 @@ inline libgetopt::option_base::option_base(const std::string& long_opt, int val)
     m_long_opt(long_opt),
     m_val(val)
 {
-    assert(long_opt != "");
+    if( long_opt == "" )
+    {
+	throw invalid_option("null long option");
+    }
 }
 
 inline libgetopt::option_base::option_base(const std::string& long_opt, const char short_opt):
@@ -81,8 +98,15 @@ inline libgetopt::option_base::option_base(const std::string& long_opt, const ch
     m_long_opt(long_opt),
     m_val(short_opt)
 {
-    assert(long_opt != "");
-    assert(short_opt != '\0');
+    if( long_opt == "")
+    {
+	throw invalid_option("null long option");
+    }
+
+    if( short_opt == '\0' )
+    {
+	throw invalid_option("null short option");
+    }
 }
 
 inline bool libgetopt::option_base::matches(int val) const

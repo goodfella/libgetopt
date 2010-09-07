@@ -115,7 +115,7 @@ cmdline_parser::parse_result cmdline_parser::parse(int argc, char* const argv[])
     longopts.push_back(last_opt);
 
 
-    // process flags
+    // parse command line
     while ( true )
     {
 	int opt;
