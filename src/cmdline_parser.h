@@ -78,7 +78,7 @@ namespace libgetopt
 	    cmdline_parser(const cmdline_parser&);
 	    cmdline_parser& operator = (const cmdline_parser&);
 
-	    option_base* find_option(option_base* opt, std::string& option_str);
+	    option_base* find_option(option_base* opt);
 	    void add_option(option_base* opt);
 
 	    arg_option_list_t m_arg_options;

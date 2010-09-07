@@ -20,3 +20,19 @@ int* libgetopt::option_base::flag_ptr()
 {
     return NULL;
 }
+
+const string libgetopt::option_base::name() const
+{
+    string name;
+
+    if( has_long_option() == true )
+    {
+	name = long_option();
+    }
+    else if( has_short_option() == true )
+    {
+	name += short_option();
+    }
+
+    return name;
+}

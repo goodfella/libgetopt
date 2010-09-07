@@ -54,6 +54,7 @@ namespace libgetopt
 
 	    const std::string& long_option() const;
 	    const char short_option() const;
+	    const std::string name() const;
 	    int val() const;
 
 	    virtual argument_policy_t arg_policy() const = 0;

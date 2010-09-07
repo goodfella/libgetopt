@@ -19,9 +19,7 @@ const int cmdline_parser::val_adj = libgetopt::limits::max_short_options + 1;
 
 void cmdline_parser::add_option(option_base* opt)
 {
-    string matching_str;
-
-    option_base* option = find_option(opt, matching_str);
+    option_base* option = find_option(opt);
 
     if( option == NULL )
     {
@@ -29,7 +27,7 @@ void cmdline_parser::add_option(option_base* opt)
     }
     else
     {
-	throw duplicate_option(matching_str);
+	throw duplicate_option(opt->name());
     }
 }
 
@@ -50,7 +48,7 @@ void cmdline_parser::add_option(arg_option* arg_opt)
     m_arg_options.push_back(arg_opt);
 }
 
-option_base* cmdline_parser::find_option(option_base* opt, string& matching_str)
+option_base* cmdline_parser::find_option(option_base* opt)
 {
     option_list_t::const_iterator option = m_options.end();
 
@@ -62,7 +60,6 @@ option_base* cmdline_parser::find_option(option_base* opt, string& matching_str)
 
 	if( option != m_options.end() )
 	{
-	    matching_str = opt->long_option();
 	    return *option;
 	}
     }
@@ -75,8 +72,6 @@ option_base* cmdline_parser::find_option(option_base* opt, string& matching_str)
 
 	if( option != m_options.end() )
 	{
-	    matching_str = "";
-	    matching_str += opt->short_option();
 	    return *option;
 	}
     }
