@@ -27,9 +27,9 @@ namespace libgetopt
 	    static const long_opt_predicate_t long_opt_pred;
 	    static const val_predicate_t val_pred;
 
-	    explicit option_base(char short_opt);
+	    explicit option_base(const char short_opt);
 	    option_base(const std::string& long_opt, int val);
-	    option_base(const std::string& long_opt, char opt);
+	    option_base(const std::string& long_opt, const char opt);
 
 	    virtual ~option_base();
 
@@ -58,7 +58,7 @@ namespace libgetopt
     };
 }
 
-inline libgetopt::option_base::option_base(char short_opt):
+inline libgetopt::option_base::option_base(const char short_opt):
     m_short_opt(short_opt),
     m_long_opt(""),
     m_val(short_opt)
@@ -74,7 +74,7 @@ inline libgetopt::option_base::option_base(const std::string& long_opt, int val)
     assert(long_opt != "");
 }
 
-inline libgetopt::option_base::option_base(const std::string& long_opt, char short_opt):
+inline libgetopt::option_base::option_base(const std::string& long_opt, const char short_opt):
     m_short_opt(short_opt),
     m_long_opt(long_opt),
     m_val(short_opt)

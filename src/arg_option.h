@@ -56,7 +56,7 @@ inline libgetopt::arg_option::arg_option(const std::string& long_opt):
 
 
 inline libgetopt::arg_option::arg_option(const std::string& long_opt,
-						   const char short_opt):
+					 const char short_opt):
     option_base(long_opt, short_opt),
     m_valid_arg(false),
     m_is_present(false)

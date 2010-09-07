@@ -12,9 +12,9 @@ namespace libgetopt
     {
 	public:
 
-	    explicit option(char short_opt);
+	    explicit option(const char short_opt);
 	    explicit option(const std::string& long_opt);
-	    option(const std::string& long_opt, char opt);
+	    option(const std::string& long_opt, const char opt);
 
 	    operator const Type& () const;
 	    const Type& get() const;
@@ -29,7 +29,7 @@ namespace libgetopt
     };
 
     template<class Type>
-    inline option<Type>::option(char short_opt):
+    inline option<Type>::option(const char short_opt):
 	arg_option(short_opt)
     {}
 
@@ -39,7 +39,7 @@ namespace libgetopt
     {}
 
     template<class Type>
-    inline option<Type>::option(const std::string& long_opt, char short_opt):
+    inline option<Type>::option(const std::string& long_opt, const char short_opt):
 	arg_option(long_opt, short_opt)
     {}
 
