@@ -13,10 +13,12 @@ bool arg_option::set(char const * const optarg)
 {
     present();
 
+    bool ret = true;
+
     if( optarg != NULL )
     {
-	m_valid_arg = parse_arg(optarg);
+	ret = m_valid_arg = parse_arg(optarg);
     }
 
-    return m_valid_arg;
+    return ret;
 }
