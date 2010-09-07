@@ -14,6 +14,56 @@ using std::vector;
 using std::bind2nd;
 using std::mem_fun;
 
+void cmdline_parser::add_option(option_base* opt)
+{
+    string matching_str;
+
+    option_base* option = find_option(opt, matching_str);
+
+    if( option == NULL )
+    {
+	m_options.push_back(opt);
+    }
+    else
+    {
+	throw duplicate_option(matching_str);
+    }
+}
+
+option_base* cmdline_parser::find_option(option_base* opt, string& matching_str)
+{
+    option_list_t::const_iterator option = m_options.end();
+
+    if( opt->has_long_option() )
+    {
+	option = find_if(m_options.begin(), m_options.end(),
+			 bind2nd(mem_fun(option_base::long_opt_pred),
+				 opt->long_option().c_str()));
+
+	if( option != m_options.end() )
+	{
+	    matching_str = opt->long_option();
+	    return *option;
+	}
+    }
+
+    if( opt->has_short_option() )
+    {
+	option = find_if(m_options.begin(), m_options.end(),
+			 bind2nd(mem_fun(option_base::short_opt_pred),
+				 opt->short_option()));
+
+	if( option != m_options.end() )
+	{
+	    matching_str = "";
+	    matching_str += opt->short_option();
+	    return *option;
+	}
+    }
+
+    return NULL;
+}
+
 cmdline_parser::parse_result cmdline_parser::parse(int argc, char* const argv[])
 {
     vector< ::option> longopts;
@@ -63,7 +113,7 @@ cmdline_parser::parse_result cmdline_parser::parse(int argc, char* const argv[])
 	    // invalid option given
 	    if( optopt == 0 )
 	    {
-		return parse_result(NULL, parse_result::result_invalid_option);
+		return parse_result(parse_result::result_invalid_option);
 	    }
 
 	    // option is missing an argument
@@ -119,7 +169,7 @@ cmdline_parser::parse_result cmdline_parser::parse(int argc, char* const argv[])
 
 	if( arg_opt->set(optarg) == false )
 	{
-	    return parse_result(arg_opt, parse_result::result_invalid_arg);
+	    return parse_result(arg_opt, parse_result::result_invalid_arg, optarg);
 	}
     }
 
