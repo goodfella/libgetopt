@@ -83,13 +83,9 @@ namespace libgetopt
 
 	    arg_option_list_t m_arg_options;
 	    option_list_t m_options;
-    };
 
-    inline void cmdline_parser::add_option(arg_option* arg_opt)
-    {
-	add_option(static_cast<option_base*>(arg_opt));
-	m_arg_options.push_back(arg_opt);
-    }
+	    static const int val_adj;
+    };
 
     inline void cmdline_parser::clear()
     {

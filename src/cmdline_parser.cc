@@ -7,12 +7,15 @@
 #include "cmdline_parser.h"
 #include "arg_option.h"
 #include "getopt_option.h"
+#include "limits.h"
 
 using namespace libgetopt;
 using std::string;
 using std::vector;
 using std::bind2nd;
 using std::mem_fun;
+
+const int cmdline_parser::val_adj = libgetopt::limits::max_short_options + 1;
 
 void cmdline_parser::add_option(option_base* opt)
 {
@@ -28,6 +31,23 @@ void cmdline_parser::add_option(option_base* opt)
     {
 	throw duplicate_option(matching_str);
     }
+}
+
+void cmdline_parser::add_option(arg_option* arg_opt)
+{
+    add_option(static_cast<option_base*>(arg_opt));
+
+    // long option without a short option
+    if( arg_opt->has_long_option() == true &&
+	arg_opt->has_short_option() == false )
+    {
+	/* change val so that getopt returns a unique value
+	 * for the option
+	 */
+	arg_opt->set_val(m_arg_options.size() + cmdline_parser::val_adj);
+    }
+
+    m_arg_options.push_back(arg_opt);
 }
 
 option_base* cmdline_parser::find_option(option_base* opt, string& matching_str)
@@ -108,6 +128,12 @@ cmdline_parser::parse_result cmdline_parser::parse(int argc, char* const argv[])
 	{
 	    break;
 	}
+	// ignore flags
+	else if( opt == 0 )
+	{
+	    continue;
+	}
+	// invalid option or missing argument
 	else if( opt == '?' || opt == ':')
 	{
 	    // invalid option given
@@ -126,44 +152,22 @@ cmdline_parser::parse_result cmdline_parser::parse(int argc, char* const argv[])
 				 bind2nd(mem_fun(option_base::val_pred),
 					 optopt));
 
-		arg_option* arg_opt = NULL;
+		assert(option != m_arg_options.end());
 
-		if( option != m_arg_options.end() )
-		{
-		    arg_opt = *option;
-		}
+		arg_option* arg_opt = *option;
 
 		return parse_result(arg_opt, parse_result::result_missing_arg);
 	    }
 	}
 
-	// zero was returned, but no long option was found
-	assert( (opt != 0 || opt_index != -1) );
-
 	arg_option_list_t::iterator option = m_arg_options.end();
 
-	// long option found
-	if( opt == 0 && optind != -1 )
-	{
-	    option = find_if(m_arg_options.begin(),
-			     m_arg_options.end(),
-			     bind2nd(mem_fun(option_base::long_opt_pred),
-				     longopts[optind].name));
-	}
-	// short option found
-	else if( opt != 0 )
-	{
-	    option = find_if(m_arg_options.begin(),
-			     m_arg_options.end(),
-			     bind2nd(mem_fun(option_base::val_pred),
-				     opt));
-	}
+	option = find_if(m_arg_options.begin(),
+			 m_arg_options.end(),
+			 bind2nd(mem_fun(option_base::val_pred), opt));
 
-	// no arg_option found, just a flag
-	if( option == m_arg_options.end() )
-	{
-	    continue;
-	}
+
+	assert( option != m_arg_options.end() );
 
 	arg_option* arg_opt = *option;
 

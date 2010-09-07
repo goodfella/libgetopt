@@ -16,6 +16,7 @@ namespace libgetopt
     class option_base
     {
 	    friend class getopt_option;
+	    friend class cmdline_parser;
 
 	public:
 
@@ -28,7 +29,7 @@ namespace libgetopt
 	    static const val_predicate_t val_pred;
 
 	    explicit option_base(const char short_opt);
-	    option_base(const std::string& long_opt, int val);
+	    option_base(const std::string& long_opt, const int val);
 	    option_base(const std::string& long_opt, const char opt);
 
 	    virtual ~option_base();
@@ -49,12 +50,13 @@ namespace libgetopt
 	protected:
 
 	    virtual int* flag_ptr();
+	    void set_val(const int val);
 
 	private:
 
 	    const char m_short_opt;
 	    const std::string m_long_opt;
-	    const int m_val;
+	    int m_val;
     };
 }
 
@@ -121,6 +123,11 @@ inline const char libgetopt::option_base::short_option() const
 inline int libgetopt::option_base::val() const
 {
     return m_val;
+}
+
+inline void libgetopt::option_base::set_val(const int val)
+{
+    m_val = val;
 }
 
 #endif
