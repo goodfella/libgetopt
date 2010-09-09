@@ -109,38 +109,23 @@ cmdline_parser::parse_result cmdline_parser::parse(int argc, char* const argv[])
     longopts.push_back(last_opt);
 
 
+    int opt = -1;
+    int opt_index = -1;
+
     // parse command line
-    while ( true )
+    while ( (opt = getopt_long(argc, argv, optstring.c_str(), &longopts[0], &opt_index)) != -1 )
     {
-	int opt;
-	int opt_index = -1;
-
-	opt = getopt_long(argc, argv, optstring.c_str(), &longopts[0], &opt_index);
-
-	// finished parsing args
-	if( opt == -1 )
+	switch (opt)
 	{
-	    break;
-	}
-	// ignore flags
-	else if( opt == 0 )
-	{
-	    continue;
-	}
-	// invalid option or missing argument
-	else if( opt == '?' || opt == ':')
-	{
-	    // invalid option given
-	    if( optopt == 0 )
+	    // flag, no need to do anything
+	    case 0:
 	    {
-		string invalid_opt;
-		invalid_opt += static_cast<char>(optopt);
-
-		return parse_result(invalid_opt);
+		continue;
 	    }
 
-	    // option is missing an argument
-	    else
+	    // invalid option or missing argument
+	    case '?':
+	    case ':':
 	    {
 		arg_option_list_t::iterator option = m_arg_options.end();
 
@@ -149,28 +134,45 @@ cmdline_parser::parse_result cmdline_parser::parse(int argc, char* const argv[])
 				 bind2nd(mem_fun(option_base::val_pred),
 					 optopt));
 
-		assert(option != m_arg_options.end());
+		// invalid option
+		if( option == m_arg_options.end() )
+		{
+		    string invalid_opt;
+		    invalid_opt += static_cast<char>(optopt);
+
+		    return parse_result(invalid_opt);
+		}
+
+		// missing argument
+		else
+		{
+		    arg_option* arg_opt = *option;
+		    return parse_result(arg_opt);
+		}
+	    }
+
+	    // option found
+	    default:
+	    {
+		arg_option_list_t::iterator option = m_arg_options.end();
+
+		option = find_if(m_arg_options.begin(),
+				 m_arg_options.end(),
+				 bind2nd(mem_fun(option_base::val_pred), opt));
+
+		// by definition an option should be found
+		assert( option != m_arg_options.end() );
 
 		arg_option* arg_opt = *option;
 
-		return parse_result(arg_opt);
+		assert( (arg_opt->arg_policy() == arg_policy_optional)
+			|| (optarg != NULL) );
+
+		if( arg_opt->set(optarg) == false )
+		{
+		    return parse_result(arg_opt, optarg);
+		}
 	    }
-	}
-
-	arg_option_list_t::iterator option = m_arg_options.end();
-
-	option = find_if(m_arg_options.begin(),
-			 m_arg_options.end(),
-			 bind2nd(mem_fun(option_base::val_pred), opt));
-
-
-	assert( option != m_arg_options.end() );
-
-	arg_option* arg_opt = *option;
-
-	if( arg_opt->set(optarg) == false )
-	{
-	    return parse_result(arg_opt, optarg);
 	}
     }
 
