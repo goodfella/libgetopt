@@ -2,7 +2,6 @@
 #define __OPTION_BASE_H__
 
 #include <cctype>
-#include <cassert>
 #include <string>
 #include <stdexcept>
 
