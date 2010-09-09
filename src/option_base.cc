@@ -24,7 +24,7 @@ int* libgetopt::option_base::flag_ptr()
     return NULL;
 }
 
-const string libgetopt::option_base::name() const
+const string option_base::name() const
 {
     string name;
 
