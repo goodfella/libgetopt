@@ -80,7 +80,10 @@ namespace libgetopt
 	    cmdline_parser(const cmdline_parser&);
 	    cmdline_parser& operator = (const cmdline_parser&);
 
-	    option_base* find_option(option_base* opt);
+	    template<class List_Type>
+	    static option_base* find_option(option_base const * const opt,
+					    const List_Type& options);
+
 	    void add_option(option_base* opt);
 
 	    arg_option_list_t m_arg_options;
@@ -91,6 +94,22 @@ namespace libgetopt
     {
 	m_options.clear();
 	m_arg_options.clear();
+    }
+
+    template<class List_Type>
+    option_base* cmdline_parser::find_option(option_base const * const opt,
+					     const List_Type& options)
+    {
+	typename List_Type::const_iterator option =
+	    find_if(options.begin(), options.end(),
+		    std::bind2nd(std::mem_fun(option_base::duplicate_opt_pred), opt));
+
+	if( option != options.end() )
+	{
+	    return *option;
+	}
+
+	return NULL;
     }
 }
 

@@ -34,10 +34,12 @@ namespace libgetopt
 	    typedef bool (option_base::*val_predicate_t)(int) const;
 	    typedef bool (option_base::*long_opt_predicate_t)(char const *) const;
 	    typedef bool (option_base::*short_opt_predicate_t)(char) const;
+	    typedef bool (option_base::*duplicate_opt_predicate_t)(option_base const * const) const;
 
 	    static const short_opt_predicate_t short_opt_pred;
 	    static const long_opt_predicate_t long_opt_pred;
 	    static const val_predicate_t val_pred;
+	    static const duplicate_opt_predicate_t duplicate_opt_pred;
 
 	    static bool bad_char(const char chr);
 
@@ -50,6 +52,7 @@ namespace libgetopt
 	    bool matches(int check_val) const;
 	    bool matches(char const * name) const;
 	    bool matches(char short_opt) const;
+	    bool matches(option_base const * const opt_base) const;
 
 	    bool has_long_option() const;
 	    bool has_short_option() const;

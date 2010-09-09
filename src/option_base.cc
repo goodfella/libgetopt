@@ -16,6 +16,9 @@ option_base::long_opt_pred = &option_base::matches;
 const option_base::val_predicate_t
 option_base::val_pred = &option_base::matches;
 
+const option_base::duplicate_opt_predicate_t
+option_base::duplicate_opt_pred = &option_base::matches;
+
 
 option_base::~option_base() {}
 
@@ -71,4 +74,31 @@ void option_base::check_opt(const string& long_opt)
     {
 	throw invalid_option("long option contains a non graphical character");
     }
+}
+
+bool option_base::matches(option_base const * const opt) const
+{
+    bool match_found = false;
+
+    if( opt->has_long_option() )
+    {
+	match_found = matches(opt->long_option().c_str());
+    }
+
+    if( match_found == true )
+    {
+	return true;
+    }
+
+    if( opt->has_short_option() )
+    {
+	match_found = matches(opt->short_option());
+    }
+
+    if( match_found == true )
+    {
+	return true;
+    }
+
+    return false;
 }

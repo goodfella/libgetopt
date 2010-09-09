@@ -18,7 +18,7 @@ using std::mem_fun;
 
 void cmdline_parser::add_option(option_base* opt)
 {
-    option_base* option = find_option(opt);
+    option_base* option = find_option(opt, m_options);
 
     if( option == NULL )
     {
@@ -45,37 +45,6 @@ void cmdline_parser::add_option(arg_option* arg_opt)
     }
 
     m_arg_options.push_back(arg_opt);
-}
-
-option_base* cmdline_parser::find_option(option_base* opt)
-{
-    option_list_t::const_iterator option = m_options.end();
-
-    if( opt->has_long_option() )
-    {
-	option = find_if(m_options.begin(), m_options.end(),
-			 bind2nd(mem_fun(option_base::long_opt_pred),
-				 opt->long_option().c_str()));
-
-	if( option != m_options.end() )
-	{
-	    return *option;
-	}
-    }
-
-    if( opt->has_short_option() )
-    {
-	option = find_if(m_options.begin(), m_options.end(),
-			 bind2nd(mem_fun(option_base::short_opt_pred),
-				 opt->short_option()));
-
-	if( option != m_options.end() )
-	{
-	    return *option;
-	}
-    }
-
-    return NULL;
 }
 
 cmdline_parser::parse_result cmdline_parser::parse(int argc, char* const argv[])
