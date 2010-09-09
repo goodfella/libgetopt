@@ -1,3 +1,6 @@
+#include <algorithm>
+#include <functional>
+
 #include "option_base.h"
 
 using std::string;
@@ -35,4 +38,37 @@ const string libgetopt::option_base::name() const
     }
 
     return name;
+}
+
+void option_base::check_opt(const char short_opt)
+{
+    if( bad_char(short_opt) == true )
+    {
+	throw invalid_option("short option is not a graphical character");
+    }
+    else if( short_opt == '-' )
+    {
+	throw invalid_option("short option cannot be '-'");
+    }
+}
+
+void option_base::check_opt(const string& long_opt)
+{
+    if( long_opt == "" )
+    {
+	throw invalid_option("long option is null");
+    }
+    else if( long_opt[0] == '-' )
+    {
+	throw invalid_option("first character of long option cannot be a '-'");
+    }
+
+    string::const_iterator bad_chr = long_opt.end();
+
+    bad_chr = find_if(long_opt.begin(), long_opt.end(), bad_char);
+
+    if( bad_chr != long_opt.end() )
+    {
+	throw invalid_option("long option contains a non graphical character");
+    }
 }

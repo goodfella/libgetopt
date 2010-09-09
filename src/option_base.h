@@ -1,6 +1,7 @@
 #ifndef __OPTION_BASE_H__
 #define __OPTION_BASE_H__
 
+#include <cctype>
 #include <cassert>
 #include <string>
 #include <stdexcept>
@@ -19,8 +20,8 @@ namespace libgetopt
     {
 	public:
 
-	    invalid_option(const std::string& option):
-		std::logic_error("invalid option: " + option)
+	    invalid_option(const std::string& err):
+		std::logic_error(err)
 	    {}
     };
 
@@ -38,6 +39,8 @@ namespace libgetopt
 	    static const short_opt_predicate_t short_opt_pred;
 	    static const long_opt_predicate_t long_opt_pred;
 	    static const val_predicate_t val_pred;
+
+	    static bool bad_char(const char chr);
 
 	    explicit option_base(const char short_opt);
 	    option_base(const std::string& long_opt, const int val);
@@ -66,10 +69,18 @@ namespace libgetopt
 
 	private:
 
+	    static void check_opt(const char short_opt);
+	    static void check_opt(const std::string& long_opt);
+
 	    const char m_short_opt;
 	    const std::string m_long_opt;
 	    int m_val;
     };
+}
+
+inline bool libgetopt::option_base::bad_char(const char chr)
+{
+    return ! isgraph(chr);
 }
 
 inline libgetopt::option_base::option_base(const char short_opt):
@@ -77,10 +88,7 @@ inline libgetopt::option_base::option_base(const char short_opt):
     m_long_opt(""),
     m_val(short_opt)
 {
-    if( short_opt == '\0' )
-    {
-	throw invalid_option("null short option");
-    }
+    check_opt(short_opt);
 }
 
 inline libgetopt::option_base::option_base(const std::string& long_opt, int val):
@@ -88,10 +96,7 @@ inline libgetopt::option_base::option_base(const std::string& long_opt, int val)
     m_long_opt(long_opt),
     m_val(val)
 {
-    if( long_opt == "" )
-    {
-	throw invalid_option("null long option");
-    }
+    check_opt(long_opt);
 }
 
 inline libgetopt::option_base::option_base(const std::string& long_opt, const char short_opt):
@@ -99,15 +104,8 @@ inline libgetopt::option_base::option_base(const std::string& long_opt, const ch
     m_long_opt(long_opt),
     m_val(short_opt)
 {
-    if( long_opt == "")
-    {
-	throw invalid_option("null long option");
-    }
-
-    if( short_opt == '\0' )
-    {
-	throw invalid_option("null short option");
-    }
+    check_opt(long_opt);
+    check_opt(short_opt);
 }
 
 inline bool libgetopt::option_base::matches(int val) const
