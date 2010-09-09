@@ -15,7 +15,6 @@ using std::vector;
 using std::bind2nd;
 using std::mem_fun;
 
-const int cmdline_parser::val_adj = libgetopt::limits::max_short_options + 1;
 
 void cmdline_parser::add_option(option_base* opt)
 {
@@ -42,7 +41,7 @@ void cmdline_parser::add_option(arg_option* arg_opt)
 	/* change val so that getopt returns a unique value
 	 * for the option
 	 */
-	arg_opt->set_val(m_arg_options.size() + cmdline_parser::val_adj);
+	arg_opt->set_val(m_arg_options.size() + limits::max_short_options + 1);
     }
 
     m_arg_options.push_back(arg_opt);
