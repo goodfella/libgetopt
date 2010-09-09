@@ -133,7 +133,10 @@ cmdline_parser::parse_result cmdline_parser::parse(int argc, char* const argv[])
 	    // invalid option given
 	    if( optopt == 0 )
 	    {
-		return parse_result(parse_result::result_invalid_option);
+		string invalid_opt;
+		invalid_opt += static_cast<char>(optopt);
+
+		return parse_result(invalid_opt);
 	    }
 
 	    // option is missing an argument
@@ -150,7 +153,7 @@ cmdline_parser::parse_result cmdline_parser::parse(int argc, char* const argv[])
 
 		arg_option* arg_opt = *option;
 
-		return parse_result(arg_opt, parse_result::result_missing_arg);
+		return parse_result(arg_opt);
 	    }
 	}
 
@@ -167,7 +170,7 @@ cmdline_parser::parse_result cmdline_parser::parse(int argc, char* const argv[])
 
 	if( arg_opt->set(optarg) == false )
 	{
-	    return parse_result(arg_opt, parse_result::result_invalid_arg, optarg);
+	    return parse_result(arg_opt, optarg);
 	}
     }
 
