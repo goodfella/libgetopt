@@ -10,7 +10,8 @@ namespace libgetopt
 {
     enum argument_policy_t
     {
-	arg_policy_required = 1,
+	arg_policy_none,
+	arg_policy_required,
 	arg_policy_optional
     };
 
