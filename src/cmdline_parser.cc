@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <memory>
 #include <functional>
+#include <string>
 
 #include "cmdline_parser.h"
 #include "arg_option.h"
@@ -137,9 +138,11 @@ cmdline_parser::parse_result cmdline_parser::parse(int argc, char* const argv[])
 		assert( (arg_opt->arg_policy() == arg_policy_optional)
 			|| (optarg != NULL) );
 
-		if( arg_opt->set(optarg) == false )
+		string error_str;
+
+		if( arg_opt->set(optarg, error_str) == false )
 		{
-		    return parse_result(arg_opt, optarg);
+		    return parse_result(arg_opt, optarg, error_str);
 		}
 	    }
 	}

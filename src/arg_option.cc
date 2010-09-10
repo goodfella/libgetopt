@@ -1,6 +1,8 @@
+#include <string>
 #include "arg_option.h"
 
 using namespace libgetopt;
+using std::string;
 
 arg_option::~arg_option(){}
 
@@ -9,7 +11,7 @@ argument_policy_t arg_option::arg_policy() const
     return arg_policy_required;
 }
 
-bool arg_option::set(char const * const optarg)
+bool arg_option::set(char const * const optarg, string& err_str)
 {
     present();
 
@@ -17,7 +19,7 @@ bool arg_option::set(char const * const optarg)
 
     if( optarg != NULL )
     {
-	ret = m_valid_arg = parse_arg(optarg);
+	ret = m_valid_arg = parse_arg(optarg, err_str);
     }
 
     return ret;

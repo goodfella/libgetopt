@@ -40,18 +40,23 @@ namespace libgetopt
 		    parse_result(const std::string& invalid_opt):
 			error_option(NULL),
 			result(result_invalid_option),
+			error_string("invalid option"),
 			invalid_option(invalid_opt)
 		    {}
 
 		    parse_result(arg_option* opt):
 			error_option(opt),
-			result(result_missing_arg)
+			result(result_missing_arg),
+			error_string("missing arg")
 		    {}
 
 
-		    parse_result(arg_option* opt, const std::string& bad_arg):
+		    parse_result(arg_option* opt,
+				 const std::string& bad_arg,
+				 const std::string& err_str):
 			error_option(opt),
 			result(result_invalid_arg),
+			error_string(err_str),
 			invalid_option(""),
 			invalid_arg(bad_arg)
 		    {}
@@ -63,6 +68,7 @@ namespace libgetopt
 
 		    arg_option* error_option;
 		    result_t result;
+		    std::string error_string;
 		    std::string invalid_option;
 		    std::string invalid_arg;
 	    };

@@ -25,7 +25,7 @@ namespace libgetopt
 
 	    Type m_arg;
 
-	    bool parse_arg(char const * const optarg);
+	    bool parse_arg(char const * const optarg, std::string& err_str);
     };
 
     template<class Type>
@@ -44,9 +44,9 @@ namespace libgetopt
     {}
 
     template<class Type>
-    inline bool option<Type>::parse_arg(char const * const optarg)
+    inline bool option<Type>::parse_arg(char const * const optarg, std::string& err_str)
     {
-	return convert<Type>(optarg, &m_arg, m_err_str);
+	return convert<Type>(optarg, &m_arg, err_str);
     }
 
     template<class Type>

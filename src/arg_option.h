@@ -1,6 +1,7 @@
 #ifndef __ARG_OPTION_H__
 #define __ARG_OPTION_H__
 
+#include <string>
 #include "option_base.h"
 
 
@@ -19,25 +20,21 @@ namespace libgetopt
 	    void present();
 	    bool is_present() const;
 
-	    virtual bool set(char const * const optarg);
+	    virtual bool set(char const * const optarg, std::string& err_str);
 	    bool is_set() const;
 
 	    argument_policy_t arg_policy() const;
 
 	    bool arg_is_valid() const;
 
-	    const std::string& error_string() const;
-
 	protected:
 
 	    bool m_valid_arg;
 	    bool m_is_present;
-	    std::string m_err_str;
-
 
 	private:
 
-	    virtual bool parse_arg(char const * const optarg) = 0;
+	    virtual bool parse_arg(char const * const optarg, std::string& err_str) = 0;
     };
 }
 
@@ -78,11 +75,6 @@ inline bool libgetopt::arg_option::is_set() const
 inline bool libgetopt::arg_option::arg_is_valid() const
 {
     return m_valid_arg;
-}
-
-inline const std::string& libgetopt::arg_option::error_string() const
-{
-    return m_err_str;
 }
 
 #endif
