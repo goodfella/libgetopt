@@ -70,6 +70,10 @@ namespace libgetopt
 
 	private:
 
+	    // no copying allowed
+	    option_base(const option_base& opt);
+	    option_base& operator = (const option_base& opt);
+
 	    static void check_opt(const char short_opt);
 	    static void check_opt(const std::string& long_opt);
 
