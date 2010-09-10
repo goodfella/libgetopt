@@ -37,12 +37,12 @@ int main(int argc, char** argv)
 
 	if( res == cmdline_parser::parse_result::result_missing_arg )
 	{
-	    printf("option: %s, missing arg\n", res.error_option->long_option().c_str());
+	    printf("option: %s, missing arg\n", res.option_name.c_str());
 	}
 	else if( res == cmdline_parser::parse_result::result_invalid_arg )
 	{
 	    printf("option: %s, invalid arg: %s\n",
-		   res.error_option->long_option().c_str(),
+		   res.option_name.c_str(),
 		   res.error_string.c_str());
 	}
 
