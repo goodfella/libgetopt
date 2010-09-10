@@ -119,7 +119,7 @@ namespace libgetopt
 		return false;
 	    }
 	}
-	else if( *bad_chrs != '\0' )
+	else if( errno != 0 || *bad_chrs != '\0' )
 	{
 	    err_str = "arg does not represent a numeric type";
 	    return false;
