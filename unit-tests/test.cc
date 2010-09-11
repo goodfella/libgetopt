@@ -2,8 +2,7 @@
 #include <cstdio>
 #include <string>
 
-#include "option.h"
-#include "cmdline_parser.h"
+#include "libgetopt.h"
 
 using namespace libgetopt;
 using namespace std;
