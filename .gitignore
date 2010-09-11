@@ -1,0 +1,9 @@
+# build artifacts
+*.a
+*.o
+
+# unit tests
+unit-tests/test
+
+# editor artifacts
+*~
