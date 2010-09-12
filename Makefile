@@ -1,6 +1,6 @@
 CXXFLAGS := -Wall -Wnon-virtual-dtor -g
 CPPFLAGS := -I include
-LDFLAGS := -L . -static
+LDFLAGS := -L .
 
 unit_tests := unit-tests/test
 
