@@ -3,11 +3,14 @@ CPPFLAGS := -I include -I libunit-test
 LDFLAGS := -L.
 
 
-unit_tests := unit-tests/test
+unit_tests := unit-tests/test unit-tests/int-overflow
 libs := libgetopt.a libunit-test.a
 
 unit-tests/test_SRCS := unit-tests/test.cc
 unit-tests/test_LIBS := getopt unit-test
+
+unit-tests/int-overflow_SRCS := unit-tests/int_overflow.cc
+unit-tests/int-overflow_LIBS := getopt unit-test
 
 libunit-test_SRCS := $(wildcard libunit-test/*.cc)
 libgetopt_SRCS := $(wildcard src/*.cc)
@@ -46,4 +49,4 @@ unit-tests: $(unit_tests)
 clean:
 	rm -f libgetopt.a $(unit_tests) libunit-test.a
 	rm -rf src/*.o unit-tests/*.o $(srcs:.cc=.d) libunit-test/*.[do]
-	rm -f Makefile~ src/*~ include/*~ unit-tests/*~ *~
+	rm -f Makefile~ src/*~ include/*~ unit-tests/*~ libunit-test/*~ *~
