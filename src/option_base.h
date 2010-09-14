@@ -58,8 +58,14 @@ namespace libgetopt
 	    bool has_short_option() const;
 
 	    const std::string& long_option() const;
+	    const std::string full_long_option() const;
+
 	    const char short_option() const;
+	    const std::string full_short_option() const;
+
 	    const std::string name() const;
+	    const std::string full_name() const;
+
 	    int val() const;
 
 	    virtual argument_policy_t arg_policy() const = 0;
@@ -144,9 +150,23 @@ inline const std::string& libgetopt::option_base::long_option() const
     return m_long_opt;
 }
 
+inline const std::string libgetopt::option_base::full_long_option() const
+{
+    return "--" + m_long_opt;
+}
+
 inline const char libgetopt::option_base::short_option() const
 {
     return m_short_opt;
+}
+
+inline const std::string libgetopt::option_base::full_short_option() const
+{
+    std::string opt;
+
+    opt += "-";
+    opt += m_short_opt;
+    return opt;
 }
 
 inline int libgetopt::option_base::val() const

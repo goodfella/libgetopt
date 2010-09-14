@@ -43,6 +43,22 @@ const string option_base::name() const
     return name;
 }
 
+const string option_base::full_name() const
+{
+    string full_name = name();
+
+    if( full_name.size() == 1 )
+    {
+	return "-" + full_name;
+    }
+    else if ( full_name.size() > 1 )
+    {
+	return "--" + full_name;
+    }
+
+    return "";
+}
+
 void option_base::check_opt(const char short_opt)
 {
     if( bad_char(short_opt) == true )
