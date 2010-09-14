@@ -38,7 +38,7 @@ namespace libgetopt
 
 	if( opt_base->has_long_option() == true )
 	{
-	    m_opt.name = opt_base->long_option().c_str();
+	    m_opt.name = opt_base->long_option.c_str();
 	    m_opt.flag = opt_base->flag_ptr();
 	    m_opt.val = opt_base->val();
 	    m_opt.has_arg = opt_base->arg_policy();
@@ -46,7 +46,7 @@ namespace libgetopt
 
 	if( opt_base->has_short_option() == true )
 	{
-	    m_optstring = opt_base->short_option();
+	    m_optstring = opt_base->short_option;
 	    m_optstring += ':';
 	}
     }

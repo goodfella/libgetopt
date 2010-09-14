@@ -33,11 +33,11 @@ const string option_base::name() const
 
     if( has_long_option() == true )
     {
-	name = long_option();
+	name = long_option;
     }
     else if( has_short_option() == true )
     {
-	name += short_option();
+	name = short_option;
     }
 
     return name;
@@ -98,7 +98,7 @@ bool option_base::matches(option_base const * const opt) const
 
     if( opt->has_long_option() )
     {
-	match_found = matches(opt->long_option().c_str());
+	match_found = matches(opt->long_option.c_str());
     }
 
     if( match_found == true )
@@ -108,7 +108,7 @@ bool option_base::matches(option_base const * const opt) const
 
     if( opt->has_short_option() )
     {
-	match_found = matches(opt->short_option());
+	match_found = matches(opt->short_option);
     }
 
     if( match_found == true )

@@ -57,10 +57,7 @@ namespace libgetopt
 	    bool has_long_option() const;
 	    bool has_short_option() const;
 
-	    const std::string& long_option() const;
 	    const std::string full_long_option() const;
-
-	    const char short_option() const;
 	    const std::string full_short_option() const;
 
 	    const std::string name() const;
@@ -69,6 +66,10 @@ namespace libgetopt
 	    int val() const;
 
 	    virtual argument_policy_t arg_policy() const = 0;
+
+	    const char short_option;
+	    const std::string long_option;
+
 
 	protected:
 
@@ -84,8 +85,6 @@ namespace libgetopt
 	    static void check_opt(const char short_opt);
 	    static void check_opt(const std::string& long_opt);
 
-	    const char m_short_opt;
-	    const std::string m_long_opt;
 	    int m_val;
     };
 }
@@ -96,24 +95,24 @@ inline bool libgetopt::option_base::bad_char(const char chr)
 }
 
 inline libgetopt::option_base::option_base(const char short_opt):
-    m_short_opt(short_opt),
-    m_long_opt(""),
+    short_option(short_opt),
+    long_option(""),
     m_val(short_opt)
 {
     check_opt(short_opt);
 }
 
 inline libgetopt::option_base::option_base(const std::string& long_opt, int val):
-    m_short_opt('\0'),
-    m_long_opt(long_opt),
+    short_option('\0'),
+    long_option(long_opt),
     m_val(val)
 {
     check_opt(long_opt);
 }
 
 inline libgetopt::option_base::option_base(const std::string& long_opt, const char short_opt):
-    m_short_opt(short_opt),
-    m_long_opt(long_opt),
+    short_option(short_opt),
+    long_option(long_opt),
     m_val(short_opt)
 {
     check_opt(long_opt);
@@ -127,37 +126,27 @@ inline bool libgetopt::option_base::matches(int val) const
 
 inline bool libgetopt::option_base::matches(char const * name) const
 {
-    return m_long_opt == name;
+    return long_option == name;
 }
 
 inline bool libgetopt::option_base::matches(char short_opt) const
 {
-    return m_short_opt == short_opt;
+    return short_option == short_opt;
 }
 
 inline bool libgetopt::option_base::has_long_option() const
 {
-    return m_long_opt != "" ;
+    return long_option != "" ;
 }
 
 inline bool libgetopt::option_base::has_short_option() const
 {
-    return m_short_opt != '\0';
-}
-
-inline const std::string& libgetopt::option_base::long_option() const
-{
-    return m_long_opt;
+    return short_option != '\0';
 }
 
 inline const std::string libgetopt::option_base::full_long_option() const
 {
-    return "--" + m_long_opt;
-}
-
-inline const char libgetopt::option_base::short_option() const
-{
-    return m_short_opt;
+    return "--" + long_option;
 }
 
 inline const std::string libgetopt::option_base::full_short_option() const
@@ -165,7 +154,7 @@ inline const std::string libgetopt::option_base::full_short_option() const
     std::string opt;
 
     opt += "-";
-    opt += m_short_opt;
+    opt += short_option;
     return opt;
 }
 
