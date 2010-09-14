@@ -71,7 +71,7 @@ namespace libgetopt
 	    cmdline_parser() {}
 
 	    void add_option(arg_option* arg_opt);
-	    parse_result parse(int argc, char* const argv[]);
+	    parse_result parse(int argc, char* const argv[]) const;
 
 	    void clear();
 

@@ -48,7 +48,7 @@ void cmdline_parser::add_option(arg_option* arg_opt)
     m_arg_options.push_back(arg_opt);
 }
 
-cmdline_parser::parse_result cmdline_parser::parse(int argc, char* const argv[])
+cmdline_parser::parse_result cmdline_parser::parse(int argc, char* const argv[]) const
 {
     vector< ::option> longopts;
 
@@ -97,7 +97,7 @@ cmdline_parser::parse_result cmdline_parser::parse(int argc, char* const argv[])
 	    case '?':
 	    case ':':
 	    {
-		arg_option_list_t::iterator option = m_arg_options.end();
+		arg_option_list_t::const_iterator option = m_arg_options.end();
 
 		option = find_if(m_arg_options.begin(),
 				 m_arg_options.end(),
@@ -124,7 +124,7 @@ cmdline_parser::parse_result cmdline_parser::parse(int argc, char* const argv[])
 	    // option found
 	    default:
 	    {
-		arg_option_list_t::iterator option = m_arg_options.end();
+		arg_option_list_t::const_iterator option = m_arg_options.end();
 
 		option = find_if(m_arg_options.begin(),
 				 m_arg_options.end(),
