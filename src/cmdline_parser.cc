@@ -8,7 +8,7 @@
 #include "cmdline_parser.h"
 #include "arg_option.h"
 #include "getopt_option.h"
-#include "limits.h"
+#include "libgetopt_limits.h"
 
 using namespace libgetopt;
 using std::string;
