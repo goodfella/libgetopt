@@ -1,17 +1,18 @@
 CXXFLAGS := -Wall -Wnon-virtual-dtor -g
-CPPFLAGS := -I include
+CPPFLAGS := -I include -I libunit-test
 LDFLAGS := -L.
 
 
 unit_tests := unit-tests/test
-libs := libgetopt.a
+libs := libgetopt.a libunit-test.a
 
 unit-tests/test_SRCS := unit-tests/test.cc
-unit-tests/test_LIBS := getopt
+unit-tests/test_LIBS := getopt unit-test
 
+libunit-test_SRCS := $(wildcard libunit-test/*.cc)
 libgetopt_SRCS := $(wildcard src/*.cc)
 
-srcs := $(libgetopt_SRCS) $(foreach test,$(unit_tests),$($(test)_SRCS))
+srcs := $(libgetopt_SRCS) $(libunit-test_SRCS) $(foreach test,$(unit_tests),$($(test)_SRCS))
 
 # 1 = target
 define create_target
@@ -24,7 +25,7 @@ endef
 %.d: %.cc
 	@$(CXX) $(CPPFLAGS) -M -E -MM -MD -MT $(<:.cc=.o) -MT $(<:.cc=.d) $(<) -o $(<:.cc=.d)
 
-all: libgetopt.a unit-tests
+all: libgetopt.a libunit-test.a unit-tests
 
 $(foreach test,$(unit_tests),$(eval $(call create_target,$(test))))
 
@@ -37,9 +38,12 @@ endif
 libgetopt.a: Makefile $(libgetopt_SRCS:.cc=.o)
 	$(AR) rcs $@ $(filter %.o,$^)
 
+libunit-test.a: Makefile $(libunit-test_SRCS:.cc=.o) libgetopt.a
+	$(AR) rcs $@ $(filter %.o,$^)
+
 unit-tests: $(unit_tests)
 
 clean:
-	rm -f libgetopt.a $(unit_tests)
-	rm -rf src/*.o unit-tests/*.o $(srcs:.cc=.d)
+	rm -f libgetopt.a $(unit_tests) libunit-test.a
+	rm -rf src/*.o unit-tests/*.o $(srcs:.cc=.d) libunit-test/*.[do]
 	rm -f Makefile~ src/*~ include/*~ unit-tests/*~ *~
