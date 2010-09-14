@@ -2,11 +2,14 @@
 #define __OPTION_H__
 
 #include "arg_option.h"
-#include "convert.h"
 
 
 namespace libgetopt
 {
+
+    template<class Type>
+    bool convert(char const * const optarg, Type* argp, std::string& error_str);
+
     template<class Type>
     class option : public arg_option
     {

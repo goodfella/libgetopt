@@ -70,8 +70,6 @@ namespace libgetopt
 	    static int base;
     };
 
-    int converter_info<int>::base = 10;
-
 
     template<>
     struct converter_info<long>: public converter_info_base<long,
@@ -83,8 +81,6 @@ namespace libgetopt
     {
 	    static int base;
     };
-
-    int converter_info<long>::base = 10;
 
 
     template<class Type>
