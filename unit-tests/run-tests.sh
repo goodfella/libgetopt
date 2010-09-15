@@ -12,7 +12,7 @@ do
 	TEST_STATUS="$?"
 
 	if [ "$TEST_STATUS" -ne "0" ]; then
-	    printf "%s FAILEDd with: %s\n" "$test" "$TEST_STATUS"
+	    printf "%s FAILED with: %s\n" "$test" "$TEST_STATUS"
 	    exit 1
 	fi
     fi
