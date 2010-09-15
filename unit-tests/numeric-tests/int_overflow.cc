@@ -1,6 +1,5 @@
 #include <limits>
 #include <cstdio>
-#include <cstdlib>
 
 #include "libgetopt.h"
 #include "libunit-test.h"
@@ -33,6 +32,8 @@ int main(int argc, char** argv)
     if( test.run() == false )
     {
 	printf("%s: failed\n", test.name.c_str());
-	exit(1);
+	return 1;
     }
+
+    return 0;
 }
