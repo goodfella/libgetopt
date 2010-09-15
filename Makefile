@@ -3,7 +3,10 @@ CPPFLAGS := -I include
 LDFLAGS := -L.
 
 
-unit_tests := unit-tests/test unit-tests/numeric-tests/int-overflow unit-tests/numeric-tests/int-underflow
+unit_tests := unit-tests/test \
+              unit-tests/numeric-tests/int-overflow \
+              unit-tests/numeric-tests/int-underflow \
+              unit-tests/numeric-tests/int-invalid
 
 libs := libgetopt.a libunit-test.a
 
@@ -18,6 +21,10 @@ unit-tests/numeric-tests/int-overflow_CPPFLAGS := $(CPPFLAGS) -I libunit-test
 unit-tests/numeric-tests/int-underflow_SRCS := unit-tests/numeric-tests/int_underflow.cc
 unit-tests/numeric-tests/int-underflow_LIBS := getopt unit-test
 unit-tests/numeric-tests/int-underflow_CPPFLAGS := $(CPPFLAGS) -I libunit-test
+
+unit-tests/numeric-tests/int-invalid_SRCS := unit-tests/numeric-tests/int_invalid.cc
+unit-tests/numeric-tests/int-invalid_LIBS := getopt unit-test
+unit-tests/numeric-tests/int-invalid_CPPFLAGS := $(CPPFLAGS) -I libunit-test
 
 libunit-test_SRCS := $(wildcard libunit-test/*.cc)
 libgetopt_SRCS := $(wildcard src/*.cc)

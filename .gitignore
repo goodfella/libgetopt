@@ -4,9 +4,8 @@
 *.d
 
 # unit tests
-unit-tests/*
-!unit-tests/*.cc
-!unit-tests/*.sh
+unit-tests/test
+unit-tests/numeric-tests/int-*
 *.html
 
 # editor artifacts
