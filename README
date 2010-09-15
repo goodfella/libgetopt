@@ -1,0 +1,24 @@
+libgetopt 
+=========
+Nicholas Guiffrida <goodfella005@gmail.com>
+
+Introduction
+------------
+
+libgetopt is a C++ wrapper around the getopt family of functions
+provided by the GNU C library.  Its purpose is to take the boiler
+plate code that is necessary when using the getopt functions and
+replace it with a simple easy to use interface for specifying and
+parsing command line options.
+
+Options are specified to take an argument of a given C++ type.  When
+parsing the command line, option arguments will be checked to insure
+that they meet the criteria necessary to assign them to the
+designated type for their respective option.  For example if an
+argument is designated as an 'int', then libgetopt will check to
+insure that the argument specified for a given option does not
+overflow or underflow an 'int'.
+
+libgetopt also provides overloads to handle options specified with
+user defined types.  In addition, one can specify a custom parser of
+an option's argument.
