@@ -1,40 +1,60 @@
 CXXFLAGS := -Wall -Wnon-virtual-dtor -g
-CPPFLAGS := -I include -I libunit-test
+CPPFLAGS := -I include
 LDFLAGS := -L.
 
 
 unit_tests := unit-tests/test unit-tests/int-overflow
+
 libs := libgetopt.a libunit-test.a
 
 unit-tests/test_SRCS := unit-tests/test.cc
 unit-tests/test_LIBS := getopt unit-test
+unit-tests/test_CPPFLAGS := $(CPPFLAGS) -I libunit-test
 
 unit-tests/int-overflow_SRCS := unit-tests/int_overflow.cc
 unit-tests/int-overflow_LIBS := getopt unit-test
+unit-tests/int-overflow_CPPFLAGS := $(CPPFLAGS) -I libunit-test
 
 libunit-test_SRCS := $(wildcard libunit-test/*.cc)
 libgetopt_SRCS := $(wildcard src/*.cc)
 
 srcs := $(libgetopt_SRCS) $(libunit-test_SRCS) $(foreach test,$(unit_tests),$($(test)_SRCS))
 
+# get all the depends files that exist.  Whatever ones don't exist
+# will be created because .o files depend on .d files
+depends := $(wildcard $(srcs:.cc=.d))
+
+
+# generates the rule for a given target
+
 # 1 = target
 define create_target
+
+ifneq ($($(1)_CPPFLAGS),)
+$(1): CPPFLAGS := $($(1)_CPPFLAGS)
+endif
+
 $(1): Makefile $($(1)_SRCS:.cc=.o) $($(1)_LIBS:%=lib%.a)
 	$(CXX) $(LDFLAGS) $$(filter %.o,$$^) $($(1)_LIBS:%=lib%.a) -o $$@
 endef
 
 
-# depend files require a source file
-%.d: %.cc
-	@$(CXX) $(CPPFLAGS) -M -E -MM -MD -MT $(<:.cc=.o) -MT $(<:.cc=.d) $(<) -o $(<:.cc=.d)
-
 all: libgetopt.a libunit-test.a unit-tests
 
+
+%.d:
+	@$(CXX) $(CPPFLAGS) -M -E -MM -MD -MT $(@:.d=.o) $(@:.d=.cc) -o $(@)
+
+
+# make the object files depend on the depends file and the Makefile
+$(foreach obj,$(srcs:.cc=.o),$(eval $(obj): $(obj:.o=.d) Makefile))
+
+# create the rules for the unit tests
 $(foreach test,$(unit_tests),$(eval $(call create_target,$(test))))
 
-# only include the depends file if the target is not clean
+# only include the depends files if the target is not a clean target
 ifeq ($(filter clean%,$(MAKECMDGOALS)),)
--include $(srcs:.cc=.d)
+include $(depends)
 endif
 
 
