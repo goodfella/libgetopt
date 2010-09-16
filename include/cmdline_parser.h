@@ -103,7 +103,7 @@ namespace libgetopt
     {
 	typename List_Type::const_iterator option =
 	    find_if(options.begin(), options.end(),
-		    std::bind2nd(std::mem_fun(option_base::duplicate_opt_pred), opt));
+		    std::bind2nd(std::mem_fun(option_base::option_base_matches), opt));
 
 	if( option != options.end() )
 	{

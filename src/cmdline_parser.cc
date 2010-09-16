@@ -101,7 +101,7 @@ cmdline_parser::parse_result cmdline_parser::parse(int argc, char* const argv[])
 
 		option = find_if(m_arg_options.begin(),
 				 m_arg_options.end(),
-				 bind2nd(mem_fun(option_base::val_pred),
+				 bind2nd(mem_fun(option_base::val_matches),
 					 optopt));
 
 		// invalid option
@@ -128,7 +128,7 @@ cmdline_parser::parse_result cmdline_parser::parse(int argc, char* const argv[])
 
 		option = find_if(m_arg_options.begin(),
 				 m_arg_options.end(),
-				 bind2nd(mem_fun(option_base::val_pred), opt));
+				 bind2nd(mem_fun(option_base::val_matches), opt));
 
 		// by definition an option should be found
 		assert( option != m_arg_options.end() );
