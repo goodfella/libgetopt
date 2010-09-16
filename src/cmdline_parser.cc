@@ -42,7 +42,7 @@ void cmdline_parser::add_option(arg_option* arg_opt)
 	/* change val so that getopt returns a unique value
 	 * for the option
 	 */
-	arg_opt->set_val(m_arg_options.size() + limits::max_short_options + 1);
+	arg_opt->val(m_arg_options.size() + limits::max_short_options + 1);
     }
 
     m_arg_options.push_back(arg_opt);

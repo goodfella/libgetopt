@@ -74,7 +74,7 @@ namespace libgetopt
 	protected:
 
 	    virtual int* flag_ptr();
-	    void set_val(const int val);
+	    void val(const int val);
 
 	private:
 
@@ -163,7 +163,7 @@ inline int libgetopt::option_base::val() const
     return m_val;
 }
 
-inline void libgetopt::option_base::set_val(const int val)
+inline void libgetopt::option_base::val(const int val)
 {
     m_val = val;
 }
