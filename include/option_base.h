@@ -144,20 +144,6 @@ inline bool libgetopt::option_base::has_short_option() const
     return short_option != '\0';
 }
 
-inline const std::string libgetopt::option_base::full_long_option() const
-{
-    return "--" + long_option;
-}
-
-inline const std::string libgetopt::option_base::full_short_option() const
-{
-    std::string opt;
-
-    opt += "-";
-    opt += short_option;
-    return opt;
-}
-
 inline int libgetopt::option_base::val() const
 {
     return m_val;

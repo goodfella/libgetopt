@@ -27,6 +27,32 @@ int* libgetopt::option_base::flag_ptr()
     return NULL;
 }
 
+const std::string libgetopt::option_base::full_long_option() const
+{
+    if( has_long_option() == false )
+    {
+	return "";
+    }
+    else
+    {
+	return "--" + long_option;
+    }
+}
+
+const std::string libgetopt::option_base::full_short_option() const
+{
+    if( has_short_option() == false )
+    {
+	return "";
+    }
+    else
+    {
+	string opt(1, '-');
+	opt += short_option;
+	return opt;
+    }
+}
+
 const string option_base::name() const
 {
     string name;
