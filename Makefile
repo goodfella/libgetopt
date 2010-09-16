@@ -29,11 +29,19 @@ unit-tests/numeric-tests/int-invalid_CPPFLAGS := $(CPPFLAGS) -I libunit-test
 libunit-test_SRCS := $(wildcard libunit-test/*.cc)
 libgetopt_SRCS := $(wildcard src/*.cc)
 
+
+# generates the depends file paths given a list of paths
+
+# 1 = list of file paths
+define create_depends
+$(foreach path,$(1),$(dir $(path)).$(basename $(notdir $(path))).d)
+endef
+
 srcs := $(libgetopt_SRCS) $(libunit-test_SRCS) $(foreach test,$(unit_tests),$($(test)_SRCS))
 
 # get all the depends files that exist.  Whatever ones don't exist
 # will be created because .o files depend on .d files
-depends := $(wildcard $(srcs:.cc=.d))
+depends := $(wildcard $(call create_depends,$(srcs)))
 
 
 # generates the rule for a given target
@@ -53,12 +61,12 @@ endef
 all: libgetopt.a libunit-test.a unit-tests
 
 
-%.d:
-	@$(CXX) $(CPPFLAGS) -M -E -MM -MD -MT $(@:.d=.o) $(@:.d=.cc) -o $(@)
+.%.d:
+	@$(CXX) $(CPPFLAGS) -M -E -MM -MD -MT $(*).o $(*).cc -o $(@)
 
 
 # make the object files depend on the depends file and the Makefile
-$(foreach obj,$(srcs:.cc=.o),$(eval $(obj): $(obj:.o=.d) Makefile))
+$(foreach obj,$(srcs:.cc=.o),$(eval $(obj): $(call create_depends,$(obj)) Makefile))
 
 # create the rules for the unit tests
 $(foreach test,$(unit_tests),$(eval $(call create_target,$(test))))
