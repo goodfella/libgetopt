@@ -10,28 +10,10 @@ using namespace libgetopt::unit_tests;
 
 int main(int argc, char** argv)
 {
-    cmdline_args args;
-
-    option<int> int_opt("int");
-
-    cmdline_parser parser;
-
-    parser.add_option(&int_opt);
-
-    args.add(argv[0]);
-
-    long long arg = numeric_limits<int>::min();
-    arg--;
-
-    args.add(&int_opt, arg);
-
-    unit_test test("underflow int", args.count(), args, parser,
-		   cmdline_parser::parse_result::result_invalid_arg);
-
+    numeric_underflow_test<int> test(argv[0]);
 
     if( test.run() == false )
     {
-	printf("%s: failed\n", test.name.c_str());
 	return 1;
     }
 

@@ -9,25 +9,10 @@ using namespace libgetopt::unit_tests;
 
 int main(int argc, char** argv)
 {
-    cmdline_args args;
+    invalid_numeric_test<int> test(argv[0]);
 
-    option<int> int_opt("int");
-
-    cmdline_parser parser;
-
-    parser.add_option(&int_opt);
-
-    args.add(argv[0]);
-
-    args.add(&int_opt, "1234abcd");
-
-    unit_test test("invalid argument", args.count(), args, parser,
-		   cmdline_parser::parse_result::result_invalid_arg);
-
-
-    if( test.run() == false )
+    if( test.run("abc123") == false )
     {
-	printf("%s: failed\n", test.name.c_str());
 	return 1;
     }
 
