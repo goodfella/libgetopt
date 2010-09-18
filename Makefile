@@ -40,7 +40,7 @@ endef
 srcs := $(libgetopt_SRCS) $(libunit-test_SRCS) $(foreach test,$(unit_tests),$($(test)_SRCS))
 
 # get all the depends files that exist.  Whatever ones don't exist
-# will be created because .o files depend on .d files
+# will be created when their object files are created
 depends := $(wildcard $(call create_depends,$(srcs)))
 
 
@@ -61,12 +61,13 @@ endef
 all: libgetopt.a libunit-test.a unit-tests
 
 
-.%.d:
-	@$(CXX) $(CPPFLAGS) -M -E -MM -MD -MT $(*).o $(*).cc -o $(@)
+%.o: %.cc
+	@$(CXX) $(CPPFLAGS) -M -E -MM -MD -MT $@ $< -o $(call create_depends,$@)
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $< -o $@
 
 
-# make the object files depend on the depends file and the Makefile
-$(foreach obj,$(srcs:.cc=.o),$(eval $(obj): $(call create_depends,$(obj)) Makefile))
+# make the object files depend on the Makefile
+$(foreach obj,$(srcs:.cc=.o),$(eval $(obj): Makefile))
 
 # create the rules for the unit tests
 $(foreach test,$(unit_tests),$(eval $(call create_target,$(test))))
@@ -87,5 +88,5 @@ unit-tests: $(unit_tests)
 
 clean:
 	rm -f libgetopt.a $(unit_tests) libunit-test.a
-	rm -rf src/*.o unit-tests/*.o $(srcs:.cc=.d) libunit-test/*.[do]
+	rm -f $(srcs:.cc=.o) $(call create_depends,$(srcs))
 	rm -f Makefile~ src/*~ include/*~ unit-tests/*~ libunit-test/*~ *~
