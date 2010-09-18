@@ -23,6 +23,7 @@ namespace libgetopt
 		void add(char const * const option, char const * const arg);
 		void add(char const * const option, long long arg);
 		void add(option_base* opt);
+		void add(long long arg);
 		void add(option_base* opt, char const * const arg);
 		void add(option_base* opt, long long arg);
 

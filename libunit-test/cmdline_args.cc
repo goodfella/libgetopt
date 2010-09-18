@@ -29,6 +29,15 @@ void cmdline_args::add(option_base* opt)
     add(opt_name.c_str());
 }
 
+void cmdline_args::add(long long arg)
+{
+	stringstream arg_ss;
+	arg_ss << arg;
+	string arg_str = arg_ss.str();
+
+	add(arg_str.c_str());
+}
+
 void cmdline_args::add(option_base* opt, char const * const arg)
 {
     add(opt);
@@ -37,22 +46,14 @@ void cmdline_args::add(option_base* opt, char const * const arg)
 
 void cmdline_args::add(option_base* opt, long long arg)
 {
-	stringstream arg_ss;
-	arg_ss << arg;
-	string arg_str = arg_ss.str();
-
 	add(opt);
-	add(arg_str.c_str());
+	add(arg);
 }
 
 void cmdline_args::add(char const * const option, long long arg)
 {
-	stringstream arg_ss;
-	arg_ss << arg;
-	string arg_str = arg_ss.str();
-
 	add(option);
-	add(arg_str.c_str());
+	add(arg);
 }
 
 cmdline_args::operator char * const * ()

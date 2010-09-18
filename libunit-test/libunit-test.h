@@ -3,5 +3,8 @@
 
 #include "cmdline_args.h"
 #include "unit_test.h"
+#include "numeric_overflow_test.h"
+#include "numeric_underflow_test.h"
+#include "invalid_numeric_test.h"
 
 #endif
