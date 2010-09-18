@@ -74,7 +74,6 @@ namespace libgetopt
 	protected:
 
 	    virtual int* flag_ptr();
-	    void val(const int val);
 
 	private:
 
@@ -84,6 +83,8 @@ namespace libgetopt
 
 	    static void check_opt(const char short_opt);
 	    static void check_opt(const std::string& long_opt);
+	    void val(const int val);
+
 
 	    int m_val;
     };
