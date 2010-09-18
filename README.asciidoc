@@ -14,9 +14,9 @@ parsing command line options.
 Options are specified to take an argument of a given C++ type.  When
 parsing the command line, option arguments will be checked to insure
 that they meet the criteria necessary to assign them to the designated
-type for their respective option.  For example if an argument is
-designated as an 'int', then libgetopt will check to insure that the
-argument specified for a given option does not overflow or underflow
+type for their respective option.  For example if an option is
+designated to take an 'int', then libgetopt will check to insure that
+the argument specified for the option does not overflow or underflow
 an 'int', and is capable of being converted to an 'int'.
 
 libgetopt also provides overloads to handle options specified with
