@@ -35,7 +35,9 @@ const std::string libgetopt::option_base::full_long_option() const
     }
     else
     {
-	return "--" + long_option;
+	string ret("--");
+	ret += long_option;
+	return ret;
     }
 }
 
@@ -75,11 +77,15 @@ const string option_base::full_name() const
 
     if( full_name.size() == 1 )
     {
-	return "-" + full_name;
+	string ret(1,'-');
+	ret += full_name;
+	return ret;
     }
     else if ( full_name.size() > 1 )
     {
-	return "--" + full_name;
+	string ret("--");
+	ret += full_name;
+	return ret;
     }
 
     return "";
