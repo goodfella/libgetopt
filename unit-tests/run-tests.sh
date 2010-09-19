@@ -9,7 +9,7 @@ function valgrind_test
 	--show-reachable=yes \
 	--error-exitcode=1 \
 	--log-file="$2" \
-	${TEST_PATH}; then
+	$1; then
 
 	printf "\t%s valgrind test FAILED, details are in %s\n" "$test" "$2"
 	return 1
