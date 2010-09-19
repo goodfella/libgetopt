@@ -11,7 +11,7 @@ argument_policy_t arg_option::arg_policy() const
     return arg_policy_required;
 }
 
-bool arg_option::set(char const * const optarg, string& err_str)
+bool arg_option::parse_arg(char const * const optarg, string& err_str)
 {
     present();
 
@@ -19,7 +19,7 @@ bool arg_option::set(char const * const optarg, string& err_str)
 
     if( optarg != NULL )
     {
-	ret = m_valid_arg = parse_arg(optarg, err_str);
+	ret = m_valid_arg = parse(optarg, err_str);
     }
 
     return ret;

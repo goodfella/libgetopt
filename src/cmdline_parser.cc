@@ -140,7 +140,7 @@ cmdline_parser::parse_result cmdline_parser::parse(int argc, char* const argv[])
 
 		string error_str;
 
-		if( arg_opt->set(optarg, error_str) == false )
+		if( arg_opt->parse_arg(optarg, error_str) == false )
 		{
 		    return parse_result(arg_opt, optarg, error_str);
 		}
