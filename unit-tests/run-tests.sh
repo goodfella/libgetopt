@@ -48,7 +48,12 @@ do
 done
 
 echo
-printf "Running numeric tests through valgrind:\n\n"
+printf "Running invalid-option test\n"
+$(dirname $0)/invalid-option
+
+
+echo
+printf "Running valgrind tests:\n\n"
 
 for test in ${NUMERIC_TESTS}
 do
@@ -63,6 +68,8 @@ do
     fi
 
 done
+
+valgrind_test "$(dirname $0)/invalid-option" "$(dirname $0)/invalid-option-valgrind.log"
 
 echo
 echo "valgrind tests passed"

@@ -6,6 +6,7 @@
 # unit tests
 unit-tests/test
 unit-tests/numeric-tests/int-*
+unit-tests/invalid-option
 *.html
 
 # editor artifacts

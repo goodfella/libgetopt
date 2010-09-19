@@ -4,6 +4,7 @@ LDFLAGS := -L.
 
 
 unit_tests := unit-tests/test \
+              unit-tests/invalid-option \
               unit-tests/numeric-tests/int-overflow \
               unit-tests/numeric-tests/int-underflow \
               unit-tests/numeric-tests/int-invalid
@@ -13,6 +14,10 @@ libs := libgetopt.a libunit-test.a
 unit-tests/test_SRCS := unit-tests/test.cc
 unit-tests/test_LIBS := unit-test getopt
 unit-tests/test_CPPFLAGS := $(CPPFLAGS) -I libunit-test
+
+unit-tests/invalid-option_SRCS := unit-tests/invalid_option.cc
+unit-tests/invalid-option_LIBS := unit-test getopt
+unit-tests/invalid-option_CPPFLAGS := $(CPPFLAGS) -I libunit-test
 
 unit-tests/numeric-tests/int-overflow_SRCS := unit-tests/numeric-tests/int_overflow.cc
 unit-tests/numeric-tests/int-overflow_LIBS := unit-test getopt
