@@ -146,6 +146,9 @@ cmdline_parser::parse_result cmdline_parser::parse(int argc, char* const argv[])
 		}
 	    }
 	}
+
+	opt = -1;
+	opt_index = -1;
     }
 
     return parse_result();
