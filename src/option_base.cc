@@ -2,6 +2,7 @@
 #include <functional>
 
 #include "option_base.h"
+#include "getopt_option.h"
 
 using std::string;
 
@@ -22,9 +23,22 @@ option_base::option_base_matches = &option_base::matches;
 
 option_base::~option_base() {}
 
-int* libgetopt::option_base::flag_ptr()
+void option_base::fill_option(getopt_option* opt) const
 {
-    return NULL;
+	opt->opt.name = NULL;
+	opt->opt.flag = NULL;
+
+	if( has_long_option() == true )
+	{
+	    opt->opt.name = long_option.c_str();
+	    opt->opt.val = m_val;
+	    opt->opt.has_arg = no_argument;
+	}
+
+	if( has_short_option() == true )
+	{
+	    opt->optstring += short_option;
+	}
 }
 
 const std::string libgetopt::option_base::full_long_option() const

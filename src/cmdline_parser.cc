@@ -4,6 +4,7 @@
 #include <memory>
 #include <functional>
 #include <string>
+#include <cassert>
 
 #include "cmdline_parser.h"
 #include "arg_option.h"
@@ -61,18 +62,18 @@ cmdline_parser::parse_result cmdline_parser::parse(int argc, char* const argv[])
 	i != m_options.end();
 	++i)
     {
-	getopt_option gopt(*i);
+	getopt_option gopt;
+
+	(*i)->fill_option(&gopt);
 
 	if( (*i)->has_long_option() == true )
 	{
-	    ::option opt = gopt.option();
-
-	    longopts.push_back(opt);
+	    longopts.push_back(gopt.opt);
 	}
 
 	if( (*i)->has_short_option() == true )
 	{
-	    optstring += gopt.optstring();
+	    optstring += gopt.optstring;
 	}
     }
 

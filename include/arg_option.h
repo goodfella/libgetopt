@@ -7,6 +7,14 @@
 
 namespace libgetopt
 {
+    enum argument_policy_t
+    {
+	arg_policy_none,
+	arg_policy_required,
+	arg_policy_optional
+    };
+
+
     class arg_option : public option_base
     {
 	public:
@@ -26,6 +34,8 @@ namespace libgetopt
 	    argument_policy_t arg_policy() const;
 
 	    bool arg_is_valid() const;
+
+	    virtual void fill_option(getopt_option* opt) const;
 
 	protected:
 
@@ -75,6 +85,11 @@ inline bool libgetopt::arg_option::is_set() const
 inline bool libgetopt::arg_option::arg_is_valid() const
 {
     return m_valid_arg;
+}
+
+inline libgetopt::argument_policy_t libgetopt::arg_option::arg_policy() const
+{
+    return arg_policy_required;
 }
 
 #endif

@@ -8,13 +8,6 @@
 
 namespace libgetopt
 {
-    enum argument_policy_t
-    {
-	arg_policy_none,
-	arg_policy_required,
-	arg_policy_optional
-    };
-
     class invalid_option: public std::logic_error
     {
 	public:
@@ -24,9 +17,10 @@ namespace libgetopt
 	    {}
     };
 
+    struct getopt_option;
+
     class option_base
     {
-	    friend class getopt_option;
 	    friend class cmdline_parser;
 
 	public:
@@ -65,15 +59,13 @@ namespace libgetopt
 
 	    int val() const;
 
-	    virtual argument_policy_t arg_policy() const = 0;
-
 	    const char short_option;
 	    const std::string long_option;
 
-
 	protected:
 
-	    virtual int* flag_ptr();
+	    virtual void fill_option(getopt_option* opt) const = 0;
+
 
 	private:
 
