@@ -35,9 +35,9 @@ namespace libgetopt
 
 	    bool arg_is_valid() const;
 
-	    virtual void fill_option(getopt_option* opt) const;
-
 	protected:
+
+	    virtual void fill_option(getopt_option* opt) const;
 
 	    bool m_valid_arg;
 	    bool m_is_present;
