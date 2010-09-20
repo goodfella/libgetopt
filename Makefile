@@ -1,4 +1,4 @@
-CXXFLAGS := -Wall -Wnon-virtual-dtor -Wold-style-cast -Woverloaded-virtual -g
+CXXFLAGS := -Wall -Wnon-virtual-dtor -Wold-style-cast -Woverloaded-virtual -fno-rtti -g
 CPPFLAGS := -I include
 LDFLAGS := -L.
 
