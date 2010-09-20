@@ -25,9 +25,9 @@ namespace libgetopt
 
 	public:
 
-	    typedef bool (option_base::*val_predicate_t)(int) const;
-	    typedef bool (option_base::*long_opt_predicate_t)(char const *) const;
-	    typedef bool (option_base::*short_opt_predicate_t)(char) const;
+	    typedef bool (option_base::*val_predicate_t)(const int) const;
+	    typedef bool (option_base::*long_opt_predicate_t)(char const * const) const;
+	    typedef bool (option_base::*short_opt_predicate_t)(const char) const;
 	    typedef bool (option_base::*duplicate_opt_predicate_t)(option_base const * const) const;
 
 	    static const short_opt_predicate_t short_opt_matches;
@@ -112,17 +112,17 @@ inline libgetopt::option_base::option_base(const std::string& long_opt, const ch
     check_opt(short_opt);
 }
 
-inline bool libgetopt::option_base::matches(int val) const
+inline bool libgetopt::option_base::matches(const int val) const
 {
     return val == m_val;
 }
 
-inline bool libgetopt::option_base::matches(char const * name) const
+inline bool libgetopt::option_base::matches(char const * const name) const
 {
     return long_option == name;
 }
 
-inline bool libgetopt::option_base::matches(char short_opt) const
+inline bool libgetopt::option_base::matches(const char short_opt) const
 {
     return short_option == short_opt;
 }
