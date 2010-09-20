@@ -43,9 +43,9 @@ namespace libgetopt
 
 	    virtual ~option_base();
 
-	    bool matches(int check_val) const;
-	    bool matches(char const * name) const;
-	    bool matches(char short_opt) const;
+	    bool matches(const int check_val) const;
+	    bool matches(char const * const name) const;
+	    bool matches(const char short_opt) const;
 	    bool matches(option_base const * const opt_base) const;
 
 	    bool has_long_option() const;
