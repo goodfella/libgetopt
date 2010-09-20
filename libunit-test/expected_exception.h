@@ -11,7 +11,7 @@ namespace libgetopt
 	template<class Ex, class Fun>
 	struct expected_exception: public std::unary_function<Fun, bool>
 	{
-	    bool operator () (Fun fun) const
+	    bool operator () (const Fun& fun) const
 	    {
 		try
 		{
