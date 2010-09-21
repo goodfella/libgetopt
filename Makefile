@@ -7,7 +7,9 @@ unit_tests := unit-tests/test \
               unit-tests/exception-tests/invalid-option \
               unit-tests/numeric-tests/int-overflow \
               unit-tests/numeric-tests/int-underflow \
-              unit-tests/numeric-tests/int-invalid
+              unit-tests/numeric-tests/int-invalid \
+              unit-tests/numeric-tests/int-max-arg \
+              unit-tests/numeric-tests/int-min-arg
 
 libs := libgetopt.a libunit-test.a
 
@@ -30,6 +32,15 @@ unit-tests/numeric-tests/int-underflow_CPPFLAGS := $(CPPFLAGS) -I libunit-test
 unit-tests/numeric-tests/int-invalid_SRCS := unit-tests/numeric-tests/int_invalid.cc
 unit-tests/numeric-tests/int-invalid_LIBS := unit-test getopt
 unit-tests/numeric-tests/int-invalid_CPPFLAGS := $(CPPFLAGS) -I libunit-test
+
+unit-tests/numeric-tests/int-max-arg_SRCS := unit-tests/numeric-tests/int_max_arg.cc
+unit-tests/numeric-tests/int-max-arg_LIBS := unit-test getopt
+unit-tests/numeric-tests/int-max-arg_CPPFLAGS := $(CPPFLAGS) -I libunit-test
+
+unit-tests/numeric-tests/int-min-arg_SRCS := unit-tests/numeric-tests/int_min_arg.cc
+unit-tests/numeric-tests/int-min-arg_LIBS := unit-test getopt
+unit-tests/numeric-tests/int-min-arg_CPPFLAGS := $(CPPFLAGS) -I libunit-test
+
 
 libunit-test_SRCS := $(wildcard libunit-test/*.cc)
 libgetopt_SRCS := $(wildcard src/*.cc)
