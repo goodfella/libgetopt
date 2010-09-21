@@ -68,7 +68,7 @@ cmdline_parser::parse_result cmdline_parser::parse(int argc, char* const argv[])
 
 	if( (*i)->has_long_option() == true )
 	{
-	    longopts.push_back(gopt.opt);
+	    longopts.push_back(gopt);
 	}
 
 	if( (*i)->has_short_option() == true )

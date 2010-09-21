@@ -25,14 +25,14 @@ option_base::~option_base() {}
 
 void option_base::fill_option(getopt_option* opt) const
 {
-	opt->opt.name = NULL;
-	opt->opt.flag = NULL;
+	opt->name = NULL;
+	opt->flag = NULL;
 
 	if( has_long_option() == true )
 	{
-	    opt->opt.name = long_option.c_str();
-	    opt->opt.val = m_val;
-	    opt->opt.has_arg = no_argument;
+	    opt->name = long_option.c_str();
+	    opt->val = m_val;
+	    opt->has_arg = no_argument;
 	}
 
 	if( has_short_option() == true )

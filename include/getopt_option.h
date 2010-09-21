@@ -6,9 +6,8 @@
 
 namespace libgetopt
 {
-    struct getopt_option
+    struct getopt_option: public ::option
     {
-	    ::option opt;
 	    std::string optstring;
     };
 }
