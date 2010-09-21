@@ -26,52 +26,68 @@ function valgrind_test
     return 0
 }
 
-NUMERIC_TESTS_DIR="$(dirname $0)/numeric-tests"
-NUMERIC_TESTS="$(ls -1 ${NUMERIC_TESTS_DIR})"
+# 1 = list of test names
+function valgrind_tests
+{
+    for test in $1
+    do
+	if [ -x "${test}" ]; then
 
+	    local VALGRIND_LOG="${test}-valgrind.log"
+	    if ! valgrind_test "${test}" "${VALGRIND_LOG}"; then
+		exit 1
+	    fi
+	fi
+
+    done
+}
+
+# 1 = test path
+# 2 = return val
+function test_failed
+{
+    printf "\t%s FAILED with: %s\n" "$1" "$2"
+    exit 1
+}
+
+# 1 = list of test names
+function run_tests
+{
+    for test in $1
+    do
+	if [ -x "${test}" ]; then
+	    printf "\trunning ${test}\n"
+	    "${test}"
+	    local TEST_STATUS="$?"
+
+	    if [ "$TEST_STATUS" -ne "0" ]; then
+		test_failed "${test}" "${TEST_STATUS}"
+	    fi
+	fi
+    done
+}
+
+# 1 = test dir under unit-tests dir
+function get_tests
+{
+    find $(dirname $0)/${1} -perm -u+x -a -type f
+}
+
+NUMERIC_TESTS="$(get_tests numeric-tests)"
 printf "Running numeric tests:\n\n"
-
-# numeric tests all run with no options
-for test in ${NUMERIC_TESTS}
-do
-    if [ -x $(dirname $0)/numeric-tests/$test ]; then
-
-	printf "\trunning $test\n"
-	${NUMERIC_TESTS_DIR}/$test
-	TEST_STATUS="$?"
-
-	if [ "$TEST_STATUS" -ne "0" ]; then
-	    printf "\t%s FAILED with: %s\n" "$test" "$TEST_STATUS"
-	    exit 1
-	fi
-    fi
-done
-
+run_tests "${NUMERIC_TESTS}"
 echo
-printf "Running invalid-option test\n"
-$(dirname $0)/invalid-option
 
-
+EXCEPTION_TESTS="$(get_tests exception-tests)"
+printf "Running exception tests:\n\n"
+run_tests "${EXCEPTION_TESTS}"
 echo
+
 printf "Running valgrind tests:\n\n"
-
-for test in ${NUMERIC_TESTS}
-do
-    TEST_PATH="${NUMERIC_TESTS_DIR}/${test}"
-
-    if [ -x "${TEST_PATH}" ]; then
-
-	VALGRIND_LOG="${test}-valgrind.log"
-	if ! valgrind_test "${TEST_PATH}" "${VALGRIND_LOG}"; then
-	    exit 1
-	fi
-    fi
-
-done
-
-valgrind_test "$(dirname $0)/invalid-option" "$(dirname $0)/invalid-option-valgrind.log"
-
+valgrind_tests "${NUMERIC_TESTS}"
+valgrind_tests "${EXCEPTION_TESTS}"
 echo
+
 echo "valgrind tests passed"
 echo
 
