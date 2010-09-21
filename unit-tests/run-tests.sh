@@ -22,7 +22,7 @@ function valgrind_test
 	fi
     fi
 
-    rm -f "${VALGRIND_LOG}"
+    rm -f "${2}"
     return 0
 }
 
