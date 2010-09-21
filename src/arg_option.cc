@@ -24,6 +24,19 @@ bool arg_option::parse_arg(char const * const optarg, string& err_str)
 void arg_option::fill_option(getopt_option* opt) const
 {
     option_base::fill_option(opt);
-    opt->has_arg = arg_policy();
-    opt->optstring += ':';
+
+    argument_policy_t has_arg = arg_policy();
+    opt->has_arg = has_arg;
+
+    if( opt->optstring != "" )
+    {
+	if( has_arg == arg_policy_required )
+	{
+	    opt->optstring += ':';
+	}
+	else if( has_arg == arg_policy_optional )
+	{
+	    opt->optstring += "::";
+	}
+    }
 }
