@@ -63,6 +63,9 @@ $(1): Makefile $($(1)_SRCS:.cc=.o) $($(1)_LIBS:%=lib%.a)
 endef
 
 
+libgetopt.a: Makefile $(libgetopt_SRCS:.cc=.o)
+	$(AR) rcs $@ $(filter %.o,$^)
+
 all: libgetopt.a libunit-test.a unit-tests
 
 
@@ -82,9 +85,6 @@ ifeq ($(filter clean%,$(MAKECMDGOALS)),)
 include $(depends)
 endif
 
-
-libgetopt.a: Makefile $(libgetopt_SRCS:.cc=.o)
-	$(AR) rcs $@ $(filter %.o,$^)
 
 libunit-test.a: Makefile $(libunit-test_SRCS:.cc=.o) libgetopt.a
 	$(AR) rcs $@ $(filter %.o,$^)
