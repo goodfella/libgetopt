@@ -30,14 +30,14 @@ void option_base::fill_option(getopt_option* opt) const
 
 	if( has_long_option() == true )
 	{
-	    opt->name = long_option.c_str();
+	    opt->name = m_long_option.c_str();
 	    opt->val = m_val;
 	    opt->has_arg = no_argument;
 	}
 
 	if( has_short_option() == true )
 	{
-	    opt->optstring += short_option;
+	    opt->optstring += m_short_option;
 	}
 }
 
@@ -50,7 +50,7 @@ const std::string libgetopt::option_base::full_long_option() const
     else
     {
 	string ret("--");
-	ret += long_option;
+	ret += m_long_option;
 	return ret;
     }
 }
@@ -64,7 +64,7 @@ const std::string libgetopt::option_base::full_short_option() const
     else
     {
 	string opt(1, '-');
-	opt += short_option;
+	opt += m_short_option;
 	return opt;
     }
 }
@@ -75,11 +75,11 @@ const string option_base::name() const
 
     if( has_long_option() == true )
     {
-	name = long_option;
+	name = m_long_option;
     }
     else if( has_short_option() == true )
     {
-	name = short_option;
+	name = m_short_option;
     }
 
     return name;
@@ -144,7 +144,7 @@ bool option_base::matches(option_base const * const opt) const
 
     if( opt->has_long_option() )
     {
-	match_found = matches(opt->long_option.c_str());
+	match_found = matches(opt->m_long_option.c_str());
     }
 
     if( match_found == true )
@@ -154,7 +154,7 @@ bool option_base::matches(option_base const * const opt) const
 
     if( opt->has_short_option() )
     {
-	match_found = matches(opt->short_option);
+	match_found = matches(opt->m_short_option);
     }
 
     if( match_found == true )
