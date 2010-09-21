@@ -28,7 +28,7 @@ namespace libgetopt
 	    void present();
 	    bool is_present() const;
 
-	    virtual bool parse_arg(char const * const optarg, std::string& err_str);
+	    virtual bool parse_arg(char const * const optarg, std::string* err_str);
 	    bool is_set() const;
 
 	    argument_policy_t arg_policy() const;
@@ -44,7 +44,7 @@ namespace libgetopt
 
 	private:
 
-	    virtual bool parse(char const * const optarg, std::string& err_str) = 0;
+	    virtual bool parse(char const * const optarg, std::string* err_str) = 0;
     };
 }
 

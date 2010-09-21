@@ -84,7 +84,7 @@ namespace libgetopt
 
 
     template<class Type>
-    bool integral_convert(char const * const num_str, std::string& err_str,
+    bool integral_convert(char const * const num_str, std::string* err_str,
 			  Type* val)
     {
 	assert( val != NULL );
@@ -106,18 +106,18 @@ namespace libgetopt
 
 	    if( ret >= converter_info<Type>::overflow_val )
 	    {
-		err_str = "arg is too large";
+		*err_str = "arg is too large";
 		return false;
 	    }
 	    else if( ret <= converter_info<Type>::underflow_val )
 	    {
-		err_str = "arg is too small";
+		*err_str = "arg is too small";
 		return false;
 	    }
 	}
 	else if( errno != 0 || *bad_chrs != '\0' )
 	{
-	    err_str = "arg does not represent a numeric type";
+	    *err_str = "arg does not represent a numeric type";
 	    return false;
 	}
 
@@ -127,11 +127,11 @@ namespace libgetopt
 
 
     template<class Type>
-    bool convert(char const * const optarg, Type* argp, std::string& error_str);
+    bool convert(char const * const optarg, Type* argp, std::string* error_str);
 
     template<>
     inline bool convert(char const* const optarg, int* argp,
-			std::string& error_str)
+			std::string* error_str)
     {
 	assert(argp != NULL);
 
@@ -141,7 +141,7 @@ namespace libgetopt
 
     template<>
     inline bool convert(char const * const optarg, long* argp,
-			std::string& error_str)
+			std::string* error_str)
     {
 	assert(argp != NULL);
 
@@ -151,7 +151,7 @@ namespace libgetopt
 
     template<>
     inline bool convert(char const * const optarg, double* argp,
-			std::string& error_str)
+			std::string* error_str)
     {
 	assert(argp != NULL);
 	*argp = atof(optarg);
@@ -161,7 +161,7 @@ namespace libgetopt
 
     template<>
     inline bool convert(char const * const optarg, long long* argp,
-			std::string& error_str)
+			std::string* error_str)
     {
 	assert(argp != NULL);
 	*argp = atoll(optarg);
@@ -170,7 +170,7 @@ namespace libgetopt
 
     template<>
     inline bool convert(char const * const optarg, std::string* argp,
-			std::string& error_str)
+			std::string* error_str)
     {
 	assert(argp != NULL);
 	*argp = optarg;

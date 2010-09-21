@@ -7,7 +7,7 @@ using std::string;
 
 arg_option::~arg_option(){}
 
-bool arg_option::parse_arg(char const * const optarg, string& err_str)
+bool arg_option::parse_arg(char const * const optarg, string* err_str)
 {
     present();
 
