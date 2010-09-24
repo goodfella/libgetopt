@@ -3,8 +3,7 @@ CPPFLAGS := -I include
 LDFLAGS := -L.
 
 
-unit_tests := unit-tests/test \
-              unit-tests/exception-tests/invalid-option \
+unit_tests := unit-tests/exception-tests/invalid-option \
               unit-tests/numeric-tests/int-overflow \
               unit-tests/numeric-tests/int-underflow \
               unit-tests/numeric-tests/int-invalid \
@@ -12,10 +11,6 @@ unit_tests := unit-tests/test \
               unit-tests/numeric-tests/int-min-arg
 
 libs := libgetopt.a libunit-test.a
-
-unit-tests/test_SRCS := unit-tests/test.cc
-unit-tests/test_LIBS := unit-test getopt
-unit-tests/test_CPPFLAGS := $(CPPFLAGS) -I libunit-test
 
 unit-tests/exception-tests/invalid-option_SRCS := unit-tests/exception-tests/invalid_option.cc
 unit-tests/exception-tests/invalid-option_LIBS := unit-test getopt
