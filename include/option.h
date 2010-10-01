@@ -67,8 +67,8 @@ namespace libgetopt
     template<class Type>
     void option<Type>::set(const Type& arg)
     {
-	arg_option::present();
-	m_valid_arg = true;
+	arg_option::present(true);
+	arg_option::parse_status(arg_option::parse_succeeded);
 	m_arg = arg;
     }
 }

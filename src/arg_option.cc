@@ -9,13 +9,26 @@ arg_option::~arg_option(){}
 
 bool arg_option::parse_arg(char const * const optarg, string* err_str)
 {
-    present();
+    present(true);
 
     bool ret = true;
 
     if( optarg != NULL )
     {
-	ret = m_valid_arg = parse(optarg, err_str);
+	ret = parse(optarg, err_str);
+    }
+    else
+    {
+	ret = false;
+    }
+
+    if( ret == true )
+    {
+	m_parse_status = arg_option::parse_succeeded;
+    }
+    else
+    {
+	m_parse_status = arg_option::parse_failed;
     }
 
     return ret;
