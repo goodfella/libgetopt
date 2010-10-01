@@ -69,7 +69,7 @@ $(1): Makefile $($(1)_SRCS:.cc=.o) $($(1)_LIBS:%=lib%.a)
 endef
 
 
-libgetopt.a: Makefile $(libgetopt_SRCS:.cc=.o) include/option.h
+libgetopt.a: Makefile $(libgetopt_SRCS:.cc=.o)
 	$(AR) rcs $@ $(filter %.o,$^)
 
 all: libgetopt.a libunit-test.a unit-tests
