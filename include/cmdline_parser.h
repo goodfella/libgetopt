@@ -21,6 +21,13 @@ namespace libgetopt
 	    {}
     };
 
+    class parser_in_use: public std::logic_error
+    {
+	public:
+
+	    parser_in_use(): logic_error("parser already in use") {}
+    };
+
     class cmdline_parser
     {
 	public:
@@ -89,6 +96,8 @@ namespace libgetopt
 
 	    arg_option_list_t m_arg_options;
 	    option_list_t m_options;
+
+	    static bool is_in_use;
     };
 
     inline void cmdline_parser::clear()

@@ -70,7 +70,7 @@ function run_tests
 # 1 = test dir under unit-tests dir
 function get_tests
 {
-    find $(dirname $0)/${1} -perm -u+x -a -type f
+    find $(dirname $0)/${1} -maxdepth 1 -perm -u+x -a -type f | grep -v "$(basename $0)"
 }
 
 NUMERIC_TESTS="$(get_tests numeric-tests)"
@@ -83,9 +83,15 @@ printf "Running exception tests:\n\n"
 run_tests "${EXCEPTION_TESTS}"
 echo
 
+SIMPLE_TESTS="$(get_tests simple-tests)"
+printf "Running simple tests:\n\n"
+run_tests "${SIMPLE_TESTS}"
+echo
+
 printf "Running valgrind tests:\n\n"
 valgrind_tests "${NUMERIC_TESTS}"
 valgrind_tests "${EXCEPTION_TESTS}"
+valgrind_tests "${SIMPLE_TESTS}"
 echo
 
 echo "valgrind tests passed"

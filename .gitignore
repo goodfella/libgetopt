@@ -4,12 +4,13 @@
 *.d
 
 # unit tests
-unit-tests/test
+unit-tests/simple-tests/*
 unit-tests/numeric-tests/*
 unit-tests/exception-tests/*
 
 !unit-tests/exception-tests/*.cc
 !unit-tests/numeric-tests/*.cc
+!unit-tests/simple-tests/*.cc
 
 *.html
 

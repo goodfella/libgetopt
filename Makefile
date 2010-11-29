@@ -8,7 +8,8 @@ unit_tests := unit-tests/exception-tests/invalid-option \
               unit-tests/numeric-tests/int-underflow \
               unit-tests/numeric-tests/int-invalid \
               unit-tests/numeric-tests/int-max-arg \
-              unit-tests/numeric-tests/int-min-arg
+              unit-tests/numeric-tests/int-min-arg \
+              unit-tests/simple-tests/parser-in-use
 
 libs := libgetopt.a libunit-test.a
 
@@ -35,6 +36,10 @@ unit-tests/numeric-tests/int-max-arg_CPPFLAGS := $(CPPFLAGS) -I libunit-test
 unit-tests/numeric-tests/int-min-arg_SRCS := unit-tests/numeric-tests/int_min_arg.cc
 unit-tests/numeric-tests/int-min-arg_LIBS := unit-test getopt
 unit-tests/numeric-tests/int-min-arg_CPPFLAGS := $(CPPFLAGS) -I libunit-test
+
+unit-tests/simple-tests/parser-in-use_SRCS := unit-tests/simple-tests/parser_in_use.cc
+unit-tests/simple-tests/parser-in-use_LIBS := unit-test getopt
+unit-tests/simple-tests/parser-in-use_CPPFLAGS := $(CPPFLAGS) -I libunit-test
 
 
 libunit-test_SRCS := $(wildcard libunit-test/*.cc)

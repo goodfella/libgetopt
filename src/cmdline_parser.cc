@@ -17,6 +17,8 @@ using std::vector;
 using std::bind2nd;
 using std::mem_fun;
 
+bool cmdline_parser::is_in_use = false;
+
 
 void cmdline_parser::add_option(option_base* opt)
 {
@@ -51,6 +53,11 @@ void cmdline_parser::add_option(arg_option* arg_opt)
 
 cmdline_parser::parse_result cmdline_parser::parse(int argc, char* const argv[]) const
 {
+    if( is_in_use == true )
+    {
+	throw parser_in_use();
+    }
+
     vector< ::option> longopts;
 
     ::option last_opt = {0,0,0,0};
@@ -82,6 +89,7 @@ cmdline_parser::parse_result cmdline_parser::parse(int argc, char* const argv[])
 
     int opt = -1;
     int opt_index = -1;
+    is_in_use = true;
 
     // parse command line
     while ( (opt = getopt_long(argc, argv, optstring.c_str(), &longopts[0], &opt_index)) != -1 )
