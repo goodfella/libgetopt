@@ -1,49 +1,7 @@
 CXXFLAGS := -Wall -Wnon-virtual-dtor -Wold-style-cast -Woverloaded-virtual -fno-rtti -g
 CPPFLAGS := -I include
 LDFLAGS := -L.
-
-
-unit_tests := unit-tests/exception-tests/invalid-option \
-              unit-tests/numeric-tests/int-overflow \
-              unit-tests/numeric-tests/int-underflow \
-              unit-tests/numeric-tests/int-invalid \
-              unit-tests/numeric-tests/int-max-arg \
-              unit-tests/numeric-tests/int-min-arg \
-              unit-tests/simple-tests/parser-in-use
-
-libs := libgetopt.a libunit-test.a
-
-unit-tests/exception-tests/invalid-option_SRCS := unit-tests/exception-tests/invalid_option.cc
-unit-tests/exception-tests/invalid-option_LIBS := unit-test getopt
-unit-tests/exception-tests/invalid-option_CPPFLAGS := $(CPPFLAGS) -I libunit-test
-
-unit-tests/numeric-tests/int-overflow_SRCS := unit-tests/numeric-tests/int_overflow.cc
-unit-tests/numeric-tests/int-overflow_LIBS := unit-test getopt
-unit-tests/numeric-tests/int-overflow_CPPFLAGS := $(CPPFLAGS) -I libunit-test
-
-unit-tests/numeric-tests/int-underflow_SRCS := unit-tests/numeric-tests/int_underflow.cc
-unit-tests/numeric-tests/int-underflow_LIBS := unit-test getopt
-unit-tests/numeric-tests/int-underflow_CPPFLAGS := $(CPPFLAGS) -I libunit-test
-
-unit-tests/numeric-tests/int-invalid_SRCS := unit-tests/numeric-tests/int_invalid.cc
-unit-tests/numeric-tests/int-invalid_LIBS := unit-test getopt
-unit-tests/numeric-tests/int-invalid_CPPFLAGS := $(CPPFLAGS) -I libunit-test
-
-unit-tests/numeric-tests/int-max-arg_SRCS := unit-tests/numeric-tests/int_max_arg.cc
-unit-tests/numeric-tests/int-max-arg_LIBS := unit-test getopt
-unit-tests/numeric-tests/int-max-arg_CPPFLAGS := $(CPPFLAGS) -I libunit-test
-
-unit-tests/numeric-tests/int-min-arg_SRCS := unit-tests/numeric-tests/int_min_arg.cc
-unit-tests/numeric-tests/int-min-arg_LIBS := unit-test getopt
-unit-tests/numeric-tests/int-min-arg_CPPFLAGS := $(CPPFLAGS) -I libunit-test
-
-unit-tests/simple-tests/parser-in-use_SRCS := unit-tests/simple-tests/parser_in_use.cc
-unit-tests/simple-tests/parser-in-use_LIBS := unit-test getopt
-unit-tests/simple-tests/parser-in-use_CPPFLAGS := $(CPPFLAGS) -I libunit-test
-
-
-libunit-test_SRCS := $(wildcard libunit-test/*.cc)
-libgetopt_SRCS := $(wildcard src/*.cc)
+UNIT_TEST_LIBS := unit-test getopt
 
 
 # generates the depends file paths given a list of paths
@@ -53,33 +11,67 @@ define create_depends
 $(foreach path,$(1),$(dir $(path)).$(basename $(notdir $(path))).d)
 endef
 
-srcs := $(libgetopt_SRCS) $(libunit-test_SRCS) $(foreach test,$(unit_tests),$($(test)_SRCS))
+
+# generates the rule for a given target
+
+# 1 = target
+# 2 = sources
+# 3 = libs
+define create_target
+
+$(1): Makefile $(2:.cc=.o) $(3:%=lib%.a)
+	$(CXX) $(LDFLAGS) $$(filter %.o,$$^) $$(LIBS:%=lib%.a) -o $$@
+endef
+
+
+# generates the rule for a unit test given its target name and source
+
+# 1 = unit test target name
+# 2 = unit test source paths
+define create_unit_test_rule
+$(1): SRCS := $(2)
+$(1): LIBS := $(UNIT_TEST_LIBS)
+$(1): CPPFLAGS := $(CPPFLAGS) -I libunit-test
+
+$(call create_target,$(1),$(2),$(UNIT_TEST_LIBS))
+
+endef
+
+
+# converts a source file name to a binary name
+
+# 1 = source file path or name
+define create_bin_name
+$(patsubst %.cc,%,$(subst _,-,$(1)))
+endef
+
+
+# Get all unit test sources.
+unit_test_srcs := $(wildcard unit-tests/*/*.cc)
+unit_tests := $(foreach src,$(unit_test_srcs),$(call create_bin_name,$(src)))
+
+# Create rules for all unit tests
+$(eval $(foreach src,$(unit_test_srcs),$(call create_unit_test_rule,$(call create_bin_name,$(src)),$(src))))
+
+libs := libgetopt.a libunit-test.a
+
+libunit-test_SRCS := $(wildcard libunit-test/*.cc)
+libgetopt_SRCS := $(wildcard src/*.cc)
+
+
+srcs := $(libgetopt_SRCS) $(libunit-test_SRCS) $(unit_test_srcs)
 
 # get all the depends files that exist.  Whatever ones don't exist
 # will be created when their object files are created
 depends := $(wildcard $(call create_depends,$(srcs)))
 
-
-# generates the rule for a given target
-
-# 1 = target
-define create_target
-
-ifneq ($($(1)_CPPFLAGS),)
-$(1): CPPFLAGS := $($(1)_CPPFLAGS)
+# only include the depends files if the target is not a clean target
+ifeq ($(filter clean%,$(MAKECMDGOALS)),)
+include $(depends)
 endif
 
-$(1): Makefile $($(1)_SRCS:.cc=.o) $($(1)_LIBS:%=lib%.a)
-	$(CXX) $(LDFLAGS) $$(filter %.o,$$^) $($(1)_LIBS:%=lib%.a) -o $$@
-endef
 
-
-libgetopt.a: Makefile $(libgetopt_SRCS:.cc=.o)
-	$(AR) rcs $@ $(filter %.o,$^)
-
-all: libgetopt.a libunit-test.a unit-tests
-
-
+# custom object file implicit rule that generates its dependency file
 %.o: %.cc
 	@$(CXX) $(CPPFLAGS) -M -E -MM -MD -MT $@ $< -o $(call create_depends,$@)
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $< -o $@
@@ -88,13 +80,11 @@ all: libgetopt.a libunit-test.a unit-tests
 # make the object files depend on the Makefile
 $(foreach obj,$(srcs:.cc=.o),$(eval $(obj): Makefile))
 
-# create the rules for the unit tests
-$(foreach test,$(unit_tests),$(eval $(call create_target,$(test))))
 
-# only include the depends files if the target is not a clean target
-ifeq ($(filter clean%,$(MAKECMDGOALS)),)
-include $(depends)
-endif
+libgetopt.a: Makefile $(libgetopt_SRCS:.cc=.o)
+	$(AR) rcs $@ $(filter %.o,$^)
+
+all: libgetopt.a libunit-test.a unit-tests
 
 
 libunit-test.a: Makefile $(libunit-test_SRCS:.cc=.o) libgetopt.a
