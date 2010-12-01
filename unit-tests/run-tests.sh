@@ -83,15 +83,9 @@ printf "Running exception tests:\n\n"
 run_tests "${EXCEPTION_TESTS}"
 echo
 
-SIMPLE_TESTS="$(get_tests simple-tests)"
-printf "Running simple tests:\n\n"
-run_tests "${SIMPLE_TESTS}"
-echo
-
 printf "Running valgrind tests:\n\n"
 valgrind_tests "${NUMERIC_TESTS}"
 valgrind_tests "${EXCEPTION_TESTS}"
-valgrind_tests "${SIMPLE_TESTS}"
 echo
 
 echo "valgrind tests passed"
