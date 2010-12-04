@@ -42,7 +42,7 @@ endef
 
 # 1 = source file path or name
 define create_bin_name
-$(patsubst %.cc,%,$(subst _,-,$(1)))
+$(basename $(subst _,-,$(1)))
 endef
 
 
