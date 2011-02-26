@@ -1,166 +1,32 @@
-#include <algorithm>
-#include <functional>
+#include <stdexcept>
 
 #include "option_base.h"
-#include "getopt_option.h"
-
-using std::string;
 
 using namespace libgetopt;
+using std::logic_error;
 
-const option_base::short_opt_predicate_t
-option_base::short_opt_matches = &option_base::matches;
-
-const option_base::long_opt_predicate_t
-option_base::long_opt_matches = &option_base::matches;
-
-const option_base::val_predicate_t
-option_base::val_matches = &option_base::matches;
-
-const option_base::duplicate_opt_predicate_t
-option_base::option_base_matches = &option_base::matches;
-
-
-option_base::~option_base() {}
-
-void option_base::fill_option(getopt_option* opt) const
+void option_base::set_present(const bool is_present)
 {
-	opt->name = NULL;
-	opt->flag = NULL;
+    if( arg_parser::arg_required() == true && is_present == true )
+    {
+	throw logic_error("present can't be set without an arg");
+    }
 
-	if( has_long_option() == true )
-	{
-	    opt->name = m_long_option.c_str();
-	    opt->val = m_val;
-	    opt->has_arg = no_argument;
-	}
-
-	if( has_short_option() == true )
-	{
-	    opt->optstring += m_short_option;
-	}
+    set_present_no_throw(is_present);
 }
 
-const std::string libgetopt::option_base::full_long_option() const
+const bool option_base::is_present() const
 {
-    if( has_long_option() == false )
-    {
-	return "";
-    }
-    else
-    {
-	string ret("--");
-	ret += m_long_option;
-	return ret;
-    }
+    return m_present;
 }
 
-const std::string libgetopt::option_base::full_short_option() const
+const bool option_base::ptr_match(option_base const * const lhs,
+				  option_base const * const rhs)
 {
-    if( has_short_option() == false )
+    if( lhs == NULL || rhs == NULL )
     {
-	return "";
-    }
-    else
-    {
-	string opt(1, '-');
-	opt += m_short_option;
-	return opt;
-    }
-}
-
-const string option_base::name() const
-{
-    string name;
-
-    if( has_long_option() == true )
-    {
-	name = m_long_option;
-    }
-    else if( has_short_option() == true )
-    {
-	name = m_short_option;
+	throw logic_error("lhs or rhs is NULL");
     }
 
-    return name;
-}
-
-const string option_base::full_name() const
-{
-    string full_name = name();
-
-    if( full_name.size() == 1 )
-    {
-	string ret(1,'-');
-	ret += full_name;
-	return ret;
-    }
-    else if ( full_name.size() > 1 )
-    {
-	string ret("--");
-	ret += full_name;
-	return ret;
-    }
-
-    return "";
-}
-
-void option_base::check_opt(const char short_opt)
-{
-    if( bad_char(short_opt) == true )
-    {
-	throw invalid_option("short option is not a graphical character");
-    }
-    else if( short_opt == '-' )
-    {
-	throw invalid_option("short option cannot be '-'");
-    }
-}
-
-void option_base::check_opt(const string& long_opt)
-{
-    if( long_opt == "" )
-    {
-	throw invalid_option("long option is null");
-    }
-    else if( long_opt[0] == '-' )
-    {
-	throw invalid_option("first character of long option cannot be a '-'");
-    }
-
-    string::const_iterator bad_chr = long_opt.end();
-
-    bad_chr = find_if(long_opt.begin(), long_opt.end(), bad_char);
-
-    if( bad_chr != long_opt.end() )
-    {
-	throw invalid_option("long option contains a non graphical character");
-    }
-}
-
-bool option_base::matches(option_base const * const opt) const
-{
-    bool match_found = false;
-
-    if( opt->has_long_option() )
-    {
-	match_found = matches(opt->m_long_option.c_str());
-    }
-
-    if( match_found == true )
-    {
-	return true;
-    }
-
-    if( opt->has_short_option() )
-    {
-	match_found = matches(opt->m_short_option);
-    }
-
-    if( match_found == true )
-    {
-	return true;
-    }
-
-    return false;
+    return *lhs == *rhs;
 }

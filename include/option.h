@@ -1,7 +1,7 @@
 #ifndef __OPTION_H__
 #define __OPTION_H__
 
-#include "arg_option.h"
+#include "option_base.h"
 
 
 namespace libgetopt
@@ -10,65 +10,93 @@ namespace libgetopt
     template<class Type>
     bool convert(char const * const optarg, Type* argp, std::string* error_str);
 
+    /** Represents a command line option
+     *
+     *  The option class is responsible for parsing arguments from the
+     *  command line.  It is declared to take a given type and given a
+     *  long name, a short name or both.  The option class can be
+     *  configured so that an argument is either required or optional
+     */
     template<class Type>
-    class option : public arg_option
+    class option : public option_base
     {
 	public:
 
-	    explicit option(const char short_opt);
-	    explicit option(const std::string& long_opt);
-	    option(const std::string& long_opt, const char opt);
+	    /** Constructs an option class with a short name
+	     *
+	     *  @param short_name The char to use as the short name
+	     *
+	     *  @param arg_required True if an argument is required,
+	     *  this is the default.  False if an argument is optional
+	     */
+	    option(const char short_name, bool arg_required = true);
 
-	    operator Type& ();
-	    Type& get();
+	    /** Constructs an option class with a long name
+	     *
+	     *  @param long_name The string to use as the long name
+	     *
+	     *  @param arg_required True if an argument is required,
+	     *  this is the default.  False if an argument is optional
+	     */
+	    option(const std::string& long_name, bool arg_required = true);
 
-	    void set(const Type& arg);
+	    /** Constructs an option class with a long name and short name
+	     *
+	     *  @param long_name The string to use as the long name
+	     *  @param short_name The char to use as the short name
+	     *
+	     *  @param arg_required True if an argument is required,
+	     *  this is the default.  False if an argument is optional
+	     */
+	    option(const std::string& long_name, const char short_name, bool arg_required = true);
+
+	    /// Returns the argument that has been parsed
+	    Type& get_arg();
+
+	    /// Sets the argument
+	    void set_arg(const Type& arg);
 
 	private:
 
 	    Type m_arg;
 
-	    bool parse(char const * const optarg, std::string* err_str);
+	    const bool __parse_arg(char const * const optarg, std::string* const err_str);
     };
 
     template<class Type>
-    inline option<Type>::option(const char short_opt):
-	arg_option(short_opt)
+    inline option<Type>::option(const char short_opt, bool arg_required):
+	option_base(short_opt, arg_required)
     {}
 
     template<class Type>
-    inline option<Type>::option(const std::string& long_opt):
-	arg_option(long_opt)
+    inline option<Type>::option(const std::string& long_opt, bool arg_required):
+	option_base(long_opt, arg_required)
     {}
 
     template<class Type>
-    inline option<Type>::option(const std::string& long_opt, const char short_opt):
-	arg_option(long_opt, short_opt)
+    inline option<Type>::option(const std::string& long_opt,
+				const char short_opt,
+				bool arg_required):
+	option_base(long_opt, short_opt, arg_required)
     {}
 
     template<class Type>
-    inline bool option<Type>::parse(char const * const optarg, std::string* err_str)
+    inline const bool option<Type>::__parse_arg(char const * const optarg,
+						std::string* const err_str)
     {
 	return convert<Type>(optarg, &m_arg, err_str);
     }
 
     template<class Type>
-    inline Type& option<Type>::get()
+    inline Type& option<Type>::get_arg()
     {
 	return m_arg;
     }
 
     template<class Type>
-    inline option<Type>::operator Type& ()
+    void option<Type>::set_arg(const Type& arg)
     {
-	return m_arg;
-    }
-
-    template<class Type>
-    void option<Type>::set(const Type& arg)
-    {
-	arg_option::present(true);
-	arg_option::parse_status(arg_option::parse_succeeded);
+	option_base::set_present_no_throw(true);
 	m_arg = arg;
     }
 }

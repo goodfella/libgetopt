@@ -1,161 +1,112 @@
 #ifndef __OPTION_BASE_H__
 #define __OPTION_BASE_H__
 
-#include <cctype>
 #include <string>
-#include <stdexcept>
 
+#include "parameter_name.h"
+#include "arg_parser.h"
+#include "iparameter.h"
 
 namespace libgetopt
 {
-    class invalid_option: public std::logic_error
+    /// Base class for the option classes
+    class option_base: public iparameter, public arg_parser
     {
 	public:
 
-	    invalid_option(const std::string& err):
-		std::logic_error(err)
-	    {}
-    };
+	    option_base(const std::string& long_name, const char short_name,
+			const bool arg_required = true);
 
-    struct getopt_option;
+	    option_base(const std::string& long_name,
+			const bool arg_required = true);
 
-    class option_base
-    {
-	    friend class cmdline_parser;
+	    option_base(const char short_name, const bool arg_required = true);
 
-	public:
 
-	    typedef bool (option_base::*val_predicate_t)(const int) const;
-	    typedef bool (option_base::*long_opt_predicate_t)(char const * const) const;
-	    typedef bool (option_base::*short_opt_predicate_t)(const char) const;
-	    typedef bool (option_base::*duplicate_opt_predicate_t)(option_base const * const) const;
+	    /** Sets whether or not an option is present
+	     *
+	     *  @param is_present Present or not present
+	     */
+	    void set_present(const bool is_present);
 
-	    static const short_opt_predicate_t short_opt_matches;
-	    static const long_opt_predicate_t long_opt_matches;
-	    static const val_predicate_t val_matches;
-	    static const duplicate_opt_predicate_t option_base_matches;;
+	    /** Returns whether or not the option is present
+	     *
+	     *  @param is_present Value to set the present flag to
+	     */
+	    const bool is_present() const;
 
-	    static bool bad_char(const char chr);
+	    /** True if two option_base classes passed as pointers match
+	     *
+	     *  This function is to be used as a predicate in standard
+	     *  algorithms for lists of optio_base pointers.
+	     */
+	    static const bool ptr_match(option_base const * const lhs,
+					option_base const * const rhs);
 
-	    explicit option_base(const char short_opt);
-	    option_base(const std::string& long_opt, const int val);
-	    option_base(const std::string& long_opt, const char opt);
-
-	    virtual ~option_base();
-
-	    bool matches(const int check_val) const;
-	    bool matches(char const * const name) const;
-	    bool matches(const char short_opt) const;
-	    bool matches(option_base const * const opt_base) const;
-
-	    bool has_long_option() const;
-	    bool has_short_option() const;
-
-	    const std::string long_option() const;
-	    const char short_option() const;
-
-	    const std::string full_long_option() const;
-	    const std::string full_short_option() const;
-
-	    const std::string name() const;
-	    const std::string full_name() const;
-
-	    int val() const;
+	    parameter_name name;
 
 	protected:
 
-	    virtual void fill_option(getopt_option* opt) const = 0;
-
+	    void set_present_no_throw(bool is_present);
 
 	private:
 
-	    // no copying allowed
-	    option_base(const option_base& opt);
-	    option_base& operator = (const option_base& opt);
+	    // No copying
+	    option_base(const option_base&);
+	    option_base& operator=(const option_base&);
 
-	    static void check_opt(const char short_opt);
-	    static void check_opt(const std::string& long_opt);
-	    void val(const int val);
-
-	    const char m_short_option;
-	    const std::string m_long_option;
-	    int m_val;
+	    bool m_present;
     };
-}
 
-inline bool libgetopt::option_base::bad_char(const char chr)
-{
-    return ! isgraph(chr);
-}
+    inline option_base::option_base(const std::string& long_name,
+				    const char short_name,
+				    const bool arg_required):
+	arg_parser(arg_required),
+	name(long_name, short_name),
+	m_present(false)
+    {}
 
-inline libgetopt::option_base::option_base(const char short_opt):
-    m_short_option(short_opt),
-    m_long_option(""),
-    m_val(short_opt)
-{
-    check_opt(short_opt);
-}
+    inline option_base::option_base(const std::string& long_name,
+				    const bool arg_required):
+	arg_parser(arg_required),
+	name(long_name),
+	m_present(false)
+    {}
 
-inline libgetopt::option_base::option_base(const std::string& long_opt, int val):
-    m_short_option('\0'),
-    m_long_option(long_opt),
-    m_val(val)
-{
-    check_opt(long_opt);
-}
+    inline option_base::option_base(const char short_name,
+				    const bool arg_required):
+	arg_parser(arg_required),
+	name(short_name),
+	m_present(false)
+    {}
 
-inline libgetopt::option_base::option_base(const std::string& long_opt, const char short_opt):
-    m_short_option(short_opt),
-    m_long_option(long_opt),
-    m_val(short_opt)
-{
-    check_opt(long_opt);
-    check_opt(short_opt);
-}
+    inline void option_base::set_present_no_throw(bool is_present)
+    {
+	m_present = is_present;
 
-inline bool libgetopt::option_base::matches(const int val) const
-{
-    return val == m_val;
-}
+	if( is_present == false )
+	{
+	    arg_parser::clear_arg_present();
+	}
+    }
 
-inline bool libgetopt::option_base::matches(char const * const name) const
-{
-    return m_long_option == name;
-}
+    /// True if the name matches rhs
+    template<class RHS_Type>
+    const bool operator==(const option_base& lhs, const RHS_Type rhs);
 
-inline bool libgetopt::option_base::matches(const char short_opt) const
-{
-    return m_short_option == short_opt;
-}
+    /// True if the names match
+    const bool operator==(const option_base& lhs, const option_base& rhs);
 
-inline bool libgetopt::option_base::has_long_option() const
-{
-    return m_long_option != "" ;
-}
+    template<class RHS_Type>
+    inline const bool operator==(const option_base& lhs, const RHS_Type rhs)
+    {
+	return lhs.name == rhs;
+    }
 
-inline bool libgetopt::option_base::has_short_option() const
-{
-    return m_short_option != '\0';
-}
-
-inline const std::string libgetopt::option_base::long_option() const
-{
-    return m_long_option;
-}
-
-inline const char libgetopt::option_base::short_option() const
-{
-    return m_short_option;
-}
-
-inline int libgetopt::option_base::val() const
-{
-    return m_val;
-}
-
-inline void libgetopt::option_base::val(const int val)
-{
-    m_val = val;
+    inline const bool operator==(const option_base& lhs, const option_base& rhs)
+    {
+	return lhs.name == rhs.name;
+    }
 }
 
 #endif

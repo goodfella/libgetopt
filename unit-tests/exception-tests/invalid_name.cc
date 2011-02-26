@@ -94,7 +94,7 @@ int main()
 
     test_list_t::const_iterator failed_test = find_if(tests.begin(),
 						      tests.end(),
-						      not1(expected_exception<invalid_option,
+						      not1(expected_exception<parameter_name::invalid_name,
 							   option_test>()));
 
     if( failed_test != tests.end() )

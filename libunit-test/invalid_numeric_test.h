@@ -51,7 +51,7 @@ namespace libgetopt
 			     m_args.count(),
 			     m_args,
 			     m_parser,
-			     cmdline_parser::parse_result::result_invalid_arg);
+			     parse_result::result_invalid_arg);
 
 	    return tester.run();
 	}

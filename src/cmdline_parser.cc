@@ -6,93 +6,100 @@
 #include <string>
 #include <cassert>
 
+#include <iostream>
+
+using namespace std;
+
 #include "cmdline_parser.h"
-#include "arg_option.h"
-#include "getopt_option.h"
-#include "libgetopt_limits.h"
+#include "option_list.h"
 
 using namespace libgetopt;
 using std::string;
 using std::vector;
 using std::bind2nd;
-using std::mem_fun;
 
 bool cmdline_parser::is_in_use = false;
 
 
+option_base const * const cmdline_parser::find_option(option_base const * const opt,
+						      const option_list_t& options)
+{
+    option_list_t::const_iterator opt_map =
+	find(options.begin(), options.end(), opt);
+
+    if( opt_map != options.end() )
+    {
+	return opt_map->option;
+    }
+
+    return NULL;
+}
+
+
 void cmdline_parser::add_option(option_base* opt)
 {
-    option_base* option = find_option(opt, m_options);
+    option_base const * const option = find_option(opt, m_options);
 
     if( option == NULL )
     {
-	m_options.push_back(opt);
+	m_options.push_back(option_map(opt));
     }
     else
     {
-	throw duplicate_option(opt->name());
+	throw duplicate_option(opt->name.string_name());
     }
 }
 
-void cmdline_parser::add_option(arg_option* arg_opt)
-{
-    add_option(static_cast<option_base*>(arg_opt));
-
-    // long option without a short option
-    if( arg_opt->has_long_option() == true &&
-	arg_opt->has_short_option() == false )
-    {
-	/* change val so that getopt returns a unique value
-	 * for the option
-	 */
-	arg_opt->val(m_arg_options.size() + limits::max_short_options + 1);
-    }
-
-    m_arg_options.push_back(arg_opt);
-}
-
-cmdline_parser::parse_result cmdline_parser::parse(int argc, char* const argv[]) const
+parse_result cmdline_parser::parse(int argc, char* const argv[])
 {
     if( is_in_use == true )
     {
 	throw parser_in_use();
     }
 
-    vector< ::option> longopts;
+    option_list longopts(m_options.size() + 1);
 
     ::option last_opt = {0,0,0,0};
 
-    string optstring;
+    // we want getopt_long to return ':' when it encounters a missing argument
+    string optstring = ":";
 
     // generate the longopts and optstring
-    for(option_list_t::const_iterator i = m_options.begin();
-	i != m_options.end();
-	++i)
+    for(option_list_t::iterator i = m_options.begin();
+	i != m_options.end(); ++i)
     {
-	getopt_option gopt;
+	int val = 0;
 
-	(*i)->fill_option(&gopt);
+	option_base const * const opt = i->option;
 
-	if( (*i)->has_long_option() == true )
+	if( opt->name.has_long_name() == true )
 	{
-	    longopts.push_back(gopt);
+	    val = longopts.add_option(opt);
 	}
 
-	if( (*i)->has_short_option() == true )
+	if( opt->name.has_short_name() == true )
 	{
-	    optstring += gopt.optstring;
+	    if( val != 0 )
+	    {
+		assert(val == opt->name.short_name());
+	    }
+
+	    val = opt->name.short_name();
+	    optstring += opt->name.short_name();
+	    optstring += opt->arg_required() == true ? ":" : "::";
 	}
+
+	i->val = val;
     }
 
-    longopts.push_back(last_opt);
-
+    longopts.add_option(last_opt);
 
     int opt = -1;
     int opt_index = -1;
     is_in_use = true;
 
     // parse command line
-    while ( (opt = getopt_long(argc, argv, optstring.c_str(), &longopts[0], &opt_index)) != -1 )
+    while ( (opt = getopt_long(argc, argv, optstring.c_str(), longopts, &opt_index)) != -1 )
     {
 	switch (opt)
 	{
@@ -102,56 +109,54 @@ cmdline_parser::parse_result cmdline_parser::parse(int argc, char* const argv[])
 		continue;
 	    }
 
-	    // invalid option or missing argument
+	    // invalid option
 	    case '?':
+	    {
+		string invalid_opt = argv[optind];
+		return parse_result(invalid_opt);
+	    }
+
+	    // missing argument
 	    case ':':
 	    {
-		arg_option_list_t::const_iterator option = m_arg_options.end();
+		option_list_t::const_iterator opt_map = m_options.end();
 
-		option = find_if(m_arg_options.begin(),
-				 m_arg_options.end(),
-				 bind2nd(mem_fun(option_base::val_matches),
-					 optopt));
+		opt_map = find(m_options.begin(), m_options.end(), opt);
 
-		// invalid option
-		if( option == m_arg_options.end() )
-		{
-		    string invalid_opt;
-		    invalid_opt += static_cast<char>(optopt);
+		assert( opt_map != m_options.end() );
 
-		    return parse_result(invalid_opt);
-		}
-
-		// missing argument
-		else
-		{
-		    arg_option* arg_opt = *option;
-		    return parse_result(arg_opt);
-		}
+		option_base* error_opt = opt_map->option;
+		return parse_result(error_opt);
 	    }
 
 	    // option found
 	    default:
 	    {
-		arg_option_list_t::const_iterator option = m_arg_options.end();
+		option_list_t::iterator opt_map = m_options.end();
 
-		option = find_if(m_arg_options.begin(),
-				 m_arg_options.end(),
-				 bind2nd(mem_fun(option_base::val_matches), opt));
+		opt_map = find(m_options.begin(), m_options.end(), opt);
 
 		// by definition an option should be found
-		assert( option != m_arg_options.end() );
+		assert( opt_map != m_options.end() );
 
-		arg_option* arg_opt = *option;
+		option_base* option = opt_map->option;
 
-		assert( (arg_opt->arg_policy() == arg_policy_optional)
-			|| (optarg != NULL) );
+		// optarg should be set if an arg is required
+		assert( option->arg_required() == false ||
+			option->arg_required() == true && optarg != NULL );
 
 		string error_str;
 
-		if( arg_opt->parse_arg(optarg, &error_str) == false )
+		if( option->arg_required() == true )
 		{
-		    return parse_result(arg_opt, optarg, error_str);
+		    if( option->parse_arg(optarg, &error_str) == false )
+		    {
+			return parse_result(option, optarg, error_str);
+		    }
+		}
+		else
+		{
+		    option->set_present(true);
 		}
 	    }
 	}

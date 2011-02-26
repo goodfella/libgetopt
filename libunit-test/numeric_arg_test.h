@@ -29,7 +29,7 @@ namespace libgetopt
 
 		    parser.add_option(&opt);
 
-		    cmdline_parser::parse_result res;
+		    parse_result res;
 
 		    res = parser.parse(args.count(), args);
 
@@ -37,7 +37,7 @@ namespace libgetopt
 		    {
 			return false;
 		    }
-		    else if( opt != arg )
+		    else if( opt.get_arg() != arg )
 		    {
 			return false;
 		    }

@@ -5,12 +5,24 @@
 #include <stdexcept>
 #include <string>
 
-#include "arg_option.h"
+#include "option_base.h"
+#include "parse_result.h"
 
 namespace libgetopt
 {
-    typedef std::vector<option_base*> option_list_t;
-    typedef std::vector<arg_option*> arg_option_list_t;
+    struct option_map
+    {
+	    explicit option_map(option_base* opt): val(0), option(opt) {}
+
+	    bool operator==(int rhs) const
+	    { return val == rhs; }
+
+	    bool operator==(option_base const * const opt) const
+	    { return option_base::ptr_match(option, opt); }
+
+	    int val;
+	    option_base *option;
+    };
 
     class duplicate_option : public std::logic_error
     {
@@ -28,59 +40,44 @@ namespace libgetopt
 	    parser_in_use(): logic_error("parser already in use") {}
     };
 
+    typedef std::vector<option_map> option_list_t;
+
+    /** Parses the command line using getopt
+     *
+     *  options are added to this class with the add_option() method.
+     *  After adding the options the command line can be parsed with
+     *  the parse() method.
+     *
+     *  @note The parse() method can only be called once globaly due
+     *  to limitations of getopt.
+     */
     class cmdline_parser
     {
 	public:
 
-	    struct parse_result
-	    {
-		    enum result_t
-		    {
-			result_success,
-			result_invalid_option,
-			result_invalid_arg,
-			result_missing_arg
-		    };
-
-		    parse_result(): result(result_success) {}
-
-		    parse_result(const std::string& invalid_opt):
-			result(result_invalid_option),
-			option_name(invalid_opt)
-		    {}
-
-		    parse_result(arg_option* opt):
-			result(result_missing_arg),
-			option_name(opt->name())
-		    {}
-
-
-		    parse_result(arg_option* opt,
-				 const std::string& bad_arg,
-				 const std::string& err_str):
-			result(result_invalid_arg),
-			option_name(opt->name()),
-			error_string(err_str),
-			invalid_arg(bad_arg)
-		    {}
-
-		    operator result_t () { return result; }
-
-		    bool good() const {return result == result_success;}
-		    bool bad() const {return result != result_success;}
-
-		    result_t result;
-		    std::string option_name;
-		    std::string error_string;
-		    std::string invalid_arg;
-	    };
-
 	    cmdline_parser() {}
 
-	    void add_option(arg_option* arg_opt);
-	    parse_result parse(int argc, char* const argv[]) const;
+	    /**  Adds an option to the list of accepted options
+	     *
+	     *   @param opt The option to add
+	     *
+	     *   @note throws a duplicate_option exception if a
+	     *   previously added option with the same parameter_name
+	     *   exists.
+	     */
+	    void add_option(option_base * opt);
 
-	    void clear();
+	    /** Parses the command line
+	     *
+	     *  @param argc The number of parameters that exist in
+	     *  argv
+	     *
+	     *  @param argv The command line parameters to parse
+	     *
+	     *  @note This function can only be called once.
+	     */
+	    parse_result parse(int argc, char* const argv[]);
+
 
 	private:
 
@@ -88,39 +85,12 @@ namespace libgetopt
 	    cmdline_parser(const cmdline_parser&);
 	    cmdline_parser& operator = (const cmdline_parser&);
 
-	    template<class List_Type>
-	    static option_base* find_option(option_base const * const opt,
-					    const List_Type& options);
+	    static option_base const * const find_option(option_base const * const opt,
+							 const option_list_t& options);
 
-	    void add_option(option_base* opt);
-
-	    arg_option_list_t m_arg_options;
 	    option_list_t m_options;
-
 	    static bool is_in_use;
     };
-
-    inline void cmdline_parser::clear()
-    {
-	m_options.clear();
-	m_arg_options.clear();
-    }
-
-    template<class List_Type>
-    option_base* cmdline_parser::find_option(option_base const * const opt,
-					     const List_Type& options)
-    {
-	typename List_Type::const_iterator option =
-	    find_if(options.begin(), options.end(),
-		    std::bind2nd(std::mem_fun(option_base::option_base_matches), opt));
-
-	if( option != options.end() )
-	{
-	    return *option;
-	}
-
-	return NULL;
-    }
 }
 
 #endif

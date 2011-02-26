@@ -3,7 +3,7 @@
 #include <cstring>
 #include "cmdline_args.h"
 
-#include "arg_option.h"
+#include "option_base.h"
 
 using namespace libgetopt::unit_tests;
 using std::string;
@@ -25,7 +25,18 @@ void cmdline_args::add(char const * const option, char const * const arg)
 
 void cmdline_args::add(option_base* opt)
 {
-    string opt_name = opt->full_name();
+    string opt_name(1, '-');
+
+    if( opt->name.has_long_name() )
+    {
+	opt_name += '-';
+	opt_name += opt->name.long_name();
+    }
+    else
+    {
+	opt_name += opt->name.short_name();
+    }
+
     add(opt_name.c_str());
 }
 

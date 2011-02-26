@@ -65,7 +65,16 @@ namespace libgetopt
 
 	inline int cmdline_args::count() const
 	{
-	    return m_args.size() - 1;
+	    // if the null pointer has been appended then don't
+	    // include that in the count
+	    if( m_args.back() == NULL )
+	    {
+		return m_args.size() - 1;
+	    }
+	    else
+	    {
+		return m_args.size();
+	    }
 	}
     }
 }

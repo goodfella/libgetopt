@@ -6,8 +6,13 @@
 
 namespace libgetopt
 {
-    struct getopt_option: public ::option
+    class option_base;
+
+    class getopt_option: public ::option
     {
+	public:
+
+	    getopt_option(option_base const * const opt);
 	    std::string optstring;
     };
 }

@@ -17,8 +17,8 @@ namespace libgetopt
 		unit_test(const std::string& name,
 			  int argc,
 			  char * const * argv,
-			  const cmdline_parser& parser,
-			  cmdline_parser::parse_result::result_t expected_result);
+			  cmdline_parser& parser,
+			  parse_result::result_t expected_result);
 
 		bool run();
 
@@ -28,15 +28,15 @@ namespace libgetopt
 
 		int m_argc;
 		char * const * m_argv;
-		const cmdline_parser& m_parser;
-		cmdline_parser::parse_result::result_t m_exp_res;
+		cmdline_parser& m_parser;
+		parse_result::result_t m_exp_res;
 	};
 
 	inline unit_test::unit_test(const std::string& n,
 				    int argc,
 				    char * const * argv,
-				    const cmdline_parser& parser,
-				    cmdline_parser::parse_result::result_t expected_result):
+				    cmdline_parser& parser,
+				    parse_result::result_t expected_result):
 	    name(n),
 	    m_argc(argc),
 	    m_argv(argv),
