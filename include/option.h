@@ -2,14 +2,11 @@
 #define __OPTION_H__
 
 #include "option_base.h"
+#include "convert.h"
 
 
 namespace libgetopt
 {
-
-    template<class Type>
-    bool convert(char const * const optarg, Type* argp, std::string* error_str);
-
     /** Represents a command line option
      *
      *  The option class is responsible for parsing arguments from the
@@ -84,7 +81,7 @@ namespace libgetopt
     inline const bool option<Type>::__parse_arg(char const * const optarg,
 						std::string* const err_str)
     {
-	return convert<Type>(optarg, &m_arg, err_str);
+	return string_cast<Type>(optarg, &m_arg, err_str);
     }
 
     template<class Type>
