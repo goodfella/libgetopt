@@ -147,7 +147,8 @@ parse_result cmdline_parser::parse(int argc, char* const argv[])
 
 		string error_str;
 
-		if( option->arg_required() == true )
+		if( option->arg_required() == true ||
+		    option->arg_required() == false && optarg != NULL )
 		{
 		    if( option->parse_arg(optarg, &error_str) == false )
 		    {
