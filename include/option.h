@@ -47,6 +47,8 @@ namespace libgetopt
 	     */
 	    option(const std::string& long_name, const char short_name, bool arg_required = true);
 
+	    ~option();
+
 	    /// Returns the argument that has been parsed
 	    Type& get_arg();
 
@@ -55,46 +57,56 @@ namespace libgetopt
 
 	private:
 
-	    Type m_arg;
-
 	    const bool __parse_arg(char const * const optarg, std::string* const err_str);
     };
 
     template<class Type>
     inline option<Type>::option(const char short_opt, bool arg_required):
 	option_base(short_opt, arg_required)
-    {}
+    {
+	option_base::m_arg = new Type();
+    }
 
     template<class Type>
     inline option<Type>::option(const std::string& long_opt, bool arg_required):
 	option_base(long_opt, arg_required)
-    {}
+    {
+	option_base::m_arg = new Type();
+    }
 
     template<class Type>
     inline option<Type>::option(const std::string& long_opt,
 				const char short_opt,
 				bool arg_required):
 	option_base(long_opt, short_opt, arg_required)
-    {}
+    {
+	option_base::m_arg = new Type();
+    }
+
+    template<class Type>
+    option<Type>::~option()
+    {
+	delete static_cast<Type*>(option_base::m_arg);
+    }
 
     template<class Type>
     inline const bool option<Type>::__parse_arg(char const * const optarg,
 						std::string* const err_str)
     {
-	return string_cast<Type>(optarg, &m_arg, err_str);
+	return string_cast<Type>(optarg, static_cast<Type*>(m_arg), err_str);
     }
 
     template<class Type>
     inline Type& option<Type>::get_arg()
     {
-	return m_arg;
+	return *(static_cast<Type*>(option_base::m_arg));
     }
 
     template<class Type>
     void option<Type>::set_arg(const Type& arg)
     {
 	option_base::set_present_no_throw(true);
-	m_arg = arg;
+	*static_cast<Type*>(option_base::m_arg) = arg;
     }
 }
 

@@ -22,7 +22,6 @@ namespace libgetopt
 
 	    option_base(const char short_name, const bool arg_required = true);
 
-
 	    /** Sets whether or not an option is present
 	     *
 	     *  @param is_present Present or not present
@@ -48,6 +47,7 @@ namespace libgetopt
 	protected:
 
 	    void set_present_no_throw(bool is_present);
+	    void* m_arg;
 
 	private:
 
@@ -63,6 +63,7 @@ namespace libgetopt
 				    const bool arg_required):
 	arg_parser(arg_required),
 	name(long_name, short_name),
+	m_arg(NULL),
 	m_present(false)
     {}
 
@@ -70,6 +71,7 @@ namespace libgetopt
 				    const bool arg_required):
 	arg_parser(arg_required),
 	name(long_name),
+	m_arg(NULL),
 	m_present(false)
     {}
 
@@ -77,6 +79,7 @@ namespace libgetopt
 				    const bool arg_required):
 	arg_parser(arg_required),
 	name(short_name),
+	m_arg(NULL),
 	m_present(false)
     {}
 
