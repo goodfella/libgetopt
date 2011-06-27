@@ -1,4 +1,4 @@
-CXXFLAGS := -Wall -Wnon-virtual-dtor -Wold-style-cast -Woverloaded-virtual -fno-rtti -g
+CXXFLAGS := -Wall -Werror -Wnon-virtual-dtor -Wold-style-cast -Woverloaded-virtual -fno-rtti -g
 CPPFLAGS := -I include
 LDFLAGS := -L.
 UNIT_TEST_LIBS := unit-test getopt
