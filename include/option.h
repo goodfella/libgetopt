@@ -107,6 +107,7 @@ namespace libgetopt
     {
 	option_base::set_present_no_throw(true);
 	*static_cast<Type*>(option_base::m_arg) = arg;
+	arg_parser::set_arg_flags(true, true);
     }
 }
 

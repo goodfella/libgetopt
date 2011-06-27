@@ -56,8 +56,8 @@ namespace libgetopt
 
 	protected:
 
-	    /// Clears the arg_present, and arg_valid flags
-	    void clear_arg_present();
+	    /// Sets the are_present and arg_valid flags
+	    void set_arg_flags(bool is_present, bool is_valid);
 
 	    /** Parses an argument
 	     *
@@ -103,10 +103,16 @@ namespace libgetopt
 	return m_arg_required;
     }
 
-    inline void arg_parser::clear_arg_present()
+    inline void arg_parser::set_arg_flags(bool is_present, bool is_valid)
     {
-	m_arg_present = false;
-	m_arg_valid = false;
+	m_arg_present = is_present;
+
+	if( is_present == false )
+	{
+	    is_valid = false;
+	}
+
+	m_arg_valid = is_valid;
     }
 }
 
