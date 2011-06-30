@@ -28,16 +28,13 @@ namespace libgetopt
 	     */
 	    void set_present(const bool is_present);
 
-	    /** Returns whether or not the option is present
-	     *
-	     *  @param is_present Value to set the present flag to
-	     */
+	    /// Returns whether or not the option is present
 	    const bool is_present() const;
 
 	    /** True if two option_base classes passed as pointers match
 	     *
 	     *  This function is to be used as a predicate in standard
-	     *  algorithms for lists of optio_base pointers.
+	     *  algorithms for lists of option_base pointers.
 	     */
 	    static const bool ptr_match(option_base const * const lhs,
 					option_base const * const rhs);
