@@ -92,6 +92,9 @@ libunit-test.a: Makefile $(libunit-test_SRCS:.cc=.o) libgetopt.a
 
 unit-tests: $(unit_tests)
 
+run-tests: all
+	unit-tests/run-tests.sh
+
 clean:
 	rm -f libgetopt.a $(unit_tests) libunit-test.a
 	rm -f $(srcs:.cc=.o) $(call create_depends,$(srcs))
