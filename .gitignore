@@ -6,9 +6,11 @@
 # unit tests
 unit-tests/numeric-tests/*
 unit-tests/exception-tests/*
+unit-tests/option-tests/*
 
 !unit-tests/exception-tests/*.cc
 !unit-tests/numeric-tests/*.cc
+!unit-tests/option-tests/*.cc
 
 *.html
 

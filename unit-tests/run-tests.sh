@@ -83,9 +83,15 @@ printf "Running exception tests:\n\n"
 run_tests "${EXCEPTION_TESTS}"
 echo
 
+OPTION_TESTS="$(get_tests option-tests)"
+printf "Running option tests:\n\n"
+run_tests "${OPTION_TESTS}"
+echo
+
 printf "Running valgrind tests:\n\n"
 valgrind_tests "${NUMERIC_TESTS}"
 valgrind_tests "${EXCEPTION_TESTS}"
+valgrind_tests "${OPTION_TESTS}"
 echo
 
 echo "valgrind tests passed"
