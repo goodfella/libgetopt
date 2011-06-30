@@ -91,9 +91,11 @@ namespace libgetopt
 
     template<class Type>
     const bool option<Type>::__parse_arg(char const * const optarg,
-						std::string* const err_str)
+					 std::string* const err_str)
     {
-	return string_cast<Type>(optarg, static_cast<Type*>(m_arg), err_str);
+	option_base::set_present_no_throw(true);
+	return string_cast<Type>(optarg, static_cast<Type*>(option_base::m_arg),
+				 err_str);
     }
 
     template<class Type>
