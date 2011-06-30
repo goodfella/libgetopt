@@ -56,8 +56,26 @@ namespace libgetopt
 
 	protected:
 
-	    /// Sets the are_present and arg_valid flags
-	    void set_arg_flags(bool is_present, bool is_valid);
+	    /* Sets the present and valid flags
+	     *
+	     *  Sets the arg_present flag to the value of the
+	     *  is_present parameter, and the arg_valid flag to true
+	     *
+	     *  @param is_present Value to set the arg_present flag
+	     */
+	    void set_arg_present_valid(bool is_present);
+
+	    /* Sets the present and valid flags
+	     *
+	     *  Sets the arg_present flag to the value of the
+	     *  is_present parameter, and the arg_valid flag to false
+	     *
+	     *  @param is_present Value to set the arg_present flag
+	     */
+	    void set_arg_present_invalid(bool is_present);
+
+	    /// Sets the arg_present and arg_valid flags to false
+	    void clear_arg_present();
 
 	    /** Parses an argument
 	     *
@@ -76,6 +94,9 @@ namespace libgetopt
 					   std::string * const error) = 0;
 
 	private:
+
+	    void set_arg_present(bool is_present);
+	    void set_arg_valid(bool is_valid);
 
 	    bool m_arg_valid;
 	    bool m_arg_present;
@@ -103,16 +124,32 @@ namespace libgetopt
 	return m_arg_required;
     }
 
-    inline void arg_parser::set_arg_flags(bool is_present, bool is_valid)
+    inline void arg_parser::set_arg_present(bool is_present)
     {
 	m_arg_present = is_present;
+    }
 
-	if( is_present == false )
-	{
-	    is_valid = false;
-	}
-
+    inline void arg_parser::set_arg_valid(bool is_valid)
+    {
 	m_arg_valid = is_valid;
+    }
+
+    inline void arg_parser::set_arg_present_valid(bool is_present)
+    {
+	set_arg_present(is_present);
+	set_arg_valid(true);
+    }
+
+    inline void arg_parser::set_arg_present_invalid(bool is_present)
+    {
+	set_arg_present(is_present);
+	set_arg_valid(false);
+    }
+
+    inline void arg_parser::clear_arg_present()
+    {
+	set_arg_present(false);
+	set_arg_valid(false);
     }
 }
 

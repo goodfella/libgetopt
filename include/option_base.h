@@ -86,7 +86,7 @@ namespace libgetopt
 
 	if( is_present == false )
 	{
-	    arg_parser::set_arg_flags(false, false);
+	    arg_parser::clear_arg_present();
 	}
     }
 
