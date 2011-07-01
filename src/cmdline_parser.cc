@@ -143,12 +143,12 @@ parse_result cmdline_parser::parse(int argc, char* const argv[])
 
 		// optarg should be set if an arg is required
 		assert( option->arg_required() == false ||
-			option->arg_required() == true && optarg != NULL );
+			(option->arg_required() == true && optarg != NULL) );
 
 		string error_str;
 
 		if( option->arg_required() == true ||
-		    option->arg_required() == false && optarg != NULL )
+		    (option->arg_required() == false && optarg != NULL) )
 		{
 		    if( option->parse_arg(optarg, &error_str) == false )
 		    {

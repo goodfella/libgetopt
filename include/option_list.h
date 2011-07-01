@@ -2,6 +2,7 @@
 #define __OPTION_LIST_H__
 
 #include <vector>
+#include <algorithm>
 #include <getopt.h>
 
 #include "parameter_name.h"
@@ -41,8 +42,8 @@ namespace libgetopt
 
     inline option_list::~option_list()
     {
-	for_each(m_options.begin(), m_options.end(),
-		 option_list::destroy_option_name);
+	std::for_each(m_options.begin(), m_options.end(),
+		      option_list::destroy_option_name);
     }
 
     inline void option_list::destroy_option_name(::option opt)

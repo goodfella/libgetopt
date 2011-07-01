@@ -4,6 +4,7 @@
 #include <string>
 #include <cerrno>
 #include <cassert>
+#include <limits>
 
 #include "strtonum.h"
 

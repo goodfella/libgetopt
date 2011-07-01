@@ -3,6 +3,7 @@
 
 #include <cstdio>
 #include <string>
+#include <cstdlib>
 
 namespace libgetopt
 {
