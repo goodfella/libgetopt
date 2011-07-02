@@ -14,24 +14,6 @@ int main(int argc, char** argv)
     args.add(&opt, "1");
     parser.add_option(&opt);
 
-    if( opt.is_present() == true )
-    {
-	cerr << "is_present is true before parsing\n";
-	return 1;
-    }
-
-    if( opt.arg_present() == true )
-    {
-	cerr << "arg_present is true before parsing\n";
-	return 1;
-    }
-
-    if( opt.arg_valid() == true )
-    {
-	cerr << "arg_valid is true before parsing\n";
-	return 1;
-    }
-
     parse_result res = parser.parse(args.count(), args);
 
     if( res.result() != parse_result::result_success )
