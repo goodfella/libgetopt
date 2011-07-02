@@ -27,14 +27,14 @@ void cmdline_args::add(option_base* opt)
 {
     string opt_name(1, '-');
 
-    if( opt->name.has_long_name() )
+    if( opt->name().has_long_name() )
     {
 	opt_name += '-';
-	opt_name += opt->name.long_name();
+	opt_name += opt->name().long_name();
     }
     else
     {
-	opt_name += opt->name.short_name();
+	opt_name += opt->name().short_name();
     }
 
     add(opt_name.c_str());

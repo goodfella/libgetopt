@@ -31,6 +31,9 @@ namespace libgetopt
 	    /// Returns whether or not the option is present
 	    const bool is_present() const;
 
+	    /// Returns the parameter_name of the option
+	    const parameter_name& name() const;
+
 	    /** True if two option_base classes passed as pointers match
 	     *
 	     *  This function is to be used as a predicate in standard
@@ -39,7 +42,8 @@ namespace libgetopt
 	    static const bool ptr_match(option_base const * const lhs,
 					option_base const * const rhs);
 
-	    parameter_name name;
+	private: parameter_name m_name;
+
 
 	protected:
 
@@ -59,7 +63,7 @@ namespace libgetopt
 				    const char short_name,
 				    const bool arg_required):
 	arg_parser(arg_required),
-	name(long_name, short_name),
+	m_name(long_name, short_name),
 	m_arg(NULL),
 	m_present(false)
     {}
@@ -67,7 +71,7 @@ namespace libgetopt
     inline option_base::option_base(const std::string& long_name,
 				    const bool arg_required):
 	arg_parser(arg_required),
-	name(long_name),
+	m_name(long_name),
 	m_arg(NULL),
 	m_present(false)
     {}
@@ -75,7 +79,7 @@ namespace libgetopt
     inline option_base::option_base(const char short_name,
 				    const bool arg_required):
 	arg_parser(arg_required),
-	name(short_name),
+	m_name(short_name),
 	m_arg(NULL),
 	m_present(false)
     {}
@@ -90,6 +94,11 @@ namespace libgetopt
 	}
     }
 
+    inline const parameter_name& option_base::name() const
+    {
+	return m_name;
+    }
+
     /// True if the name matches rhs
     template<class RHS_Type>
     const bool operator==(const option_base& lhs, const RHS_Type rhs);
@@ -100,12 +109,12 @@ namespace libgetopt
     template<class RHS_Type>
     inline const bool operator==(const option_base& lhs, const RHS_Type rhs)
     {
-	return lhs.name == rhs;
+	return lhs.name() == rhs;
     }
 
     inline const bool operator==(const option_base& lhs, const option_base& rhs)
     {
-	return lhs.name == rhs.name;
+	return lhs.name() == rhs.name();
     }
 }
 

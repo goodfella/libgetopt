@@ -41,14 +41,14 @@ namespace libgetopt
 
     inline parse_result::parse_result(option_base* opt):
 	result(result_missing_arg),
-	option_name(opt->name.string_name())
+	option_name(opt->name().string_name())
     {}
 
     inline parse_result::parse_result(option_base* opt,
 				      const std::string& bad_arg,
 				      const std::string& err_str):
 	result(result_invalid_arg),
-	option_name(opt->name.string_name()),
+	option_name(opt->name().string_name()),
 	error_string(err_str),
 	invalid_arg(bad_arg)
     {}

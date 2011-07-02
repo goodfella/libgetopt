@@ -46,7 +46,7 @@ void cmdline_parser::add_option(option_base* opt)
     }
     else
     {
-	throw duplicate_option(opt->name.string_name());
+	throw duplicate_option(opt->name().string_name());
     }
 }
 
@@ -72,20 +72,20 @@ parse_result cmdline_parser::parse(int argc, char* const argv[])
 
 	option_base const * const opt = i->option;
 
-	if( opt->name.has_long_name() == true )
+	if( opt->name().has_long_name() == true )
 	{
 	    val = longopts.add_option(opt);
 	}
 
-	if( opt->name.has_short_name() == true )
+	if( opt->name().has_short_name() == true )
 	{
 	    if( val != 0 )
 	    {
-		assert(val == opt->name.short_name());
+		assert(val == opt->name().short_name());
 	    }
 
-	    val = opt->name.short_name();
-	    optstring += opt->name.short_name();
+	    val = opt->name().short_name();
+	    optstring += opt->name().short_name();
 	    optstring += opt->arg_required() == true ? ":" : "::";
 	}
 
