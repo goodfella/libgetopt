@@ -34,9 +34,9 @@ int main(int argc, char** argv)
 
     parse_result res = parser.parse(args.count(), args);
 
-    if( res.result != parse_result::result_success )
+    if( res.result() != parse_result::result_success )
     {
-	cerr << "parsing failed: " << res.error_string << endl;
+	cerr << "parsing failed: " << res.error_string() << endl;
 	return 1;
     }
 

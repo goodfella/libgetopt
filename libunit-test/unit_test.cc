@@ -7,7 +7,7 @@ bool unit_test::run()
 {
     parse_result res = m_parser.parse(m_argc, m_argv);
 
-    if( res.result != m_exp_res )
+    if( res.result() != m_exp_res )
     {
 	return false;
     }

@@ -18,7 +18,7 @@ int main(int argc, char** argv)
 
     parse_result res = parser.parse(args.count(), args);
 
-    if( res.result != parse_result::result_invalid_arg )
+    if( res.result() != parse_result::result_invalid_arg )
     {
 	cerr << "parsing did not fail\n";
 	return 1;
