@@ -112,7 +112,10 @@ parse_result cmdline_parser::parse(int argc, char* const argv[])
 	    // invalid option
 	    case '?':
 	    {
-		string invalid_opt = argv[optind];
+		/* according to the getopt manpage, optind is one
+		 * passed the invalid option.
+		 */
+		string invalid_opt = argv[optind - 1];
 		return parse_result(invalid_opt);
 	    }
 
