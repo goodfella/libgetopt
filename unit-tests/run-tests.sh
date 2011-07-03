@@ -88,10 +88,16 @@ printf "Running option tests:\n\n"
 run_tests "${OPTION_TESTS}"
 echo
 
+CMDLINE_PARSER_TESTS="$(get_tests cmdline-parser-tests)"
+printf "Running cmdline parser tests:\n\n"
+run_tests "${CMDLINE_PARSER_TESTS}"
+echo
+
 printf "Running valgrind tests:\n\n"
 valgrind_tests "${NUMERIC_TESTS}"
 valgrind_tests "${EXCEPTION_TESTS}"
 valgrind_tests "${OPTION_TESTS}"
+valgrind_tests "${CMDLINE_PARSER_TESTS}"
 echo
 
 echo "valgrind tests passed"
