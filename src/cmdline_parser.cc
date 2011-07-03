@@ -124,7 +124,7 @@ parse_result cmdline_parser::parse(int argc, char* const argv[])
 	    {
 		option_list_t::const_iterator opt_map = m_options.end();
 
-		opt_map = find(m_options.begin(), m_options.end(), opt);
+		opt_map = find(m_options.begin(), m_options.end(), optopt);
 
 		assert( opt_map != m_options.end() );
 
