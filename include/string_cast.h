@@ -1,5 +1,5 @@
-#ifndef __CONVERT_H__
-#define __CONVERT_H__
+#ifndef __STRING_CAST_H__
+#define __STRING_CAST_H__
 
 #include <string>
 #include <cerrno>

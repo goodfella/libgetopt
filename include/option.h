@@ -2,7 +2,7 @@
 #define __OPTION_H__
 
 #include "option_base.h"
-#include "convert.h"
+#include "string_cast.h"
 
 
 namespace libgetopt
