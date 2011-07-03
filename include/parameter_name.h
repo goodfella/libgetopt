@@ -72,6 +72,9 @@ namespace libgetopt
     /// True if the long name member to matches long_name
     bool operator==(const parameter_name& lhs, char const * const long_name);
 
+    bool operator==(const parameter_name& lhs, const std::string& long_name);
+    bool operator!=(const parameter_name& lhs, const std::string& long_name);
+
     /// true if either the short name or long name matches
     bool operator==(const parameter_name& lhs, const parameter_name& rhs);
 
@@ -127,7 +130,17 @@ namespace libgetopt
 
     inline bool operator==(const parameter_name& lhs, char const * const rhs)
     {
-	return lhs.long_name() == rhs;
+	return (lhs.long_name() == rhs || lhs.string_name() == rhs);
+    }
+
+    inline bool operator==(const parameter_name& lhs, const std::string& name)
+    {
+	return (lhs.long_name() == name || lhs.string_name() == name);
+    }
+
+    inline bool operator!=(const parameter_name& lhs, const std::string& name)
+    {
+	return (lhs.long_name() != name && lhs.string_name() != name);
     }
 
     inline bool operator==(const parameter_name& lhs, const parameter_name& rhs)
