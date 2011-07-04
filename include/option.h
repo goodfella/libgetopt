@@ -26,7 +26,7 @@ namespace libgetopt
 	     *  @param arg_required True if an argument is required,
 	     *  this is the default.  False if an argument is optional
 	     */
-	    option(const char short_name, bool arg_required = true);
+	    explicit option(const char short_name, bool arg_required = true);
 
 	    /** Constructs an option class with a long name
 	     *
@@ -35,7 +35,7 @@ namespace libgetopt
 	     *  @param arg_required True if an argument is required,
 	     *  this is the default.  False if an argument is optional
 	     */
-	    option(const std::string& long_name, bool arg_required = true);
+	    explicit option(const std::string& long_name, bool arg_required = true);
 
 	    /** Constructs an option class with a long name and short name
 	     *

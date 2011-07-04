@@ -17,10 +17,10 @@ namespace libgetopt
 	    option_base(const std::string& long_name, const char short_name,
 			const bool arg_required = true);
 
-	    option_base(const std::string& long_name,
+	    explicit option_base(const std::string& long_name,
 			const bool arg_required = true);
 
-	    option_base(const char short_name, const bool arg_required = true);
+	    explicit option_base(const char short_name, const bool arg_required = true);
 
 	    /** Sets whether or not an option is present
 	     *
