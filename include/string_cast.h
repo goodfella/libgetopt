@@ -5,6 +5,8 @@
 #include <cerrno>
 #include <cassert>
 #include <limits>
+#include <vector>
+#include <list>
 
 #include "strtonum.h"
 
@@ -43,6 +45,46 @@ namespace libgetopt
 	    return false;
 	}
     }
+
+    template<class Type>
+    struct string_cast<std::vector<Type> >
+    {
+	    static bool cast(char const * const optarg, std::vector<Type>* vec,
+			     std::string* err_str)
+	    {
+		Type arg;
+		if( string_cast<Type>::cast(optarg, &arg, err_str) == true )
+		{
+		    vec->push_back(arg);
+		    return true;
+		}
+		else
+		{
+		    return false;
+		}
+	    }
+    };
+
+
+    template<class Type>
+    struct string_cast<std::list<Type> >
+    {
+	    static bool cast(char const * const optarg, std::list<Type>* li,
+			     std::string* err_str)
+	    {
+		Type arg;
+		if( string_cast<Type>::cast(optarg, &arg, err_str) == true )
+		{
+		    li->push_back(arg);
+		    return true;
+		}
+		else
+		{
+		    return false;
+		}
+	    }
+    };
+
 
     template<>
     struct string_cast<std::string>
