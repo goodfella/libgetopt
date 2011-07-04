@@ -19,6 +19,8 @@ namespace libgetopt
     {
 	public:
 
+	    typedef Type arg_type_t;
+
 	    /** Constructs an option class with a short name
 	     *
 	     *  @param short_name The char to use as the short name
