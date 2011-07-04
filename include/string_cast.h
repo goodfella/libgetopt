@@ -10,21 +10,16 @@
 
 namespace libgetopt
 {
-    template<class Type>
-    bool string_cast(char const * const optarg, Type* argp,
-			     std::string* err_str);
-
-    template<>
-    inline bool string_cast(char const * const optarg, std::string* argp,
-			    std::string* err_str)
-    {
-	*argp = optarg;
-	return true;
-    };
 
     // for all numeric types
     template<class Type>
-    bool string_cast(char const * const optarg, Type* argp, std::string* err_str)
+    struct string_cast
+    {
+	    static bool cast(char const * const optarg, Type* argp, std::string* err_str);
+    };
+
+    template<class Type>
+    bool string_cast<Type>::cast(char const * const optarg, Type* argp, std::string* err_str)
     {
 	typedef std::numeric_limits<Type> numeric_limits_t;
 
@@ -48,6 +43,17 @@ namespace libgetopt
 	    return false;
 	}
     }
+
+    template<>
+    struct string_cast<std::string>
+    {
+	    static bool cast(char const * const optarg, std::string* argp,
+			     std::string* err_str)
+	    {
+		*argp = optarg;
+		return true;
+	    }
+    };
 }
 
 #endif
