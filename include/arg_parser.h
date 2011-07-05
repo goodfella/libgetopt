@@ -58,21 +58,19 @@ namespace libgetopt
 
 	    /* Sets the present and valid flags
 	     *
-	     *  Sets the arg_present flag to the value of the
-	     *  is_present parameter, and the arg_valid flag to true
+	     *  Sets the arg_present flag to true and the arg_valid
+	     *  flag to true.
 	     *
-	     *  @param is_present Value to set the arg_present flag
 	     */
-	    void set_arg_present_valid(bool is_present);
+	    void set_arg_present_valid();
 
 	    /* Sets the present and valid flags
 	     *
-	     *  Sets the arg_present flag to the value of the
-	     *  is_present parameter, and the arg_valid flag to false
+	     *  Sets the arg_present flag to true and the arg_valid
+	     *  flag to false.
 	     *
-	     *  @param is_present Value to set the arg_present flag
 	     */
-	    void set_arg_present_invalid(bool is_present);
+	    void set_arg_present_invalid();
 
 	    /// Sets the arg_present and arg_valid flags to false
 	    void clear_arg_present();
@@ -134,15 +132,15 @@ namespace libgetopt
 	m_arg_valid = is_valid;
     }
 
-    inline void arg_parser::set_arg_present_valid(bool is_present)
+    inline void arg_parser::set_arg_present_valid()
     {
-	set_arg_present(is_present);
+	set_arg_present(true);
 	set_arg_valid(true);
     }
 
-    inline void arg_parser::set_arg_present_invalid(bool is_present)
+    inline void arg_parser::set_arg_present_invalid()
     {
-	set_arg_present(is_present);
+	set_arg_present(true);
 	set_arg_valid(false);
     }
 
