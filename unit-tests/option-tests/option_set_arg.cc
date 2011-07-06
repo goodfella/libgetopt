@@ -37,5 +37,25 @@ int main(int argc, char** argv)
 	return 1;
     }
 
+    opt.set_present(false);
+
+    if( opt.is_present() == true )
+    {
+	cerr << "cleared present flag but is_present is still true\n";
+	return 1;
+    }
+
+    if( opt.arg_present() == true )
+    {
+	cerr << "cleared present flag but arg_present is still true\n";
+	return 1;
+    }
+
+    if( opt.arg_valid() == true )
+    {
+	cerr << "cleared present flag but arg_valid is still true\n";
+	return 1;
+    }
+
     return 0;
 }
