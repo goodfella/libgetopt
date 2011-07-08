@@ -54,6 +54,8 @@ namespace libgetopt
 	    /// Returns the argument that has been parsed
 	    Type& get_arg();
 
+	    const Type& get_arg() const;
+
 	    /// Sets the argument
 	    void set_arg(const Type& arg);
 
@@ -102,6 +104,12 @@ namespace libgetopt
 
     template<class Type>
     inline Type& option<Type>::get_arg()
+    {
+	return *(static_cast<Type*>(option_base::m_arg));
+    }
+
+    template<class Type>
+    inline const Type& option<Type>::get_arg() const
     {
 	return *(static_cast<Type*>(option_base::m_arg));
     }
