@@ -4,6 +4,8 @@
 #include <vector>
 #include <algorithm>
 
+#include "libgetopt_string.h"
+
 namespace libgetopt
 {
     class option_base;
@@ -35,7 +37,6 @@ namespace libgetopt
 
 	    private:
 
-		static char* delchar(char*);
 		std::vector<char*> m_args;
 	};
 
@@ -53,14 +54,8 @@ namespace libgetopt
 
 	inline void cmdline_args::clear()
 	{
-	    std::transform(m_args.begin(), m_args.end(), m_args.begin(), cmdline_args::delchar);
+	    std::transform(m_args.begin(), m_args.end(), m_args.begin(), delete_cstring);
 	    m_args.clear();
-	}
-
-	inline char* cmdline_args::delchar(char* arg)
-	{
-	    delete[] arg;
-	    return NULL;
 	}
 
 	inline int cmdline_args::count() const

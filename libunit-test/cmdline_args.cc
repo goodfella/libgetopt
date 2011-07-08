@@ -1,6 +1,7 @@
 #include <sstream>
 #include <string>
 #include <cstring>
+#include "libgetopt_string.h"
 #include "cmdline_args.h"
 
 #include "option_base.h"
@@ -11,10 +12,9 @@ using std::stringstream;
 
 void cmdline_args::add(char const * const option)
 {
-    char *arg = new char[strlen(option) + 1];
-    strcpy(arg, option);
-
-    m_args.push_back(arg);
+    auto_cstring_ptr arg(duplicate_cstring(option));
+    m_args.push_back(arg.get());
+    arg.release();
 }
 
 void cmdline_args::add(char const * const option, char const * const arg)
@@ -42,11 +42,11 @@ void cmdline_args::add(option_base* opt)
 
 void cmdline_args::add(long long arg)
 {
-	stringstream arg_ss;
-	arg_ss << arg;
-	string arg_str = arg_ss.str();
+    stringstream arg_ss;
+    arg_ss << arg;
+    string arg_str = arg_ss.str();
 
-	add(arg_str.c_str());
+    add(arg_str.c_str());
 }
 
 void cmdline_args::add(option_base* opt, char const * const arg)
@@ -57,14 +57,14 @@ void cmdline_args::add(option_base* opt, char const * const arg)
 
 void cmdline_args::add(option_base* opt, long long arg)
 {
-	add(opt);
-	add(arg);
+    add(opt);
+    add(arg);
 }
 
 void cmdline_args::add(char const * const option, long long arg)
 {
-	add(option);
-	add(arg);
+    add(option);
+    add(arg);
 }
 
 cmdline_args::operator char * const * ()

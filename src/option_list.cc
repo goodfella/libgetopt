@@ -1,6 +1,6 @@
 #include <cassert>
-
 #include <string>
+#include <cstring>
 
 #include "option_base.h"
 #include "option_list.h"
@@ -12,21 +12,15 @@ using std::string;
 char* option_list::create_option_name(const parameter_name& name)
 {
     assert(name.has_long_name() == true);
-
-    string long_name = name.long_name();
-
-    char * cname = new char[long_name.length() + 1];
-    long_name.copy(cname, long_name.length());
-    cname[long_name.length()] = '\0';
-
-    return cname;
+    return duplicate_cstring(name.long_name().c_str());
 }
 
 int option_list::add_long_option(option_base const * const opt)
 {
     ::option getopt_opt;
 
-    getopt_opt.name = create_option_name(opt->name());
+    auto_cstring_ptr long_name(create_option_name(opt->name()));
+    getopt_opt.name = long_name.get();
 
     getopt_opt.has_arg = opt->arg_required() == true ? required_argument : optional_argument;
 
@@ -42,5 +36,7 @@ int option_list::add_long_option(option_base const * const opt)
     }
 
     m_options.push_back(getopt_opt);
+    long_name.release();
+
     return getopt_opt.val;
 }

@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <getopt.h>
 
+#include "libgetopt_string.h"
 #include "parameter_name.h"
 
 namespace libgetopt
@@ -48,7 +49,7 @@ namespace libgetopt
 
     inline void option_list::destroy_option_name(::option opt)
     {
-	delete[] opt.name;
+	delete_cstring(opt.name);
     }
 
     inline void option_list::add_option(::option opt)
