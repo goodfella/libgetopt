@@ -74,7 +74,7 @@ parse_result cmdline_parser::parse(int argc, char* const argv[])
 
 	if( opt->name().has_long_name() == true )
 	{
-	    val = longopts.add_option(opt);
+	    val = longopts.add_long_option(opt);
 	}
 
 	if( opt->name().has_short_name() == true )

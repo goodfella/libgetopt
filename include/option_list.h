@@ -19,7 +19,7 @@ namespace libgetopt
 
 	    ~option_list();
 
-	    int add_option(option_base const * const opt);
+	    int add_long_option(option_base const * const opt);
 	    void add_option(::option opt);
 
 	    operator const struct option*();
@@ -29,7 +29,7 @@ namespace libgetopt
 
 	private:
 
-	    char const * create_option_name(const parameter_name& name);
+	    static char* create_option_name(const parameter_name& name);
 	    static void destroy_option_name(::option);
 
 	    std::vector< ::option > m_options;

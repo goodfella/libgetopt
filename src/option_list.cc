@@ -9,7 +9,7 @@
 using namespace libgetopt;
 using std::string;
 
-char const * option_list::create_option_name(const parameter_name& name)
+char* option_list::create_option_name(const parameter_name& name)
 {
     assert(name.has_long_name() == true);
 
@@ -22,7 +22,7 @@ char const * option_list::create_option_name(const parameter_name& name)
     return cname;
 }
 
-int option_list::add_option(option_base const * const opt)
+int option_list::add_long_option(option_base const * const opt)
 {
     ::option getopt_opt;
 
