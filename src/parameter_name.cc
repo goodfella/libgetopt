@@ -6,17 +6,43 @@
 
 using namespace libgetopt;
 using std::string;
+using std::numeric_limits;
 
-const string parameter_name::string_name() const
+bool libgetopt::operator==(const parameter_name& lhs, const parameter_name& rhs)
 {
-    if( has_long_name() == true )
+    bool short_test =
+	((lhs.has_short_name() == true) &&
+	 (rhs.has_short_name() == true) &&
+	 (lhs.short_name() == rhs.short_name()));
+
+    bool long_test =
+	((lhs.has_long_name() == true) &&
+	 (rhs.has_long_name() == true) &&
+	 (lhs.long_name() == rhs.long_name()));
+
+    return (short_test || long_test);
+}
+
+bool libgetopt::operator==(const parameter_name& lhs, const char rhs)
+{
+    if( lhs.has_short_name() == true )
     {
-	return long_name();
+	return lhs.short_name() == rhs;
     }
     else
     {
-	return string(1, short_name());
+	return false;
     }
+}
+
+bool libgetopt::operator==(const parameter_name& lhs, const int rhs)
+{
+    if( rhs > numeric_limits<char>::max() || rhs < numeric_limits<char>::min() )
+    {
+	return false;
+    }
+
+    return lhs == static_cast<char>(rhs);
 }
 
 void parameter_name::check_name(const char short_name)
@@ -50,15 +76,4 @@ void parameter_name::check_name(const string& long_name)
     {
 	throw parameter_name::invalid_name("long name contains a non graphical character");
     }
-}
-
-bool operator==(const parameter_name& lhs, const int rhs)
-{
-    if( rhs > std::numeric_limits<char>::max() )
-    {
-	return false;
-    }
-
-    char temp = static_cast<char>(rhs);
-    return temp == lhs.short_name();
 }

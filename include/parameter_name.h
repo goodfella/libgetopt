@@ -4,6 +4,7 @@
 #include <string>
 #include <stdexcept>
 #include <cctype>
+#include <cstring>
 
 namespace libgetopt
 {
@@ -28,7 +29,7 @@ namespace libgetopt
 	     *  returned.  If there is only a short name, then a
 	     *  string representation of the short name is returned
 	     */
-	    const std::string string_name() const;
+	    const std::string& string_name() const;
 
 	    /// Returns whether or not an option has a long name
 	    const bool has_long_name() const;
@@ -66,29 +67,53 @@ namespace libgetopt
 	private:
 
 	    std::string m_long_name;
-	    char m_short_name;
+	    std::string m_short_name;
     };
 
-    /// True if the long name member to matches long_name
-    bool operator==(const parameter_name& lhs, char const * const long_name);
+    /// True if rhs to matches long_name() or string_name()
+    bool operator==(const parameter_name& lhs, char const * const rhs);
 
-    bool operator==(const parameter_name& lhs, const std::string& long_name);
-    bool operator!=(const parameter_name& lhs, const std::string& long_name);
+    /// True if rhs does not match long_name() and string_name()
+    bool operator!=(const parameter_name& lhs, char const * const rhs);
 
-    /// true if either the short name or long name matches
+
+    /// See operator==(const parameter_name& lhs, char const * const rhs)
+    bool operator==(const parameter_name& lhs, const std::string& rhs);
+
+    /// See operator==(const parameter_name& lhs, char const * const rhs)
+    bool operator!=(const parameter_name& lhs, const std::string& rhs);
+
+
+    /** Checks if two parameter_name objects are equal
+     *
+     *  @return True both lhs and rhs have long names and the long
+     *  names are equal.  Also true if both lhs and rhs have short
+     *  names and the short names are equal.  False otherwise
+     */
     bool operator==(const parameter_name& lhs, const parameter_name& rhs);
+
+    /// Not of operator==(const parameter_name& lhs, const parameter_name& rhs)
+    bool operator!=(const parameter_name& lhs, const parameter_name& rhs);
+
 
     /// True if the short name member matches rhs
     bool operator==(const parameter_name& lhs, const int rhs);
 
+    /// Not of operator==(const parameter_name& lhs, const int rhs)
+    bool operator!=(const parameter_name& lhs, const int rhs);
+
+
     /// True if the short name member matches rhs
     bool operator==(const parameter_name& lhs, const char rhs);
+
+    /// Not of operator==(const parameter_name& lhs, const char rhs)
+    bool operator!=(const parameter_name& lhs, const char rhs);
 
 
     inline parameter_name::parameter_name(const std::string& long_name,
 				    const char short_name):
 	m_long_name(long_name),
-	m_short_name(short_name)
+	m_short_name(1, short_name)
     {
 	check_name(long_name);
 	check_name(short_name);
@@ -96,14 +121,14 @@ namespace libgetopt
 
     inline parameter_name::parameter_name(const std::string& long_name):
 	m_long_name(long_name),
-	m_short_name(0)
+	m_short_name("")
     {
 	check_name(long_name);
     }
 
     inline parameter_name::parameter_name(const char short_name):
 	m_long_name(""),
-	m_short_name(short_name)
+	m_short_name(1, short_name)
     {
 	check_name(short_name);
     }
@@ -115,7 +140,26 @@ namespace libgetopt
 
     inline const char parameter_name::short_name() const
     {
-	return m_short_name;
+	if( m_short_name != "" )
+	{
+	    return m_short_name[0];
+	}
+	else
+	{
+	    return '\0';
+	}
+    }
+
+    inline const std::string& parameter_name::string_name() const
+    {
+	if( m_long_name != "" )
+	{
+	    return m_long_name;
+	}
+	else
+	{
+	    return m_short_name;
+	}
     }
 
     inline const bool parameter_name::has_long_name() const
@@ -125,33 +169,50 @@ namespace libgetopt
 
     inline const bool parameter_name::has_short_name() const
     {
-	return short_name() != 0;
+	return short_name() != '\0';
     }
 
     inline bool operator==(const parameter_name& lhs, char const * const rhs)
     {
-	return (lhs.long_name() == rhs || lhs.string_name() == rhs);
+	if( strlen(rhs) == 0 )
+	{
+	    return false;
+	}
+
+	bool long_test = (lhs.long_name() == rhs);
+	bool short_test = (lhs.short_name()== rhs[0]);
+	return (long_test || short_test);
     }
 
-    inline bool operator==(const parameter_name& lhs, const std::string& name)
+    inline bool operator==(const parameter_name& lhs, const std::string& rhs)
     {
-	return (lhs.long_name() == name || lhs.string_name() == name);
+	return (lhs == rhs.c_str());
+    }
+
+
+    inline bool operator!=(const parameter_name& lhs, const parameter_name& rhs)
+    {
+	return ! (lhs == rhs);
+    }
+
+    inline bool operator!=(const parameter_name& lhs, char const * const rhs)
+    {
+	return ! (lhs == rhs);
     }
 
     inline bool operator!=(const parameter_name& lhs, const std::string& name)
     {
-	return (lhs.long_name() != name && lhs.string_name() != name);
+	return ! (lhs == name);
     }
 
-    inline bool operator==(const parameter_name& lhs, const parameter_name& rhs)
+    inline bool operator!=(const parameter_name& lhs, const char rhs)
     {
-	return ( lhs.short_name() == rhs.short_name() ||
-		 lhs.long_name() == rhs.long_name() );
+	return ! (lhs == rhs);
     }
 
-    inline bool operator==(const parameter_name& lhs, const char rhs)
+    inline bool operator!=(const parameter_name& lhs, const int rhs)
     {
-	return rhs == lhs.short_name();
+	return ! (lhs == rhs);
     }
 
     inline bool bad_name_char(const char ch)
