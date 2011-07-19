@@ -9,11 +9,11 @@ using namespace libgetopt::unit_tests;
 
 int main(int argc, char** argv)
 {
-    option<int> opt("opt");
+    option<parse_arg_failed> opt("opt");
     cmdline_parser parser;
     cmdline_args args(argv[0]);
 
-    args.add(&opt, static_cast<long long>(numeric_limits<int>::max()) + 1);
+    args.add(&opt, "arg");
     parser.add_option(&opt);
 
     parse_result res = parser.parse(args.count(), args);
