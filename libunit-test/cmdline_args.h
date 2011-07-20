@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <algorithm>
+#include <string>
 
 #include "libgetopt_string.h"
 
@@ -25,6 +26,7 @@ namespace libgetopt
 		void add(char const * const option, char const * const arg);
 		void add(char const * const option, long long arg);
 		void add(option_base* opt);
+		void add(option_base* opt, const std::string&);
 		void add(long long arg);
 		void add(option_base* opt, char const * const arg);
 		void add(option_base* opt, long long arg);
@@ -70,6 +72,11 @@ namespace libgetopt
 	    {
 		return m_args.size();
 	    }
+	}
+
+	inline void cmdline_args::add(option_base* opt, const std::string& arg)
+	{
+	    add(opt, arg.c_str());
 	}
     }
 }

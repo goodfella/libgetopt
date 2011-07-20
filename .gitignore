@@ -9,12 +9,14 @@ unit-tests/exception-tests/*
 unit-tests/option-tests/*
 unit-tests/cmdline-parser-tests/*
 unit-tests/parameter-name-tests/*
+unit-tests/custom-parser-tests/*
 
 !unit-tests/exception-tests/*.cc
 !unit-tests/numeric-tests/*.cc
 !unit-tests/option-tests/*.cc
 !unit-tests/cmdline-parser-tests/*.cc
 !unit-tests/parameter-name-tests/*.cc
+!unit-tests/custom-parser-tests/*.cc
 
 *.html
 

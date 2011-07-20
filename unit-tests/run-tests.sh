@@ -98,12 +98,19 @@ printf "Running parameter name tests:\n\n"
 run_tests "${PARAMETER_NAME_TESTS}"
 echo
 
+CUSTOM_PARSER_TESTS="$(get_tests custom-parser-tests)"
+printf "Running custom parser tests:\n\n"
+run_tests "${CUSTOM_PARSER_TESTS}"
+echo
+
+
 printf "Running valgrind tests:\n\n"
 valgrind_tests "${NUMERIC_TESTS}"
 valgrind_tests "${EXCEPTION_TESTS}"
 valgrind_tests "${OPTION_TESTS}"
 valgrind_tests "${CMDLINE_PARSER_TESTS}"
 valgrind_tests "${PARAMETER_NAME_TESTS}"
+valgrind_tests "${CUSTOM_PARSER_TESTS}"
 echo
 
 echo "valgrind tests passed"

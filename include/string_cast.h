@@ -9,6 +9,7 @@
 #include <list>
 
 #include "strtonum.h"
+#include "custom_parser.h"
 
 namespace libgetopt
 {
@@ -46,6 +47,18 @@ namespace libgetopt
 	    return false;
 	}
     }
+
+    template<class Type>
+    struct string_cast<custom_parser<Type> >
+    {
+	    static bool cast(char const * const optarg,
+			     custom_parser<Type>* param_parser,
+			     std::string* err_str)
+	    {
+		Type& parser = param_parser->parser();
+		return parser(optarg, err_str);
+	    }
+    };
 
     template<class Type>
     struct string_cast<std::vector<Type> >
