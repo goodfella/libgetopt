@@ -31,7 +31,7 @@ namespace libgetopt
 	    delimited_arg_parser();
 
 	    /// Constructs the class setting delimiter
-	    delimited_arg_parser(char delimiter);
+	    explicit delimited_arg_parser(char delimiter);
 
 	    /** Sets the delimiter
 	     *
