@@ -37,7 +37,7 @@ namespace libgetopt
 		    {
 			return false;
 		    }
-		    else if( opt.get_arg() != arg )
+		    else if( opt.arg() != arg )
 		    {
 			return false;
 		    }

@@ -22,14 +22,16 @@ namespace libgetopt
 
 	    explicit option_base(const char short_name, const bool arg_required = true);
 
+	    virtual ~option_base();
+
 	    /** Sets whether or not an option is present
 	     *
 	     *  @param is_present Present or not present
 	     */
-	    void set_present(const bool is_present);
+	    void present(const bool is_present);
 
 	    /// Returns whether or not the option is present
-	    const bool is_present() const;
+	    const bool present() const;
 
 	    /// Returns the parameter_name of the option
 	    const parameter_name& name() const;

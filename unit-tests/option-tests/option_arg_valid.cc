@@ -22,7 +22,7 @@ int main(int argc, char** argv)
 	return 1;
     }
 
-    if( opt.is_present() == false )
+    if( opt.present() == false )
     {
 	cerr << "is_present() is false\n";
 	return 1;

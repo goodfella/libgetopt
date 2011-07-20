@@ -46,7 +46,7 @@ int main(int argc, char** argv)
 
 bool check_option::operator() (const pair<option<int>*, bool>& opt_info) const
 {
-    if( opt_info.first->is_present() == true )
+    if( opt_info.first->present() == true )
     {
 	cerr << "is_present is true before parsing\n";
 	return false;

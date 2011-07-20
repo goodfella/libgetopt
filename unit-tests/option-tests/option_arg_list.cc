@@ -26,7 +26,7 @@ int main(int argc, char ** argv)
     option<list<string> >::arg_type_t::const_iterator i;
 
     int j = 2;
-    for(i = opt.get_arg().begin(); i != opt.get_arg().end(); ++i, j+=2)
+    for(i = opt.arg().begin(); i != opt.arg().end(); ++i, j+=2)
     {
 	if( (*i == args[j]) != true )
 	{

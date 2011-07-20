@@ -5,7 +5,9 @@
 using namespace libgetopt;
 using std::logic_error;
 
-void option_base::set_present(const bool is_present)
+option_base::~option_base() {}
+
+void option_base::present(const bool is_present)
 {
     if( arg_parser::arg_required() == true && is_present == true )
     {
@@ -15,7 +17,7 @@ void option_base::set_present(const bool is_present)
     set_present_no_throw(is_present);
 }
 
-const bool option_base::is_present() const
+const bool option_base::present() const
 {
     return m_present;
 }

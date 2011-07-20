@@ -11,15 +11,15 @@ int main(int argc, char** argv)
 
     string new_arg = "new_arg";
 
-    opt.set_arg(new_arg);
+    opt.arg(new_arg);
 
-    if( opt.get_arg() != new_arg )
+    if( opt.arg() != new_arg )
     {
 	cerr << "arg not set\n";
 	return 1;
     }
 
-    if( opt.is_present() == false )
+    if( opt.present() == false )
     {
 	cerr << "arg set but option::is_present is false\n";
 	return 1;
@@ -37,9 +37,9 @@ int main(int argc, char** argv)
 	return 1;
     }
 
-    opt.set_present(false);
+    opt.present(false);
 
-    if( opt.is_present() == true )
+    if( opt.present() == true )
     {
 	cerr << "cleared present flag but is_present is still true\n";
 	return 1;

@@ -52,12 +52,12 @@ namespace libgetopt
 	    ~option();
 
 	    /// Returns the argument that has been parsed
-	    Type& get_arg();
+	    Type& arg();
 
-	    const Type& get_arg() const;
+	    const Type& arg() const;
 
 	    /// Sets the argument
-	    void set_arg(const Type& arg);
+	    void arg(const Type& arg);
 
 	private:
 
@@ -103,19 +103,19 @@ namespace libgetopt
     }
 
     template<class Type>
-    inline Type& option<Type>::get_arg()
+    inline Type& option<Type>::arg()
     {
 	return *(static_cast<Type*>(option_base::m_arg));
     }
 
     template<class Type>
-    inline const Type& option<Type>::get_arg() const
+    inline const Type& option<Type>::arg() const
     {
 	return *(static_cast<Type*>(option_base::m_arg));
     }
 
     template<class Type>
-    void option<Type>::set_arg(const Type& arg)
+    void option<Type>::arg(const Type& arg)
     {
 	option_base::set_present_no_throw(true);
 	*static_cast<Type*>(option_base::m_arg) = arg;

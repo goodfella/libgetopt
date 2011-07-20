@@ -160,7 +160,7 @@ parse_result cmdline_parser::parse(int argc, char* const argv[])
 		}
 		else
 		{
-		    option->set_present(true);
+		    option->present(true);
 		}
 	    }
 	}
