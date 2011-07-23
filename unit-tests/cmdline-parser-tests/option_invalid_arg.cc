@@ -17,9 +17,21 @@ int main(int argc, char** argv)
 
     parse_result res = parser.parse(args.count(), args);
 
+    if( res.bad() != true )
+    {
+	cerr << "bad() is not true\n";
+	return 1;
+    }
+
+    if( res.good() != false )
+    {
+	cerr << "good() is not false\n";
+	return 1;
+    }
+
     if( res.result() != parse_result::result_invalid_arg )
     {
-	cerr << "expected missing arg\n";
+	cerr << "expected invalid arg\n";
 	return 1;
     }
 
