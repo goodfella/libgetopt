@@ -19,6 +19,8 @@ namespace libgetopt
     {
 	public:
 
+	    typedef Parser_Type parser_t;
+
 	    custom_parser();
 	    custom_parser(const custom_parser<Parser_Type>& parser);
 	    custom_parser<Parser_Type>& operator= (const custom_parser<Parser_Type>& parser);
