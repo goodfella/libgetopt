@@ -35,7 +35,7 @@ $(call directory-tests,cmdline-parser-tests): $(call directory-tests,parameter-n
 $(call directory-tests,option-tests): $(call directory-tests,parameter-name-tests)
 option-tests/option-set-arg-test: option-tests/option-initialization-test
 option-tests/option-arg-invalid-test: cmdline-parser-tests/option-invalid-arg-test option-tests/option-initialization-test
-option-tests/option-arg-valid-test: option-tests/option-initialization-test
+option-tests/option-arg-valid-test: cmdline-parser-tests/option-valid-arg-test option-tests/option-initialization-test
 option-tests/option-arg-list-test option-tests/option-arg-vector-test: option-tests/option-arg-valid-test
 
 # numeric tests depend on option tests passing

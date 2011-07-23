@@ -15,6 +15,8 @@ namespace libgetopt
 {
     struct parse_arg_failed {};
 
+    struct parse_arg_passed {};
+
     // for all numeric types
     template<class Type>
     struct string_cast
@@ -120,6 +122,18 @@ namespace libgetopt
 			     std::string* err_str)
 	    {
 		return false;
+	    }
+    };
+
+    // For testing a parsing success
+    template<>
+    struct string_cast<parse_arg_passed>
+    {
+	    static bool cast(char const * const optarg,
+			     parse_arg_passed* param_parser,
+			     std::string* err_str)
+	    {
+		return true;
 	    }
     };
 }
