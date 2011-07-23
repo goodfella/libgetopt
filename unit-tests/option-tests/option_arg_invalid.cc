@@ -16,13 +16,7 @@ int main(int argc, char** argv)
     args.add(&opt, "arg");
     parser.add_option(&opt);
 
-    parse_result res = parser.parse(args.count(), args);
-
-    if( res.result() != parse_result::result_invalid_arg )
-    {
-	cerr << "parsing did not fail\n";
-	return 1;
-    }
+    parser.parse(args.count(), args);
 
     if( opt.present() == false )
     {
