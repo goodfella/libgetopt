@@ -7,20 +7,14 @@ using namespace libgetopt::unit_tests;
 
 int main(int argc, char** argv)
 {
-    option<int> opt("opt");
+    option<parse_arg_passed> opt("opt");
     cmdline_parser parser;
     cmdline_args args(argv[0]);
 
     args.add(&opt, "1");
     parser.add_option(&opt);
 
-    parse_result res = parser.parse(args.count(), args);
-
-    if( res.result() != parse_result::result_success )
-    {
-	cerr << "parsing failed: " << res.error_string() << endl;
-	return 1;
-    }
+    parser.parse(args.count(), args);
 
     if( opt.present() == false )
     {
