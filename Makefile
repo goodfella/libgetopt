@@ -48,7 +48,7 @@ endef
 
 # Get all unit test sources.
 unit_test_srcs := $(wildcard unit-tests/*/*.cc)
-unit_tests := $(foreach src,$(unit_test_srcs),$(call create_bin_name,$(src)))
+export unit_tests := $(foreach src,$(unit_test_srcs),$(call create_bin_name,$(src)))
 
 # Create rules for all unit tests
 $(eval $(foreach src,$(unit_test_srcs),$(call create_unit_test_rule,$(call create_bin_name,$(src)),$(src))))
@@ -80,6 +80,8 @@ endif
 # make the object files depend on the Makefile
 $(foreach obj,$(srcs:.cc=.o),$(eval $(obj): Makefile))
 
+.PHONY: all unit-tests run-tests
+
 
 libgetopt.a: Makefile $(libgetopt_SRCS:.cc=.o)
 	$(AR) rcs $@ $(filter %.o,$^)
@@ -92,8 +94,8 @@ libunit-test.a: Makefile $(libunit-test_SRCS:.cc=.o) libgetopt.a
 
 unit-tests: $(unit_tests)
 
-run-tests: all
-	unit-tests/run-tests.sh
+run-tests: $(unit_tests)
+	$(MAKE) -C unit-tests
 
 clean:
 	rm -f libgetopt.a $(unit_tests) libunit-test.a
