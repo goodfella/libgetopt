@@ -9,10 +9,10 @@ using namespace std;
 using namespace libgetopt;
 using namespace libgetopt::unit_tests;
 
-typedef vector<char> arg_cont_t;
+typedef vector<string> arg_cont_t;
 
 bool check_args(const arg_cont_t& args,
-		const option<delimited_arg<char>::type_t >& opt)
+		const option<delimited_arg<string>::type_t >& opt)
 {
     const arg_cont_t& opt_args = opt.arg().parser().args();
 
@@ -31,10 +31,10 @@ bool check_args(const arg_cont_t& args,
 
 int main(int argc, char** argv)
 {
-    option<custom_parser<delimited_arg_parser<char> > > opt1("opt1");
-    option<delimited_arg<char>::type_t > opt2("opt2");
-    option<delimited_arg<char>::type_t > opt3("opt3");
-    option<delimited_arg<char>::type_t > opt4("opt4");
+    option<custom_parser<delimited_arg_parser<string> > > opt1("opt1");
+    option<delimited_arg<string>::type_t > opt2("opt2");
+    option<delimited_arg<string>::type_t > opt3("opt3");
+    option<delimited_arg<string>::type_t > opt4("opt4");
 
     cmdline_args cargs(argv[0]);
     cmdline_parser parser;
@@ -46,9 +46,9 @@ int main(int argc, char** argv)
 
     arg_cont_t args;
 
-    for(char i = 0; i < 10; ++i)
+    for(char i = 48; i < 58; ++i)
     {
-	args.push_back(i);
+	args.push_back(string(1,i));
     }
 
     string opt1_args;
@@ -60,12 +60,12 @@ int main(int argc, char** argv)
     {
 	if( opt1_args.empty() == true )
 	{
-	    opt1_args += (*i + 48);
+	    opt1_args += *i;
 	}
 	else
 	{
 	    opt1_args += ',';
-	    opt1_args += (*i + 48);
+	    opt1_args += *i;
 	}
     }
 
