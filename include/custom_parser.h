@@ -23,6 +23,8 @@ namespace libgetopt
 
 	    custom_parser();
 	    custom_parser(const custom_parser<Parser_Type>& parser);
+	    explicit custom_parser(const Parser_Type& parser);
+
 	    custom_parser<Parser_Type>& operator= (const custom_parser<Parser_Type>& parser);
 
 	    ~custom_parser();
@@ -49,6 +51,12 @@ namespace libgetopt
     inline custom_parser<T>::custom_parser(const custom_parser<T>& parser)
     {
 	custom_parser_base::m_parser = new T(parser.parser());
+    }
+
+    template<class T>
+    inline custom_parser<T>::custom_parser(const T& parser)
+    {
+	custom_parser_base::m_parser = new T(parser);
     }
 
     template<class T>
