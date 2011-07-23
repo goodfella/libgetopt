@@ -24,6 +24,8 @@ namespace libgetopt
 
 	    virtual ~option_base();
 
+	    void clear_present();
+
 	    /** Sets whether or not an option is present
 	     *
 	     *  @param is_present Present or not present
@@ -85,6 +87,11 @@ namespace libgetopt
 	m_arg(NULL),
 	m_present(false)
     {}
+
+    inline void option_base::clear_present()
+    {
+	set_present_no_throw(false);
+    }
 
     inline void option_base::set_present_no_throw(bool is_present)
     {

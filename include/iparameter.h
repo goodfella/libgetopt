@@ -10,7 +10,7 @@ namespace libgetopt
 	    virtual ~iparameter();
 
 	    virtual const bool present() const = 0;
-	    virtual void present(const bool is_present) = 0;
+	    virtual void clear_present() = 0;
     };
 }
 
