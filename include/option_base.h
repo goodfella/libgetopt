@@ -38,6 +38,13 @@ namespace libgetopt
 	    /// Returns the parameter_name of the option
 	    const parameter_name& name() const;
 
+	    /** Returns whether an argument is required
+	     *
+	     *  @return true if an argument is required, false
+	     *  otherwise
+	     */
+	    const bool arg_required() const;
+
 	    /** True if two option_base classes passed as pointers match
 	     *
 	     *  This function is to be used as a predicate in standard
@@ -46,8 +53,10 @@ namespace libgetopt
 	    static const bool ptr_match(option_base const * const lhs,
 					option_base const * const rhs);
 
-	private: parameter_name m_name;
+	private:
 
+	    bool m_arg_required;
+	    parameter_name m_name;
 
 	protected:
 
@@ -66,7 +75,7 @@ namespace libgetopt
     inline option_base::option_base(const std::string& long_name,
 				    const char short_name,
 				    const bool arg_required):
-	arg_parser(arg_required),
+	m_arg_required(arg_required),
 	m_name(long_name, short_name),
 	m_arg(NULL),
 	m_present(false)
@@ -74,7 +83,7 @@ namespace libgetopt
 
     inline option_base::option_base(const std::string& long_name,
 				    const bool arg_required):
-	arg_parser(arg_required),
+	m_arg_required(arg_required),
 	m_name(long_name),
 	m_arg(NULL),
 	m_present(false)
@@ -82,7 +91,7 @@ namespace libgetopt
 
     inline option_base::option_base(const char short_name,
 				    const bool arg_required):
-	arg_parser(arg_required),
+	m_arg_required(arg_required),
 	m_name(short_name),
 	m_arg(NULL),
 	m_present(false)
@@ -106,6 +115,11 @@ namespace libgetopt
     inline const parameter_name& option_base::name() const
     {
 	return m_name;
+    }
+
+    inline const bool option_base::arg_required() const
+    {
+	return m_arg_required;
     }
 
     /// True if the name matches rhs

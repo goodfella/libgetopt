@@ -14,7 +14,7 @@ namespace libgetopt
     {
 	public:
 
-	    explicit arg_parser(const bool arg_required);
+	    arg_parser();
 
 	    virtual ~arg_parser();
 
@@ -33,13 +33,6 @@ namespace libgetopt
 	     *  parse_arg(), false otherwise
 	     */
 	    const bool arg_present() const;
-
-	    /** Returns whether an argument is required
-	     *
-	     *  @return true if an argument is required, false
-	     *  otherwise
-	     */
-	    const bool arg_required() const;
 
 	    /** Parses an argument
 	     *
@@ -98,13 +91,11 @@ namespace libgetopt
 
 	    bool m_arg_valid;
 	    bool m_arg_present;
-	    bool m_arg_required;
     };
 
-    inline arg_parser::arg_parser(const bool arg_required):
+    inline arg_parser::arg_parser():
 	m_arg_valid(false),
-	m_arg_present(false),
-	m_arg_required(arg_required)
+	m_arg_present(false)
     {}
 
     inline const bool arg_parser::arg_valid() const
@@ -115,11 +106,6 @@ namespace libgetopt
     inline const bool arg_parser::arg_present() const
     {
 	return m_arg_present;
-    }
-
-    inline const bool arg_parser::arg_required() const
-    {
-	return m_arg_required;
     }
 
     inline void arg_parser::set_arg_present(bool is_present)

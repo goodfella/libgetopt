@@ -9,7 +9,7 @@ option_base::~option_base() {}
 
 void option_base::present(const bool is_present)
 {
-    if( arg_parser::arg_required() == true && is_present == true )
+    if( arg_required() == true && is_present == true )
     {
 	throw logic_error("present can't be set without an arg");
     }
