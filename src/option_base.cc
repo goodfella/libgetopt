@@ -17,11 +17,6 @@ void option_base::present(const bool is_present)
     set_present_no_throw(is_present);
 }
 
-const bool option_base::present() const
-{
-    return m_present;
-}
-
 const bool option_base::ptr_match(option_base const * const lhs,
 				  option_base const * const rhs)
 {

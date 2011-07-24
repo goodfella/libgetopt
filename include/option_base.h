@@ -102,6 +102,11 @@ namespace libgetopt
 	set_present_no_throw(false);
     }
 
+    inline const bool option_base::present() const
+    {
+	return m_present;
+    }
+
     inline void option_base::set_present_no_throw(bool is_present)
     {
 	m_present = is_present;
