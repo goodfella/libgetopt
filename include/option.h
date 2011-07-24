@@ -88,17 +88,16 @@ namespace libgetopt
     }
 
     template<class Type>
-    option<Type>::~option()
+    inline option<Type>::~option()
     {
-	delete static_cast<Type*>(option_base::m_arg);
+	delete &arg();
     }
 
     template<class Type>
     const bool option<Type>::__parse_arg(char const * const optarg,
 					 std::string* const err_str)
     {
-	bool ret = string_cast<Type>::cast(optarg, static_cast<Type*>(option_base::m_arg),
-				       err_str);
+	bool ret = string_cast<Type>::cast(optarg, &arg(), err_str);
 
 	option_base::set_present_no_throw(true);
 
@@ -118,9 +117,10 @@ namespace libgetopt
     }
 
     template<class Type>
-    void option<Type>::arg(const Type& arg)
+    void option<Type>::arg(const Type& new_arg)
     {
-	*(static_cast<Type*>(option_base::m_arg)) = arg;
+	Type& my_arg = arg();
+	my_arg = new_arg;
 	option_base::set_present_no_throw(true);
 	arg_parser::set_arg_present_valid();
     }

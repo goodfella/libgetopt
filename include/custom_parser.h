@@ -70,13 +70,14 @@ namespace libgetopt
     template<class T>
     inline custom_parser<T>::~custom_parser()
     {
-	delete static_cast<T*>(custom_parser::m_parser);
+	delete &parser();
     }
 
     template<class T>
-    inline void custom_parser<T>::parser(const T& parser)
+    inline void custom_parser<T>::parser(const T& new_parser)
     {
-	*(static_cast<T*>(custom_parser_base::m_parser)) = parser;
+	T& my_parser = parser();
+	my_parser = new_parser;
     }
 
     template<class T>
