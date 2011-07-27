@@ -3,8 +3,7 @@
 # 1 = path to unit test
 define unit-test-recipe
 $1-test:
-	@./run-test.sh $1
-	@./valgrind-test.sh $1
+	@./run-test.sh $1 && ./valgrind-test.sh $1
 	@echo
 
 endef
