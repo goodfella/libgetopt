@@ -10,6 +10,8 @@
 
 namespace libgetopt
 {
+    class ioption_base_visitor;
+
     struct option_map
     {
 	    explicit option_map(option_base* opt): val(0), option(opt) {}
@@ -78,8 +80,27 @@ namespace libgetopt
 	     */
 	    parse_result parse(int argc, char* const argv[]);
 
+	    /** Adds a visitor to the visitor list
+	     *
+	     *  @note If the visitor has allready been added, a
+	     *  std::logic_error exception is thrown.
+	     *
+	     *  @param visitor visitor to add to the list
+	     */
+	    void add_visitor(ioption_base_visitor* visitor);
+
+	    /** Removes a visitor from the visitor list
+	     *
+	     *  @note If the visitor has not allready been added, a
+	     *  std::logic_error exception is thrown.
+	     *
+	     *  @param visitor visitor to remove from the list
+	     */
+	    void remove_visitor(ioption_base_visitor* visitor);
 
 	private:
+
+	    typedef std::vector<ioption_base_visitor*> visitor_list_t;
 
 	    // no copying allowed
 	    cmdline_parser(const cmdline_parser&);
@@ -90,6 +111,7 @@ namespace libgetopt
 
 	    option_list_t m_options;
 	    static bool is_in_use;
+	    visitor_list_t m_visitors;
     };
 }
 

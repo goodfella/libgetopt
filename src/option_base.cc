@@ -1,9 +1,12 @@
 #include <stdexcept>
+#include <string>
 
 #include "option_base.h"
+#include "ioption_base_visitor.h"
 
 using namespace libgetopt;
 using std::logic_error;
+using std::string;
 
 option_base::~option_base() {}
 
@@ -26,4 +29,14 @@ const bool option_base::ptr_match(option_base const * const lhs,
     }
 
     return *lhs == *rhs;
+}
+
+void option_base::visit(const std::string& arg)
+{
+    if( m_base_visitor != NULL )
+    {
+	m_base_visitor->visit(*this, arg);
+    }
+
+    derived_visit(arg);
 }

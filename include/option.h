@@ -3,6 +3,7 @@
 
 #include "option_base.h"
 #include "string_cast.h"
+#include "ioption_visitor.h"
 
 
 namespace libgetopt
@@ -59,9 +60,17 @@ namespace libgetopt
 	    /// Sets the argument
 	    void arg(const Type& arg);
 
+	    /** Sets the visitor
+	     *
+	     *  Passing a NULL pointer clears the visitor
+	     */
+	    void visitor(ioption_visitor<Type>* vis);
+
 	private:
 
 	    const bool __parse_arg(char const * const optarg, std::string* const err_str);
+
+	    void derived_visit(const std::string& arg);
     };
 
     template<class Type>
@@ -123,6 +132,21 @@ namespace libgetopt
 	my_arg = new_arg;
 	option_base::set_present_no_throw(true);
 	arg_parser::set_arg_present_valid();
+    }
+
+    template<class Type>
+    void option<Type>::derived_visit(const std::string& arg)
+    {
+	if( option_base::m_visitor != NULL )
+	{
+	    (static_cast<ioption_visitor<Type>*>(option_base::m_visitor))->visit(*this, arg);
+	}
+    }
+
+    template<class Type>
+    void option<Type>::visitor(ioption_visitor<Type>* vis)
+    {
+	option_base::m_visitor = vis;
     }
 }
 

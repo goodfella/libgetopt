@@ -7,5 +7,7 @@
 #include "custom_parser.h"
 #include "delimited_arg_parser.h"
 #include "delimited_arg.h"
+#include "ioption_base_visitor.h"
+#include "ioption_visitor.h"
 
 #endif

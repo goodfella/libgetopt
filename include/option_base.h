@@ -9,6 +9,8 @@
 
 namespace libgetopt
 {
+    class ioption_base_visitor;
+
     /// Base class for the option classes
     class option_base: public iparameter, public arg_parser
     {
@@ -45,6 +47,11 @@ namespace libgetopt
 	     */
 	    const bool arg_required() const;
 
+	    /// Dispatches the visitor attached to the option
+	    void visit(const std::string& arg);
+
+	    void base_visitor(ioption_base_visitor* visitor);
+
 	    /** True if two option_base classes passed as pointers match
 	     *
 	     *  This function is to be used as a predicate in standard
@@ -55,6 +62,8 @@ namespace libgetopt
 
 	private:
 
+	    virtual void derived_visit(const std::string& arg) = 0;
+
 	    bool m_arg_required;
 	    parameter_name m_name;
 
@@ -62,6 +71,7 @@ namespace libgetopt
 
 	    void set_present_no_throw(bool is_present);
 	    void* m_arg;
+	    void* m_visitor;
 
 	private:
 
@@ -69,6 +79,7 @@ namespace libgetopt
 	    option_base(const option_base&);
 	    option_base& operator=(const option_base&);
 
+	    ioption_base_visitor* m_base_visitor;
 	    bool m_present;
     };
 
@@ -78,6 +89,8 @@ namespace libgetopt
 	m_arg_required(arg_required),
 	m_name(long_name, short_name),
 	m_arg(NULL),
+	m_visitor(NULL),
+	m_base_visitor(NULL),
 	m_present(false)
     {}
 
@@ -86,6 +99,8 @@ namespace libgetopt
 	m_arg_required(arg_required),
 	m_name(long_name),
 	m_arg(NULL),
+	m_visitor(NULL),
+	m_base_visitor(NULL),
 	m_present(false)
     {}
 
@@ -94,6 +109,8 @@ namespace libgetopt
 	m_arg_required(arg_required),
 	m_name(short_name),
 	m_arg(NULL),
+	m_visitor(NULL),
+	m_base_visitor(NULL),
 	m_present(false)
     {}
 
@@ -125,6 +142,11 @@ namespace libgetopt
     inline const bool option_base::arg_required() const
     {
 	return m_arg_required;
+    }
+
+    inline void option_base::base_visitor(ioption_base_visitor* visitor)
+    {
+	m_base_visitor = visitor;
     }
 
     /// True if the name matches rhs

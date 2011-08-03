@@ -12,11 +12,11 @@ using namespace std;
 
 #include "cmdline_parser.h"
 #include "option_list.h"
+#include "ioption_base_visitor.h"
 
 using namespace libgetopt;
 using std::string;
 using std::vector;
-using std::bind2nd;
 
 bool cmdline_parser::is_in_use = false;
 
@@ -48,6 +48,37 @@ void cmdline_parser::add_option(option_base* opt)
     {
 	throw duplicate_option(opt->name().string_name());
     }
+}
+
+void cmdline_parser::add_visitor(ioption_base_visitor* vis)
+{
+
+    visitor_list_t::const_iterator visitor = find(m_visitors.begin(),
+						  m_visitors.end(),
+						  vis);
+
+    if( visitor == m_visitors.end() )
+    {
+	m_visitors.push_back(vis);
+    }
+    else
+    {
+	throw logic_error("duplicate visitor");
+    }
+}
+
+void cmdline_parser::remove_visitor(ioption_base_visitor* vis)
+{
+    visitor_list_t::iterator visitor = find(m_visitors.begin(),
+					    m_visitors.end(),
+					    vis);
+
+    if( visitor == m_visitors.end() )
+    {
+	throw logic_error("visitor not found");
+    }
+
+    m_visitors.erase(visitor);
 }
 
 parse_result cmdline_parser::parse(int argc, char* const argv[])
@@ -135,6 +166,7 @@ parse_result cmdline_parser::parse(int argc, char* const argv[])
 	    // option found
 	    default:
 	    {
+		string arg;
 		option_list_t::iterator opt_map = m_options.end();
 
 		opt_map = find(m_options.begin(), m_options.end(), opt);
@@ -162,6 +194,17 @@ parse_result cmdline_parser::parse(int argc, char* const argv[])
 		{
 		    option->present(true);
 		}
+
+		arg = optarg == NULL ? "" : optarg;
+
+		for(visitor_list_t::iterator i = m_visitors.begin();
+		    i != m_visitors.end();
+		    ++i)
+		{
+		    (*i)->visit(*option, arg);
+		}
+
+		option->visit(arg);
 	    }
 	}
 
