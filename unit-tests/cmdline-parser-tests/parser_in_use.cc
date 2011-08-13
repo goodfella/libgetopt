@@ -6,7 +6,7 @@ using namespace unit_tests;
 
 int main()
 {
-    option<int> iopt("int", 'i');
+    option<parse_arg_passed> iopt("int", 'i');
     cmdline_parser parser;
     cmdline_args args;
 

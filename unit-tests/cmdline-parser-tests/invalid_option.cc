@@ -7,7 +7,7 @@ using namespace libgetopt::unit_tests;
 
 int main(int argc, char** argv)
 {
-    option<int> opt("opt", false);
+    option<parse_arg_passed> opt("opt", false);
     cmdline_parser parser;
     cmdline_args args(argv[0]);
 
