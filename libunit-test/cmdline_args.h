@@ -18,10 +18,12 @@ namespace libgetopt
 	    public:
 
 		cmdline_args(char const * const arg0);
+		cmdline_args(const std::string& arg0);
 		cmdline_args();
 
 		~cmdline_args();
 
+		void add(const std::string& arg);
 		void add(char const * const option);
 		void add(char const * const option, char const * const arg);
 		void add(char const * const option, long long arg);
@@ -45,6 +47,11 @@ namespace libgetopt
 	inline cmdline_args::cmdline_args(){}
 
 	inline cmdline_args::cmdline_args(char const * const arg0)
+	{
+	    add(arg0);
+	}
+
+	inline cmdline_args::cmdline_args(const std::string& arg0)
 	{
 	    add(arg0);
 	}
@@ -77,6 +84,11 @@ namespace libgetopt
 	inline void cmdline_args::add(option_base* opt, const std::string& arg)
 	{
 	    add(opt, arg.c_str());
+	}
+
+	inline void cmdline_args::add(const std::string& arg)
+	{
+	    add(arg.c_str());
 	}
     }
 }
