@@ -10,7 +10,8 @@ SET(GETOPT_SOURCES
   src/cmdline_parser.cc
   src/strtonum.cc
   src/libgetopt_limits.cc
-  src/parameter_name.cc)
+  src/parameter_name.cc
+  src/cmdline_lexer.cc)
   
 SET(UNIT_TEST_SOURCES
   libunit-test/unit_test.cc
