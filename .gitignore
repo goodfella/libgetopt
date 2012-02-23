@@ -16,6 +16,12 @@ unit-tests/custom-parser-tests/*
 !unit-tests/parameter-name-tests/*.cc
 !unit-tests/custom-parser-tests/*.cc
 
+!unit-tests/numeric-tests/*.txt
+!unit-tests/option-tests/*.txt
+!unit-tests/cmdline-parser-tests/*.txt
+!unit-tests/parameter-name-tests/*.txt
+!unit-tests/custom-parser-tests/*.txt
+
 *.html
 
 # editor artifacts
