@@ -1,5 +1,5 @@
 # subdirectories all the unit test directories
-PROJECT(unit-tests)
+PROJECT(tests)
 ADD_SUBDIRECTORY(parameter-name-tests)
 ADD_SUBDIRECTORY(cmdline-parser-tests)
 ADD_SUBDIRECTORY(option-tests)
