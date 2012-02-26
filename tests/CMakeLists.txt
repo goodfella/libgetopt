@@ -1,8 +1,5 @@
 # subdirectories all the unit test directories
 PROJECT(tests)
-ADD_SUBDIRECTORY(parameter-name-tests)
-ADD_SUBDIRECTORY(cmdline-parser-tests)
-ADD_SUBDIRECTORY(option-tests)
-ADD_SUBDIRECTORY(numeric-tests)
-ADD_SUBDIRECTORY(custom-parser-tests)
+ADD_SUBDIRECTORY(unit-tests)
+ADD_SUBDIRECTORY(integration-tests)
 ENABLE_TESTING()
