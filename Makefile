@@ -40,3 +40,6 @@ clean-emacs:
 
 clean-all:
 	test -z "$(CMAKE_BUILD_DIR)" || rm -rf $(CMAKE_BUILD_DIR)
+
+git-clean:
+	git clean -fdx
