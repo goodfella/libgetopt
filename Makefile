@@ -15,6 +15,8 @@ endef
 .PHONY: all clean-all clean-emacs
 
 all: cmake-all
+test: cmake-test
+clean: cmake-clean
 
 $(CMAKE_TARGET):
 	mkdir -p $(@D)
