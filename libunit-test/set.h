@@ -4,6 +4,7 @@
 #include <vector>
 #include <iterator>
 #include <cstring>
+#include <algorithm>
 
 namespace libgetopt
 {
@@ -23,6 +24,8 @@ namespace libgetopt
 
 			typedef typename set_t::iterator iterator;
 			typedef typename set_t::const_iterator const_iterator;
+			typedef typename set_t::const_reference const_reference;
+			typedef typename set_t::reference reference;
 
 			typedef typename powerset_t::iterator powerset_iterator;
 			typedef typename powerset_t::const_iterator const_powerset_iterator;
@@ -31,16 +34,18 @@ namespace libgetopt
 			set(const T& val);
 
 			void add_element(const T& e);
+			iterator insert(iterator position, const T& val);
+
 			size_t size() const;
 
 			T& operator [] (typename set_t::size_type i);
 			const T& operator [] (typename set_t::size_type i) const;
 
-			typename set_t::iterator begin();
-			const typename set_t::iterator begin() const;
+			iterator begin();
+			const_iterator begin() const;
 
-			typename set_t::iterator end();
-			const typename set_t::iterator end() const;
+			iterator end();
+			const_iterator end() const;
 
 			static const powerset_t powerset(const set<T>& source_set);
 
@@ -61,6 +66,12 @@ namespace libgetopt
 		inline void set<T>::add_element(const T& e)
 		{
 			m_set.push_back(e);
+		}
+
+		template<class T>
+		typename set<T>::iterator set<T>::insert(iterator position, const T& val)
+		{
+			return m_set.insert(position, val);
 		}
 
 		template<class T>
@@ -88,7 +99,7 @@ namespace libgetopt
 		}
 
 		template<class T>
-		inline const typename set<T>::iterator set<T>::begin() const
+		inline typename set<T>::const_iterator set<T>::begin() const
 		{
 			return m_set.begin();
 		}
@@ -100,58 +111,98 @@ namespace libgetopt
 		}
 
 		template<class T>
-		inline const typename set<T>::iterator set<T>::end() const
+		inline typename set<T>::const_iterator set<T>::end() const
 		{
 			return m_set.end();
 		}
 
+		// copied from roseta code powerset
+
+		/* This algorithm is not recursive, it works backwards
+		 * from the empty set.  The algorithm works by
+		 * tracking elements to put in a set through a vector
+		 * of iterators.  The first set added is the empty
+		 * set, the next set added is the full set with all
+		 * the elements.  Then the algorithm works backward
+		 * from there.
+		 */
+
+		/* Three operations are used to manipulate the element
+		 * vector:  
+		 *
+		 * If the element vector is not empty, and the last
+		 * iterator in the element vector points to the last
+		 * element in the set, then the last iterator in the
+		 * element vector is removed, and the algorithm moves
+		 * to starts the loop over.
+		 *
+		 * if the element vector is not empty, and the last
+		 * iterator in the element vector does not point to
+		 * the last element in the set, the last iterator in
+		 * the element vector is set to the next element in
+		 * the set (see ++elements.back()).  Then, iterators
+		 * pointing to the remaining elements in the set
+		 * (elements.back() + 1 through source_set.end()) are
+		 * added to the element vector.
+		 *
+		 * if the element vector is empty, then add all the
+		 * elements from source_set to the element vector.
+		 */
 		template<class T>
 		const typename set<T>::powerset_t set<T>::powerset(const set<T>& source_set)
 		{
-			powerset_t power_set;
-			size_t source_set_size = source_set.size();
-
-			for(int subset_size = 1; subset_size <= source_set_size; ++subset_size)
+			typedef typename set<T>::const_iterator set_iter;
+			typedef std::vector<set_iter> vec;
+			typedef typename vec::iterator vec_iter;
+ 
+			struct local
 			{
-				// set of each element
-				if( subset_size == 1 )
+				static const T& dereference(set_iter v) { return *v; }
+			};
+ 
+			typename set<T>::powerset_t result;
+ 
+			vec elements;
+			do
+			{
+				set<T> subset;
+				std::transform(elements.begin(), elements.end(),
+					       std::inserter(subset, subset.end()),
+					       local::dereference);
+
+				result.insert(result.end(), subset);
+
+				/* Be mindfull of the
+				 * ++elements.back() which moves the
+				 * iterator at elements.back() to the
+				 * next element in the set */
+				if (!elements.empty() && ++elements.back() == source_set.end())
 				{
-					for(int j = 0; j < source_set_size; ++j)
-					{
-						power_set.push_back(set<T>(source_set[j]));
-					}
-				}
-				else if( subset_size == source_set_size )
-				{
-					power_set.push_back(source_set);
+					elements.pop_back();
 				}
 				else
 				{
-					for(int first_elem = 0;
-					    first_elem + subset_size <= source_set_size;
-					    ++first_elem)
+					set_iter iter;
+
+					// if elements is empty, add all the elements
+					if (elements.empty())
 					{
-						for(int next_elem = first_elem + 1;
-						    next_elem + (subset_size - 1) <= source_set_size;
-						    ++next_elem)
-						{
-							set<T> subset(source_set[first_elem]);
-							subset.add_element(source_set[next_elem]);
-
-							for(int elem_count = 2;
-							    elem_count < subset_size;
-							    ++elem_count)
-							{
-								subset.add_element(source_set[next_elem + (elem_count - 1)]);
-							}
-
-							power_set.push_back(subset);
-						}
+						iter = source_set.begin();
+					}
+					// add all elements after the element referenced by elements.back()
+					else
+					{
+						iter = elements.back();
+						++iter;
+					}
+					for (; iter != source_set.end(); ++iter)
+					{
+						elements.push_back(iter);
 					}
 				}
-			}
-
-			return power_set;
+			} while (!elements.empty());
+ 
+			return result;
 		}
 	}
 }
