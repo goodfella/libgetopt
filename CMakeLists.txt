@@ -2,6 +2,8 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 PROJECT(libgetopt CXX)
 INCLUDE_DIRECTORIES(include libunit-test)
 
+ADD_DEFINITIONS(-g)
+
 SET(GETOPT_SOURCES
   src/option_list.cc
   src/iparameter.cc
