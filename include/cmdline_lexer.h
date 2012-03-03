@@ -67,8 +67,7 @@ namespace libgetopt
 	     *  @param token Pointer to a cmdline_token used to
 	     *  describe the parameter parsed
 	     *
-	     *  @return true if there are more args to parse, false
-	     *  otherwise
+	     *  @return true if token was filled, false otherwise
 	     */
 	    bool next_parameter(cmdline_token* token);
 
