@@ -56,11 +56,23 @@ int main()
 	return 1;
     }
 
-    lexer.reset(0, NULL);
+    try
+    {
+	    lexer.reset(0, NULL);
+    }
+    catch(logic_error& ex)
+    {}
+    catch(...)
+    {
+	    return 1;
+    }
+
+    args.clear();
+    lexer.reset(args.count(), args);
 
     if( lexer.next_parameter(&token) == true )
     {
-	cerr << "lexer.next_parameter returned true with an empty lexer\n";
+	cerr << "lexer.next_parameter returned true with empty args\n";
 	return 1;
     }
 

@@ -10,19 +10,19 @@ using namespace libgetopt;
 
 void cmdline_lexer::check_args(int argc, char * const * argv)
 {
+    if( argv == NULL )
+    {
+	throw logic_error(string("argv is NULL, cmdline_lexer::") + __FUNCTION__);
+    }
+
     if( argc > 0 && argv == NULL )
     {
-	throw logic_error("argc > 0 and argv is NULL");
+	throw logic_error(string("argc > 0 and argv is NULL, cmdline_lexer::") + __FUNCTION__);
     }
 
-    if( argc > 0 && argv[argc] != NULL )
+    if( argv[argc] != NULL )
     {
-	throw logic_error("argc > 0 && argv[argc] != NULL");
-    }
-
-    if( argc == 0 && argv != NULL )
-    {
-	throw logic_error("argc == 0 && argv != NULL");
+	throw logic_error(string("argv[argc] != NULL, cmdline_lexer::") + __FUNCTION__);
     }
 }
 
