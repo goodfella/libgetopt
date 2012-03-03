@@ -69,7 +69,7 @@ void cmdline_args::add(char const * const option, long long arg)
 
 cmdline_args::operator char * const * ()
 {
-    if( m_args.back() != NULL )
+    if( m_args.size() == 0 || m_args.back() != NULL )
     {
 	m_args.push_back(NULL);
     }
