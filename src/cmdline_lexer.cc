@@ -10,19 +10,9 @@ using namespace libgetopt;
 
 void cmdline_lexer::check_args(int argc, char * const * argv)
 {
-    if( argv == NULL )
-    {
-	throw logic_error(string("argv is NULL, cmdline_lexer::") + __FUNCTION__);
-    }
-
     if( argc > 0 && argv == NULL )
     {
 	throw logic_error(string("argc > 0 and argv is NULL, cmdline_lexer::") + __FUNCTION__);
-    }
-
-    if( argv[argc] != NULL )
-    {
-	throw logic_error(string("argv[argc] != NULL, cmdline_lexer::") + __FUNCTION__);
     }
 }
 
@@ -47,13 +37,12 @@ bool cmdline_lexer::next_parameter(cmdline_token* token)
 	return false;
     }
 
-    char* param = m_paramv[m_param_idx];
-
-    // no more args
-    if( param == NULL )
+    if( m_param_idx >= m_paramc )
     {
 	return false;
     }
+
+    char* param = m_paramv[m_param_idx];
 
     token->parameter = param;
     size_t param_length = strlen(param);

@@ -63,11 +63,7 @@ int main(int argc, char** argv)
 {
     test_list_t tests;
 
-    char const * bad_argv[] = {"bad-argv", "bad-argv"};
-
-    tests.push_back(make_pair(0, argv));
     tests.push_back(make_pair(1, static_cast<char**>(NULL)));
-    tests.push_back(make_pair(1, const_cast<char**>(bad_argv)));
 
     for(test_list_t::const_iterator i = tests.begin();
 	i != tests.end();
