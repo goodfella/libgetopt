@@ -75,44 +75,44 @@ namespace libgetopt
 
 	    static void check_args(int argc, char * const * argv);
 
-	    static void lex_named_parameter(char const * const parameter,
-					    cmdline_token& token);
+	    static void lex_named_parameter(cmdline_token& token);
+	    static void lex_unnamed_parameter(cmdline_token& token);
 
-	    static void lex_unnamed_parameter(char const * const parameter,
-					      cmdline_token& token);
-
+	    //! The number of parameters to lex
 	    int m_paramc;
 
-	    /// The param to lex in the next call to next_parameter
-	    int m_param_idx;
+	    //! The array of parameters to lex
 	    char * const * m_paramv;
+
+	    //! The index of the next m_paramv to lex
+	    int m_paramv_idx;
     };
 
     inline cmdline_lexer::cmdline_lexer(int argc, char * const * argv):
 	m_paramc(argc),
-	m_param_idx(0),
-	m_paramv(argv)
+	m_paramv(argv),
+	m_paramv_idx(0)
     {
 	check_args(argc, argv);
     }
 
     inline cmdline_lexer::cmdline_lexer():
 	m_paramc(0),
-	m_param_idx(0),
-	m_paramv(NULL)
+	m_paramv(NULL),
+	m_paramv_idx(0)
     {}
 
     inline void cmdline_lexer::reset()
     {
-	m_param_idx = 0;
+	reset(m_paramc, m_paramv);
     }
 
     inline void cmdline_lexer::reset(int argc, char * const * argv)
     {
 	check_args(argc, argv);
-	reset();
 	m_paramc = argc;
 	m_paramv = argv;
+	m_paramv_idx = 0;
     }
 }
 

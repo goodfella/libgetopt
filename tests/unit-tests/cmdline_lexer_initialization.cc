@@ -30,7 +30,25 @@ bool test_lexer(cmdline_lexer& lexer)
     return true;
 }
 
-int main()
+bool lexer_exception(int argc, char ** argv, cmdline_lexer& lexer)
+{
+    try
+    {
+	lexer.reset(argc, argv);
+    }
+    catch(logic_error& ex)
+    {
+	return true;
+    }
+    catch(...)
+    {
+	return false;
+    }
+
+    return false;
+}
+
+int main(int argc, char ** argv)
 {
     cmdline_lexer lexer;
     cmdline_token token;
@@ -46,6 +64,7 @@ int main()
 
     if( test_lexer(lexer) == false )
     {
+	cerr << "test_lexer failed with unnamed parameter\n";
 	return 1;
     }
 
@@ -53,18 +72,38 @@ int main()
 
     if( test_lexer(lexer) == false )
     {
+	cerr << "test_lexer failed after first reset]n";
 	return 1;
     }
 
-    try
+    if( lexer_exception(-1, NULL, lexer) == false )
     {
-	    lexer.reset(0, NULL);
+	cerr << "no exception with -1 argc, and NULL argv\n";
+	return 1;
     }
-    catch(logic_error& ex)
-    {}
-    catch(...)
+
+    if( lexer_exception(-1, argv, lexer) == false )
     {
-	    return 1;
+	cerr << "no exception with -1 argc, and valid argv\n";
+	return 1;
+    }
+
+    if( lexer_exception(0, NULL, lexer) == true )
+    {
+	cerr << "exception with 0 argc, and NULL argv\n";
+	return 1;
+    }
+
+    if( lexer_exception(argc, NULL, lexer) == false )
+    {
+	cerr << "no exception with argc and NULL argv\n";
+	return 1;
+    }
+
+    if( lexer_exception(argc, argv, lexer) == true )
+    {
+	cerr << "exception with good argv and argv";
+	return 1;
     }
 
     args.clear();

@@ -1,6 +1,7 @@
 #include <stdexcept>
 #include <cassert>
 #include <cstring>
+#include <algorithm>
 
 #include "cmdline_lexer.h"
 #include "cmdline_token.h"
@@ -13,6 +14,11 @@ void cmdline_lexer::check_args(int argc, char * const * argv)
     if( argc > 0 && argv == NULL )
     {
 	throw logic_error(string("argc > 0 and argv is NULL, cmdline_lexer::") + __FUNCTION__);
+    }
+
+    if( argc < 0 )
+    {
+	throw logic_error(string("argc < 0, cmdline_lexer::") + __FUNCTION__);
     }
 }
 
@@ -27,87 +33,65 @@ bool cmdline_lexer::next_parameter(cmdline_token* token)
     token->name = "";
     token->arg = "";
 
-    if( m_paramv == NULL )
+    // no parameters to parse
+    if( m_paramc == 0 || m_paramv == NULL )
     {
 	return false;
     }
 
-    if( m_paramc == 0 )
+    if( m_paramv_idx >= m_paramc )
     {
 	return false;
     }
 
-    if( m_param_idx >= m_paramc )
-    {
-	return false;
-    }
-
-    char* param = m_paramv[m_param_idx];
-
-    token->parameter = param;
-    size_t param_length = strlen(param);
+    token->parameter.assign(m_paramv[m_paramv_idx]);
 
     // "--" is considered an unnamed parameter
-    if( strcmp(param, "--") == 0 )
+    if( token->parameter == "--" )
     {
-	lex_unnamed_parameter(param, *token);
+	lex_unnamed_parameter(*token);
     }
     // named parameter
-    else if( param[0] == '-' && param_length > 1 )
+    else if( token->parameter[0] == '-' && token->parameter.length() > 1 )
     {
-	lex_named_parameter(param, *token);
+	lex_named_parameter(*token);
     }
     // does not start with '-' or is just '-'
     else
     {
-	lex_unnamed_parameter(param, *token);
+	lex_unnamed_parameter(*token);
     }
 
-    ++m_param_idx;
+    ++m_paramv_idx;
 
     return true;
 }
 
-void cmdline_lexer::lex_unnamed_parameter(char const * const parameter,
-					  cmdline_token& token)
+void cmdline_lexer::lex_unnamed_parameter(cmdline_token& token)
 {
-    assert(parameter != NULL);
     token.name = "";
     token.type = cmdline_token::unnamed;
     token.arg = "";
 }
 
-void cmdline_lexer::lex_named_parameter(char const * const parameter,
-					cmdline_token& token)
+void cmdline_lexer::lex_named_parameter(cmdline_token& token)
 {
-    assert(parameter != NULL);
-
     // long name
-    if( parameter[1] == '-' )
+    if( token.parameter[1] == '-' )
     {
-	char const * const name = &parameter[2];
+	// skip the --, and the first leter of the name since it could be a '='
+	string::iterator start_of_equals = find(token.parameter.begin() + 3,
+						token.parameter.end(),
+						'=');
 
-	// make sure not to include an argument passed with '=' in the name
-	size_t name_length = strcspn(name + 1, "=") + 1;
-	token.name.assign(name, name_length);
+	token.name.assign(token.parameter.begin() + 2, start_of_equals);
 	token.type = cmdline_token::long_named;
 
-	// arg passed with an equal sign
-	if( name[name_length] == '=' )
+	if( start_of_equals != token.parameter.end() )
 	{
-	    size_t arg_length = strlen(&name[name_length + 1]);
-	    if( arg_length > 0 )
-	    {
-		token.arg.assign(&name[name_length + 1], arg_length);
-	    }
-	    // no arg after equals sign
-	    else
-	    {
-		token.arg = "";
-	    }
+	    // skip the equals sign
+	    token.arg.assign(start_of_equals + 1, token.parameter.end());
 	}
-
-	// no equals sign
 	else
 	{
 	    token.arg = "";
@@ -118,18 +102,8 @@ void cmdline_lexer::lex_named_parameter(char const * const parameter,
     else
     {
 	// make sure to not include an argument here
-	token.name.assign(1, parameter[1]);
+	token.name.assign(1, token.parameter[1]);
+	token.arg.assign(token.parameter.begin() + 2, token.parameter.end());
 	token.type = cmdline_token::short_named;
-
-	size_t short_arg_len = strlen(&parameter[2]);
-
-	if( short_arg_len > 0 )
-	{
-	    token.arg.assign(&parameter[2]);
-	}
-	else
-	{
-	    token.arg = "";
-	}
     }
 }
