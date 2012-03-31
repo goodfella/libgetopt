@@ -23,19 +23,19 @@ bool test_short_name(const string& name, const string& arg)
 	return false;
     }
 
-    if( token.name != name )
+    if( token.name() != name )
     {
 	cerr << "token.name missmatch for: " << parameter << endl;
 	return false;
     }
 
-    if( token.arg != arg )
+    if( token.arg() != arg )
     {
 	cerr << "token.arg missmatch for: " << parameter << endl;
 	return false;
     }
 
-    if( token.type != cmdline_token::short_named )
+    if( token.type() != cmdline_token::short_named )
     {
 	cerr << "token.type missmatch for: " << parameter << endl;
 	return false;

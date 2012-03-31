@@ -42,10 +42,10 @@ typedef set<test_case> test_set_t;
 void fail(const stringstream& message, const test_case& test, const cmdline_token& token)
 {
 	cerr << "test: " << test << endl;
-	cerr << "token.parameter = " << token.parameter << endl;
-	cerr << "token.name = " << token.name << endl;
-	cerr << "token.arg = " << token.arg << endl;
-	cerr << "token.type = " << token.type << endl;
+	cerr << "token.parameter = " << token.parameter() << endl;
+	cerr << "token.name = " << token.name() << endl;
+	cerr << "token.arg = " << token.arg() << endl;
+	cerr << "token.type = " << token.type() << endl;
 	cerr << "cmdline_lexer_full_test failed: " << message.str() << endl;
 	exit(1);
 }
@@ -77,25 +77,25 @@ bool run_test(const test_set_t& tests)
 
 	while( lexer.next_parameter(&token) == true )
 	{
-		if( token.name != test->name )
+	        if( token.name() != test->name )
 		{
 			fail(stringstream("token name does not match test name"), *test, token);
 		}
 
-		if( token.name.size() > 0 && token.arg != test->arg )
-		{
+	        if( token.name().size() > 0 && token.arg() != test->arg )
+	        {
 			fail(stringstream("token arg does not match test arg"), *test, token);
 		}
 
-		if( test->name.size() > 1 && token.type != cmdline_token::long_named )
+		if( test->name.size() > 1 && token.type() != cmdline_token::long_named )
 		{
 			fail(stringstream("token type missmatch expected: long_named"), *test, token);
 		}
-		else if( test->name.size() == 1 && token.type != cmdline_token::short_named )
+		else if( test->name.size() == 1 && token.type() != cmdline_token::short_named )
 		{
 			fail(stringstream("token type missmatch expected: short_named"), *test, token);
 		}
-		else if( test->name.size() == 0 && token.type != cmdline_token::unnamed )
+		else if( test->name.size() == 0 && token.type() != cmdline_token::unnamed )
 		{
 			fail(stringstream("token type missmatch expected: unnamed"), *test, token);
 		}

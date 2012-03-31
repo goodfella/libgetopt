@@ -22,25 +22,25 @@ bool check_parser(cmdline_lexer& lexer,
 	return false;
     }
 
-    if( token.parameter != parameter )
+    if( token.parameter() != parameter )
     {
 	cerr << "token.parameter != " << parameter << endl;
 	return false;
     }
 
-    if( token.name != name )
+    if( token.name() != name )
     {
 	cerr << "token.name != " << name << endl;
 	return false;
     }
 
-    if( token.arg != arg )
+    if( token.arg() != arg )
     {
 	cerr << "token.arg != " << arg << endl;;
 	return false;
     }
 
-    if( token.type != cmdline_token::long_named )
+    if( token.type() != cmdline_token::long_named )
     {
 	cerr << "token.type != long_named\n";
 	return false;

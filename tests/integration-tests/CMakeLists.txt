@@ -1,6 +1,5 @@
 INCLUDE("../test-macros.cmake")
 
-GETOPT_TEST(cmdline-parser-in-use cmdline_parser_in_use.cc)
 GETOPT_TEST(cmdline-parser-dup-opt cmdline_parser_dup_opt.cc)
 GETOPT_TEST(cmdline-parser-invalid-opt cmdline_parser_invalid_opt.cc)
 GETOPT_TEST(cmdline-parser-invalid-opt-arg cmdline_parser_invalid_opt_arg.cc)

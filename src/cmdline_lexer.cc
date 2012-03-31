@@ -29,9 +29,10 @@ bool cmdline_lexer::next_parameter(cmdline_token* token)
 	throw logic_error("token is NULL");
     }
 
-    token->parameter = "";
-    token->name = "";
-    token->arg = "";
+    token->parameter("");
+    token->name("");
+    token->arg("");
+    token->type(cmdline_token::unknown);
 
     // no parameters to parse
     if( m_paramc == 0 || m_paramv == NULL )
@@ -44,15 +45,15 @@ bool cmdline_lexer::next_parameter(cmdline_token* token)
 	return false;
     }
 
-    token->parameter.assign(m_paramv[m_paramv_idx]);
+    token->parameter().assign(m_paramv[m_paramv_idx]);
 
     // "--" is considered an unnamed parameter
-    if( token->parameter == "--" )
+    if( token->parameter() == "--" )
     {
 	lex_unnamed_parameter(*token);
     }
     // named parameter
-    else if( token->parameter[0] == '-' && token->parameter.length() > 1 )
+    else if( token->parameter()[0] == '-' && token->parameter().length() > 1 )
     {
 	lex_named_parameter(*token);
     }
@@ -69,32 +70,32 @@ bool cmdline_lexer::next_parameter(cmdline_token* token)
 
 void cmdline_lexer::lex_unnamed_parameter(cmdline_token& token)
 {
-    token.name = "";
-    token.type = cmdline_token::unnamed;
-    token.arg = "";
+    token.name("");
+    token.type(cmdline_token::unnamed);
+    token.arg("");
 }
 
 void cmdline_lexer::lex_named_parameter(cmdline_token& token)
 {
     // long name
-    if( token.parameter[1] == '-' )
+    if( token.parameter()[1] == '-' )
     {
 	// skip the --, and the first leter of the name since it could be a '='
-	string::iterator start_of_equals = find(token.parameter.begin() + 3,
-						token.parameter.end(),
+	string::iterator start_of_equals = find(token.parameter().begin() + 3,
+						token.parameter().end(),
 						'=');
 
-	token.name.assign(token.parameter.begin() + 2, start_of_equals);
-	token.type = cmdline_token::long_named;
+	token.name().assign(token.parameter().begin() + 2, start_of_equals);
+	token.type() = cmdline_token::long_named;
 
-	if( start_of_equals != token.parameter.end() )
+	if( start_of_equals != token.parameter().end() )
 	{
 	    // skip the equals sign
-	    token.arg.assign(start_of_equals + 1, token.parameter.end());
+	    token.arg().assign(start_of_equals + 1, token.parameter().end());
 	}
 	else
 	{
-	    token.arg = "";
+	    token.arg("");
 	}
     }
 
@@ -102,8 +103,8 @@ void cmdline_lexer::lex_named_parameter(cmdline_token& token)
     else
     {
 	// make sure to not include an argument here
-	token.name.assign(1, token.parameter[1]);
-	token.arg.assign(token.parameter.begin() + 2, token.parameter.end());
-	token.type = cmdline_token::short_named;
+	token.name().assign(1, token.parameter()[1]);
+	token.arg().assign(token.parameter().begin() + 2, token.parameter().end());
+	token.type() = cmdline_token::short_named;
     }
 }
