@@ -22,9 +22,9 @@ int main(int argc, char** argv)
 	return 1;
     }
 
-    if( res.option_name() != "--abc" )
+    if( res.param_name() != "abc" )
     {
-	cerr << "incorrect invalid option: " << res.option_name() << endl;
+	cerr << "incorrect invalid option: " << res.param_name() << endl;
 	return 1;
     }
 

@@ -35,9 +35,9 @@ int main(int argc, char** argv)
 	return 1;
     }
 
-    if( opt.name() != res.option_name() )
+    if( opt.name() != res.param_name() )
     {
-	cerr << "incorrect option name: " << res.option_name() << endl;
+	cerr << "incorrect option name: " << res.param_name() << endl;
 	return 1;
     }
 

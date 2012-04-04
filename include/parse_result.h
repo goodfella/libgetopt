@@ -1,6 +1,8 @@
 #ifndef __PARSE_RESULT_H__
 #define __PARSE_RESULT_H__
 
+#include "option_base.h"
+
 namespace libgetopt
 {
     class parse_result
@@ -17,46 +19,46 @@ namespace libgetopt
 
 	    parse_result();
 
-	    explicit parse_result(const std::string& invalid_opt);
+	    explicit parse_result(const std::string& invalid_param);
 
-	    explicit parse_result(option_base* opt);
+	    explicit parse_result(const parameter_name& param);
 
-	    parse_result(option_base* opt, const std::string& bad_arg,
+	    parse_result(const parameter_name& param, const std::string& bad_arg,
 			 const std::string& err_str);
 
 	    bool good() const;
 	    bool bad() const;
 
 	    result_t result() const;
-	    const std::string& option_name() const;
+	    const std::string& param_name() const;
 	    const std::string& error_string() const;
 	    const std::string& invalid_arg() const;
 
 	private:
 
 	    result_t m_result;
-	    std::string m_option_name;
+	    std::string m_param_name;
 	    std::string m_error_string;
 	    std::string m_invalid_arg;
     };
 
     inline parse_result::parse_result(): m_result(result_success) {}
 
-    inline parse_result::parse_result(const std::string& invalid_opt):
+    inline parse_result::parse_result(const std::string& invalid_param):
 	m_result(result_invalid_option),
-	m_option_name(invalid_opt)
+	m_param_name(invalid_param)
     {}
 
-    inline parse_result::parse_result(option_base* opt):
+    inline parse_result::parse_result(const parameter_name& name):
 	m_result(result_missing_arg),
-	m_option_name(opt->name().string_name())
+	m_param_name(name.string_name())
     {}
 
-    inline parse_result::parse_result(option_base* opt,
+    inline parse_result::parse_result(const parameter_name& name,
 				      const std::string& bad_arg,
 				      const std::string& err_str):
 	m_result(result_invalid_arg),
-	m_option_name(opt->name().string_name()),
+	m_param_name(name.string_name()),
 	m_error_string(err_str),
 	m_invalid_arg(bad_arg)
     {}
@@ -69,9 +71,9 @@ namespace libgetopt
 	return m_result;
     }
 
-    inline const std::string& parse_result::option_name() const
+    inline const std::string& parse_result::param_name() const
     {
-	return m_option_name;
+	return m_param_name;
     }
 
     inline const std::string& parse_result::error_string() const
