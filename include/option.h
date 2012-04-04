@@ -68,30 +68,30 @@ namespace libgetopt
 
 	private:
 
-	    const bool __parse_arg(char const * const optarg, std::string* const err_str);
+	    const bool option_parse_arg(char const * const optarg, std::string* const err_str);
 
 	    void derived_visit(const std::string& arg);
     };
 
     template<class Type>
-    inline option<Type>::option(const char short_opt, bool arg_required):
-	option_base(short_opt, arg_required)
+    inline option<Type>::option(const char short_name, bool arg_required):
+	option_base(short_name, arg_required)
     {
 	option_base::m_arg = new Type();
     }
 
     template<class Type>
-    inline option<Type>::option(const std::string& long_opt, bool arg_required):
-	option_base(long_opt, arg_required)
+    inline option<Type>::option(const std::string& long_name, bool arg_required):
+	option_base(long_name, arg_required)
     {
 	option_base::m_arg = new Type();
     }
 
     template<class Type>
-    inline option<Type>::option(const std::string& long_opt,
-				const char short_opt,
+    inline option<Type>::option(const std::string& long_name,
+				const char short_name,
 				bool arg_required):
-	option_base(long_opt, short_opt, arg_required)
+	option_base(long_name, short_name, arg_required)
     {
 	option_base::m_arg = new Type();
     }
@@ -103,14 +103,10 @@ namespace libgetopt
     }
 
     template<class Type>
-    const bool option<Type>::__parse_arg(char const * const optarg,
-					 std::string* const err_str)
+    inline const bool option<Type>::option_parse_arg(char const * const optarg,
+						     std::string* const err_str)
     {
-	bool ret = string_cast<Type>::cast(optarg, &arg(), err_str);
-
-	option_base::set_present_no_throw(true);
-
-	return ret;
+	return string_cast<Type>::cast(optarg, &arg(), err_str);
     }
 
     template<class Type>

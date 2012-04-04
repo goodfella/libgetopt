@@ -49,16 +49,20 @@ namespace libgetopt
 	    /** Checks if a string qualifies as a long name
 	     *
 	     *  Throws an invalid_name exception if long_name does not
-	     *  qualify as a long option name
+	     *  qualify as a long option name.  A valid long name is
+	     *  one which contains only printable characters not
+	     *  including white space and does not start with a dash.
 	     *
 	     *  @param long_name String to check
 	     */
 	    static void check_name(const std::string& long_name);
 
-	    /** Checks if a string qualifies as a short name
+	    /** Checks if a char qualifies as a short name
 	     *
 	     *  Throws an parameter_name::invalid_name exception if
-	     *  short_name does not qualify as a short option name
+	     *  short_name does not qualify as a short name.  A valid
+	     *  short name is any printable character excluding white
+	     *  space, and a dash.
 	     *
 	     *  @param short_name Character to check
 	     */

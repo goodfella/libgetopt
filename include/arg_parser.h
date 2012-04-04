@@ -2,6 +2,7 @@
 #define __ARG_PARSER_H__
 
 #include <string>
+#include "named_parameter.h"
 
 namespace libgetopt
 {
@@ -10,13 +11,30 @@ namespace libgetopt
      *  Defines the common methods and data for a parameter class that
      *  takes and argument.
      */
-    class arg_parser
+    class arg_parser: public named_parameter
     {
 	public:
 
-	    arg_parser();
+	enum arg_policy_t
+	{
+	    no_arg,
+	    arg_required,
+	    arg_optional,
+	};
+
+	arg_parser(const std::string& long_name, const char short_name,
+		   const arg_parser::arg_policy_t arg_policy);
+
+	arg_parser(const std::string& long_name,
+		   const arg_parser::arg_policy_t arg_policy);
+
+	arg_parser(const char short_name,
+		   const arg_parser::arg_policy_t arg_policy);
 
 	    virtual ~arg_parser();
+
+	/// Returns the arg setting
+	const arg_parser::arg_policy_t arg_policy() const;
 
 	    /** Returns whether the argument parsed is valid
 	     *
@@ -81,8 +99,8 @@ namespace libgetopt
 	     *
 	     *  @return true if parsing succeeded, false otherwise
 	     */
-	    virtual const bool __parse_arg(char const * const arg,
-					   std::string * const error) = 0;
+	    virtual const bool derived_parse_arg(char const * const arg,
+						 std::string * const error) = 0;
 
 	private:
 
@@ -91,11 +109,32 @@ namespace libgetopt
 
 	    bool m_arg_valid;
 	    bool m_arg_present;
+	arg_policy_t m_arg_policy;
     };
 
-    inline arg_parser::arg_parser():
+    inline arg_parser::arg_parser(const std::string& long_name,
+				  const char short_name,
+				  const arg_parser::arg_policy_t arg_policy):
+	named_parameter(long_name, short_name),
 	m_arg_valid(false),
-	m_arg_present(false)
+	m_arg_present(false),
+	m_arg_policy(arg_policy)
+    {}
+
+    inline arg_parser::arg_parser(const std::string& long_name, 
+				  const arg_parser::arg_policy_t arg_policy):
+	named_parameter(long_name),
+	m_arg_valid(false),
+	m_arg_present(false),
+	m_arg_policy(arg_policy)
+    {}
+
+    inline arg_parser::arg_parser(const char short_name,
+				  const arg_parser::arg_policy_t arg_policy):
+	named_parameter(short_name),
+	m_arg_valid(false),
+	m_arg_present(false),
+	m_arg_policy(arg_policy)
     {}
 
     inline const bool arg_parser::arg_valid() const
@@ -106,6 +145,11 @@ namespace libgetopt
     inline const bool arg_parser::arg_present() const
     {
 	return m_arg_present;
+    }
+
+    inline const arg_parser::arg_policy_t arg_parser::arg_policy() const
+    {
+	return m_arg_policy;
     }
 
     inline void arg_parser::set_arg_present(bool is_present)
