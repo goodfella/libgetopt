@@ -10,16 +10,18 @@ using namespace std;
 #include "cmdline_parser.h"
 #include "cmdline_token.h"
 #include "cmdline_lexer.h"
+#include "optional_arg_parser.h"
 #include "option_base.h"
+#include "ibasic_flag.h"
 #include "ioption_base_visitor.h"
 
 using namespace libgetopt;
 using std::string;
 using std::vector;
 
-cmdline_parser::parser_token::parser_token(cmdline_token const * token,
-					   cmdline_lexer* lexer,
-					   cmdline_parser* parser):
+cmdline_parser::parser_token::parser_token(cmdline_token const * const token,
+					   cmdline_lexer * const lexer,
+					   cmdline_parser * const parser):
     m_token(token),
     m_lexer(lexer),
     m_parser(parser)
@@ -27,20 +29,30 @@ cmdline_parser::parser_token::parser_token(cmdline_token const * token,
 
 cmdline_parser::parser_token::~parser_token() {}
 
-cmdline_parser::option_token::option_token(option_base * option,
-					   cmdline_token const * token,
-					   cmdline_lexer* lexer,
-					   cmdline_parser* parser):
+cmdline_parser::parser_named_param::parser_named_param(named_parameter const * const param,
+						       cmdline_token const * const token,
+						       cmdline_lexer * const lexer,
+						       cmdline_parser * const parser):
     parser_token(token, lexer, parser),
+    m_param(param)
+{}
+
+cmdline_parser::parser_named_param::~parser_named_param() {}
+
+cmdline_parser::parser_option::parser_option(option_base * const option,
+					     cmdline_token const * const token,
+					     cmdline_lexer * const lexer,
+					     cmdline_parser* const parser):
+    parser_named_param(option, token, lexer, parser),
     m_option(option)
 {}
 
-const parse_result cmdline_parser::option_token::parse()
+const parse_result cmdline_parser::parser_option::parse()
 {
-    return handle_arg_parser(*m_option, *this);
+    return handle_arg_required(*m_option, *this);
 }
 
-void cmdline_parser::option_token::visit(const string& arg) const
+void cmdline_parser::parser_option::visit(const string& arg) const
 {
     cmdline_parser::parser_token::parser().invoke_option_visitors(*m_option, arg);
 }
@@ -81,7 +93,7 @@ auto_ptr<cmdline_parser::parser_token> cmdline_parser::find_token(cmdline_token 
 
     if( temp != NULL )
     {
-	ptoken = auto_ptr<parser_token>(new option_token(temp, token, lexer, this));
+	ptoken = auto_ptr<parser_token>(new parser_option(temp, token, lexer, this));
     }
 
     return ptoken;
@@ -142,25 +154,24 @@ void cmdline_parser::remove_visitor(ioption_base_visitor* vis)
     m_option_visitors.erase(visitor);
 }
 
-void cmdline_parser::process_named_param(named_parameter& param,
-					 const parser_token& ptoken)
+void cmdline_parser::process_no_arg(ibasic_flag& flag, const parser_token& ptoken)
 {
-    param.present(true);
+    flag.present(true);
     ptoken.visit("");
 }
 
 const parse_result cmdline_parser::process_arg(arg_parser& parser,
 					       const string& arg,
-					       const parser_token& ptoken)
+					       const parser_named_param& ptoken)
 {
     string error_str;
 
     // option failed to parse arg
     if( parser.parse_arg(arg.c_str(), &error_str) == false )
     {	
-	return parse_result(parser.name(), arg, error_str);
+	return parse_result(ptoken.param().name(), arg, error_str);
     }
-    
+
     ptoken.visit(arg);
     return parse_result();
 }
@@ -180,46 +191,26 @@ void cmdline_parser::invoke_option_visitors(option_base& option, const string& a
     }
 }
 
-const parse_result cmdline_parser::handle_arg_parser(arg_parser& parser,
-						     parser_token& ptoken)
-{
-    // arg required
-    if( parser.arg_policy() == arg_parser::arg_required )
-    {
-	return handle_arg_required(parser, ptoken);
-    }
-
-    // arg optional
-    else if( parser.arg_policy() == arg_parser::arg_optional )
-    {
-	return handle_arg_optional(parser, ptoken);
-    }
-
-    // no arg required
-    else
-    {
-	return handle_no_arg(parser, ptoken);
-    }    
-}
-
-const parse_result cmdline_parser::handle_no_arg(named_parameter& param,
-						 parser_token& ptoken)
+const parse_result cmdline_parser::handle_no_arg(ibasic_flag& flag,
+						 const parser_named_param& ptoken)
 {
     if( ptoken.token().has_arg() == true )
     {
 	// this option is not supposed to have an arg
-	return parse_result(param.name(), ptoken.token().arg(), "no argument required");
+	return parse_result(ptoken.param().name(),
+			    ptoken.token().arg(),
+			    "no argument required");
     }
     else
     {
-	process_named_param(param, ptoken);
+	process_no_arg(flag, ptoken);
     }
 
     return parse_result();
 }
 
 const parse_result cmdline_parser::handle_arg_required(arg_parser& parser,
-						       parser_token& ptoken)
+						       parser_named_param& ptoken)
 {
     cmdline_token next_token;
 
@@ -233,7 +224,7 @@ const parse_result cmdline_parser::handle_arg_required(arg_parser& parser,
     if( ptoken.lexer().next_parameter(&next_token) == false )
     {
 	// no argument given for the option and there are no more tokens
-	return parse_result(parser.name());
+	return parse_result(ptoken.param().name());
     }
 
     // unnamed token use it as the argument
@@ -253,11 +244,11 @@ const parse_result cmdline_parser::handle_arg_required(arg_parser& parser,
     }
 
     // option missing argument
-    return parse_result(parser.name());
+    return parse_result(ptoken.param().name());
 }
 
-const parse_result cmdline_parser::handle_arg_optional(arg_parser& parser,
-						       parser_token& ptoken)
+const parse_result cmdline_parser::handle_arg_optional(optional_arg_parser& parser,
+						       parser_named_param& ptoken)
 {
     cmdline_token next_token;
 
@@ -270,8 +261,8 @@ const parse_result cmdline_parser::handle_arg_optional(arg_parser& parser,
     // no arg given, get another token
     if( ptoken.lexer().next_parameter(&next_token) == false )
     {
-	// no more tokens just process the option
-	process_named_param(parser, ptoken);
+	// no more tokens just process the flag
+	process_no_arg(parser, ptoken);
 	return parse_result();
     }
 
@@ -283,7 +274,6 @@ const parse_result cmdline_parser::handle_arg_optional(arg_parser& parser,
 
     /* At this point the next token is named so we need to see if it's
      * a negative number or represents an option */
-
     
     auto_ptr<parser_token> next_ptoken = ptoken.parser().find_token(&next_token, &ptoken.lexer());
 
@@ -291,7 +281,7 @@ const parse_result cmdline_parser::handle_arg_optional(arg_parser& parser,
      * the next option */
     if( next_ptoken.get() != NULL )
     {
-	process_named_param(parser, ptoken);
+	process_no_arg(parser, ptoken);
 	return next_ptoken->parse();
     }
 
@@ -303,7 +293,7 @@ const parse_result cmdline_parser::handle_arg_optional(arg_parser& parser,
     // next token is not a number
     else
     {
-	process_named_param(parser, ptoken);
+	process_no_arg(parser, ptoken);
 
 	/* return invalid option since the named token
 	 * does not represent a known option */

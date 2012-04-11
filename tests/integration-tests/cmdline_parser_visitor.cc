@@ -26,7 +26,7 @@ struct option_base_visitor: ioption_base_visitor
 int main(int argc, char** argv)
 {
     option<parse_arg_passed> opt1("opt1");
-    option<parse_arg_passed> opt2("opt2", false);
+    option<parse_arg_passed> opt2("opt2");
 
     option_base_visitor visitor;
 
@@ -71,7 +71,7 @@ int main(int argc, char** argv)
     cmdline_args args(argv[0]);
 
     args.add(&opt1, "abc");
-    args.add(&opt2);
+    args.add(&opt2, "abc2");
 
     parse_result res = parser.parse(args.count(), args);
 

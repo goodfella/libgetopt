@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "parameter_name.h"
+#include "named_parameter.h"
 #include "arg_parser.h"
 
 namespace libgetopt
@@ -11,30 +11,24 @@ namespace libgetopt
     class ioption_base_visitor;
 
     /// Base class for the option classes
-    class option_base: public arg_parser
+    class option_base: public arg_parser, public named_parameter
     {
 	public:
 
 	option_base(const std::string& long_name,
-		    const char short_name,
-		    const bool arg_required);
+		    const char short_name);
 
-	explicit option_base(const std::string& long_name,
-			     const bool arg_required);
+	explicit option_base(const std::string& long_name);
 
-	explicit option_base(const char short_name,
-			     const bool arg_required);
+	explicit option_base(const char short_name);
 
 	    virtual ~option_base();
 
-	    /** Sets whether or not an option is present
-	     *
-	     *  @param is_present Present or not present
-	     */
-	    void present(const bool is_present);
-
 	    /// Returns whether or not the option is present
 	    const bool present() const;
+
+	/// Clears the present flag of the option
+	void clear_present();
 
 	const bool derived_parse_arg(char const * const optarg,
 				     std::string* const err_str);
@@ -59,7 +53,7 @@ namespace libgetopt
 
 	protected:
 
-	    void set_present_no_throw(bool is_present);
+	    void present(const bool is_present);
 
 	    /// Dispatches the visitor attached to the option
 	    void visit(const std::string& arg);
@@ -82,33 +76,28 @@ namespace libgetopt
 	    bool m_present;
     };
 
-    inline arg_parser::arg_policy_t option_arg_policy(const bool arg_required)
-    {
-	return arg_required == true ? arg_parser::arg_required : arg_parser::arg_optional;
-    }
-
     inline option_base::option_base(const std::string& long_name,
-				    const char short_name,
-				    const bool arg_required):
-	arg_parser(long_name, short_name, option_arg_policy(arg_required)),
+				    const char short_name):
+	arg_parser(arg_parser::arg_required),
+	named_parameter(long_name, short_name),
 	m_arg(NULL),
 	m_visitor(NULL),
 	m_base_visitor(NULL),
 	m_present(false)
     {}
 
-    inline option_base::option_base(const std::string& long_name,
-				    const bool arg_required):
-	arg_parser(long_name, option_arg_policy(arg_required)),
+    inline option_base::option_base(const std::string& long_name):
+	arg_parser(arg_parser::arg_required),
+	named_parameter(long_name),
 	m_arg(NULL),
 	m_visitor(NULL),
 	m_base_visitor(NULL),
 	m_present(false)
     {}
 
-    inline option_base::option_base(const char short_name,
-				    const bool arg_required):
-	arg_parser(short_name, option_arg_policy(arg_required)),
+    inline option_base::option_base(const char short_name):
+	arg_parser(arg_parser::arg_required),
+	named_parameter(short_name),
 	m_arg(NULL),
 	m_visitor(NULL),
 	m_base_visitor(NULL),
@@ -120,14 +109,9 @@ namespace libgetopt
 	return m_present;
     }
 
-    inline void option_base::set_present_no_throw(bool is_present)
+    inline void option_base::clear_present()
     {
-	m_present = is_present;
-
-	if( is_present == false )
-	{
-	    arg_parser::clear_arg_present();
-	}
+	present(false);
     }
 
     inline void option_base::base_visitor(ioption_base_visitor* visitor)

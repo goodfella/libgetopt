@@ -12,14 +12,16 @@ option_base::~option_base() {}
 
 void option_base::present(const bool is_present)
 {
-    if( (arg_parser::arg_policy() == arg_parser::arg_required) &&
-	is_present == true )
-    {
-	throw logic_error("present can't be set without an arg");
-    }
+    m_present = is_present;
 
-    set_present_no_throw(is_present);
-    visit("");
+    if( is_present == false )
+    {
+	arg_parser::clear_arg_present();
+    }
+    else
+    {
+	arg_parser::set_arg_present_valid();
+    }
 }
 
 const bool option_base::ptr_match(option_base const * const lhs,
@@ -57,7 +59,7 @@ void option_base::visit(const std::string& arg)
 const bool option_base::derived_parse_arg(char const * const optarg,
 					  std::string* const err_str)
 {
-    set_present_no_throw(true);
+    present(true);
 
     // derived class' parse arg
     bool ret = option_parse_arg(optarg, err_str);
@@ -65,4 +67,3 @@ const bool option_base::derived_parse_arg(char const * const optarg,
 
     return ret;
 }
-

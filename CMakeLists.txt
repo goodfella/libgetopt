@@ -8,6 +8,8 @@ SET(GETOPT_SOURCES
   src/cmdline_parser.cc
   src/strtonum.cc
   src/option_base.cc
+  src/optional_arg_parser.cc
+  src/ibasic_flag.cc
   src/arg_parser.cc
   src/named_parameter.cc
   src/parameter_name.cc

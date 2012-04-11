@@ -37,7 +37,7 @@ int main(int argc, char** argv)
 	return 1;
     }
 
-    opt.present(false);
+    opt.clear_present();
 
     if( opt.present() == true )
     {

@@ -22,13 +22,6 @@ namespace libgetopt
 	 */
 	virtual const bool present() const = 0;
 
-	/** Sets whether the named parameter is present
-	 *
-	 * @param present A true value means the named parameter was
-	 * present, a false value means the parameter was not present.
-	*/
-	virtual void present(const bool present) = 0;
-	
 	/// Returns the parameters name
 	const parameter_name& name() const;
 

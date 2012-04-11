@@ -25,30 +25,21 @@ namespace libgetopt
 	    /** Constructs an option class with a short name
 	     *
 	     *  @param short_name The char to use as the short name
-	     *
-	     *  @param arg_required True if an argument is required,
-	     *  this is the default.  False if an argument is optional
 	     */
-	    explicit option(const char short_name, bool arg_required = true);
+	    explicit option(const char short_name);
 
 	    /** Constructs an option class with a long name
 	     *
 	     *  @param long_name The string to use as the long name
-	     *
-	     *  @param arg_required True if an argument is required,
-	     *  this is the default.  False if an argument is optional
 	     */
-	    explicit option(const std::string& long_name, bool arg_required = true);
+	explicit option(const std::string& long_name);
 
 	    /** Constructs an option class with a long name and short name
 	     *
 	     *  @param long_name The string to use as the long name
 	     *  @param short_name The char to use as the short name
-	     *
-	     *  @param arg_required True if an argument is required,
-	     *  this is the default.  False if an argument is optional
 	     */
-	    option(const std::string& long_name, const char short_name, bool arg_required = true);
+	    option(const std::string& long_name, const char short_name);
 
 	    ~option();
 
@@ -74,24 +65,23 @@ namespace libgetopt
     };
 
     template<class Type>
-    inline option<Type>::option(const char short_name, bool arg_required):
-	option_base(short_name, arg_required)
+    inline option<Type>::option(const char short_name):
+	option_base(short_name)
     {
 	option_base::m_arg = new Type();
     }
 
     template<class Type>
-    inline option<Type>::option(const std::string& long_name, bool arg_required):
-	option_base(long_name, arg_required)
+    inline option<Type>::option(const std::string& long_name):
+	option_base(long_name)
     {
 	option_base::m_arg = new Type();
     }
 
     template<class Type>
     inline option<Type>::option(const std::string& long_name,
-				const char short_name,
-				bool arg_required):
-	option_base(long_name, short_name, arg_required)
+				const char short_name):
+	option_base(long_name, short_name)
     {
 	option_base::m_arg = new Type();
     }
@@ -124,10 +114,8 @@ namespace libgetopt
     template<class Type>
     void option<Type>::arg(const Type& new_arg)
     {
-	Type& my_arg = arg();
-	my_arg = new_arg;
-	option_base::set_present_no_throw(true);
-	arg_parser::set_arg_present_valid();
+	arg() = new_arg;
+	option_base::present(true);
     }
 
     template<class Type>
