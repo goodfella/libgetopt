@@ -2,7 +2,7 @@ ENABLE_TESTING()
 
 MACRO(GETOPT_TEST name source)
   ADD_EXECUTABLE(${name} ${source})
-  TARGET_LINK_LIBRARIES(${name} getopt unit-test)
+  TARGET_LINK_LIBRARIES(${name} unit-test getopt)
   ADD_TEST(${name} ${name})
 IF(VALGRIND)
   ADD_TEST(valgrind-${name} ${PROJECT_BINARY_DIR}/valgrind-test.sh ${CMAKE_CURRENT_BINARY_DIR}/${name})
