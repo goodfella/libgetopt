@@ -4,6 +4,7 @@
 #include <string>
 
 #include "named_parameter.h"
+#include "parameter_name.h"
 #include "arg_parser.h"
 
 namespace libgetopt
@@ -21,6 +22,8 @@ namespace libgetopt
 	explicit option_base(const std::string& long_name);
 
 	explicit option_base(const char short_name);
+
+	explicit option_base(const parameter_name& name);
 
 	    virtual ~option_base();
 
@@ -98,6 +101,15 @@ namespace libgetopt
     inline option_base::option_base(const char short_name):
 	arg_parser(arg_parser::arg_required),
 	named_parameter(short_name),
+	m_arg(NULL),
+	m_visitor(NULL),
+	m_base_visitor(NULL),
+	m_present(false)
+    {}
+
+    inline option_base::option_base(const parameter_name& name):
+	arg_parser(arg_parser::arg_required),
+	named_parameter(name),
 	m_arg(NULL),
 	m_visitor(NULL),
 	m_base_visitor(NULL),

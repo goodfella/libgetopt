@@ -2,6 +2,7 @@
 #define __OPTION_H__
 
 #include "option_base.h"
+#include "parameter_name.h"
 #include "string_cast.h"
 #include "ioption_visitor.h"
 
@@ -40,6 +41,13 @@ namespace libgetopt
 	     *  @param short_name The char to use as the short name
 	     */
 	    option(const std::string& long_name, const char short_name);
+
+	/** Constructs an option class using a parameter_name object
+	 *
+	 *  @param name The parameter_name object that represents the
+	 *  option's name
+	 */
+	explicit option(const parameter_name& name);
 
 	    ~option();
 
@@ -82,6 +90,13 @@ namespace libgetopt
     inline option<Type>::option(const std::string& long_name,
 				const char short_name):
 	option_base(long_name, short_name)
+    {
+	option_base::m_arg = new Type();
+    }
+
+    template<class Type>
+    inline option<Type>::option(const parameter_name& name):
+	option_base(name)
     {
 	option_base::m_arg = new Type();
     }

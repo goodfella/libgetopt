@@ -13,6 +13,7 @@ namespace libgetopt
 	named_parameter(const std::string& long_name, const char short_name);
 	explicit named_parameter(const std::string& long_name);
 	explicit named_parameter(const char short_name);
+	explicit named_parameter(const parameter_name& name);
 
 	virtual ~named_parameter() = 0;
 
@@ -40,6 +41,10 @@ namespace libgetopt
 
     inline named_parameter::named_parameter(const char short_name):
 	m_name(short_name)
+    {}
+
+    inline named_parameter::named_parameter(const parameter_name& name):
+	m_name(name)
     {}
 
     inline const parameter_name& named_parameter::name() const
