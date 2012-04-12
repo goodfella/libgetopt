@@ -49,6 +49,9 @@ namespace libgetopt
 
 			static const powerset_t powerset(const set<T>& source_set);
 
+		    template <class F>
+		    void foreach_elem(F op);
+
 		    private:
 
 			set_t m_set;
@@ -204,6 +207,13 @@ namespace libgetopt
  
 			return result;
 		}
+
+	    template<class T>
+	    template<class F>
+	    void set<T>::foreach_elem(F op)
+	    {
+		std::for_each(m_set.begin(), m_set.end(), op);
+	    }
 	}
 }
 
