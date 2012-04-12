@@ -5,11 +5,11 @@ Nicholas Guiffrida <goodfella005@gmail.com>
 Introduction
 ------------
 
-libgetopt is a C++ wrapper around the getopt family of functions
-provided by the GNU C library.  Its purpose is to take the boiler
-plate code that is necessary when using the getopt functions and
-replace it with a simple easy to use interface for specifying and
-parsing command line options.
+libgetopt is a C++ replacement for the getopt family of functions
+provided by the GNU C library.  Its purpose is to replace the boiler
+plate code that is necessary when using the getopt functions with a
+simple easy to use interface for specifying and parsing command line
+parameters.
 
 Options are specified to take an argument of a given C++ type.  When
 parsing the command line, option arguments will be checked to insure
