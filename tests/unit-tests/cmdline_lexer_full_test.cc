@@ -50,7 +50,7 @@ void fail(const stringstream& message, const test_case& test, const cmdline_toke
 	exit(1);
 }
 
-bool run_test(const test_set_t& tests)
+void run_test(const test_set_t& tests)
 {
 	cmdline_args args;
 	string arg_string = "";

@@ -304,8 +304,6 @@ const parse_result cmdline_parser::handle_arg_optional(optional_arg_parser& pars
 const parse_result cmdline_parser::handle_token(const cmdline_token& token,
 						cmdline_lexer& lexer)
 {
-    option_base* option = NULL;
-
     // token is an unnamed parameter
     if( token.is_unnamed() == true )
     {

@@ -257,8 +257,8 @@ struct test_setup: public unary_function<test_setup_t, bool>
 	{
 	    comparison_test test(setup.first, setup.second);
 
-	    parameter_name* lhs;
-	    parameter_name* rhs;
+	    parameter_name* lhs = NULL;
+	    parameter_name* rhs = NULL;
 
 	    if( test.long_setting == comparison_test::no_long_name )
 	    {
@@ -336,6 +336,14 @@ struct test_setup: public unary_function<test_setup_t, bool>
 		    lhs = new parameter_name(long_name, short_name);
 		    rhs = new parameter_name(not_long_name, not_short_name);
 		}
+	    }
+
+	    if( lhs == NULL || rhs == NULL )
+	    {
+		delete lhs;
+		delete rhs;
+		cerr << "improper setup, either lhs is null, or rhs is null\n";
+		return false;
 	    }
 
 	    bool ret = test_parameter_names(*lhs, *rhs, test);
