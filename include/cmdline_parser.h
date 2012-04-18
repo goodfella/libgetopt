@@ -79,6 +79,9 @@ namespace libgetopt
 	     */
 	    void remove_visitor(ioption_base_visitor* visitor);
 
+	    /// Removes all the parameters added to the parser
+	    void clear_params();
+
 	private:
 
 	    typedef std::vector<ioption_base_visitor*> option_visitor_list_t;

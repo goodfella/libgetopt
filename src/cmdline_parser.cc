@@ -154,6 +154,11 @@ void cmdline_parser::remove_visitor(ioption_base_visitor* vis)
     m_option_visitors.erase(visitor);
 }
 
+void cmdline_parser::clear_params()
+{
+    m_options.clear();
+}
+
 void cmdline_parser::process_no_arg(ibasic_flag& flag, const parser_token& ptoken)
 {
     flag.present(true);
