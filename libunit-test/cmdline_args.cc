@@ -77,3 +77,42 @@ cmdline_args::operator char * const * ()
     return &m_args[0];
 }
 
+void cmdline_args::generate_named_param(const string& name,
+					const string& arg,
+					string& param)
+{
+    generate_named_param(name, param);
+
+    if( name.length() > 1 )
+    {
+	param += '=';
+    }
+
+    param += arg;
+}
+
+void cmdline_args::generate_named_param(const string& name,
+					string& param)
+{
+    if( name.length() == 1 )
+    {
+	generate_named_param(name[0], param);
+    }
+    else
+    {
+	param += "--" + name;
+    }
+}
+
+void cmdline_args::generate_named_param(const char name, string& param)
+{
+    param += '-';
+    param += name;
+}
+
+void cmdline_args::generate_named_param(const char name, const string& arg,
+					string& param)
+{
+    generate_named_param(name, param);
+    param += arg;
+}

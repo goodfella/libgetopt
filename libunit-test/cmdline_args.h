@@ -39,6 +39,20 @@ namespace libgetopt
 
 		void clear();
 
+	    static void generate_named_param(const std::string& name,
+					     const std::string& arg,
+					     std::string& param);
+
+	    static void generate_named_param(const std::string& name,
+					     std::string& param);
+
+	    static void generate_named_param(const char name,
+					     const std::string& arg,
+					     std::string& param);
+
+	    static void generate_named_param(const char name,
+					     std::string& param);
+
 	    private:
 
 		std::vector<char*> m_args;
