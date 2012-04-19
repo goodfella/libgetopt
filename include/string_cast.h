@@ -13,9 +13,25 @@
 
 namespace libgetopt
 {
-    struct parse_arg_failed {};
+    struct parse_arg_failed
+    {
+	std::string arg;
+    };
 
-    struct parse_arg_passed {};
+    struct parse_arg_passed
+    {
+	std::string arg;
+    };
+
+    /// Compares a type with a string
+    template<class Type>
+    const bool string_equals(Type const * const type, const std::string& str);
+
+    template<>
+    const bool string_equals(parse_arg_passed const * const type, const std::string& str);
+
+    template<>
+    const bool string_equals(parse_arg_failed const * const type, const std::string& str);
 
     // for all numeric types
     template<class Type>
@@ -121,6 +137,7 @@ namespace libgetopt
 			     parse_arg_failed* param_parser,
 			     std::string* err_str)
 	    {
+		param_parser->arg = optarg;
 		return false;
 	    }
     };
@@ -133,6 +150,7 @@ namespace libgetopt
 			     parse_arg_passed* param_parser,
 			     std::string* err_str)
 	    {
+		param_parser->arg = optarg;
 		return true;
 	    }
     };
