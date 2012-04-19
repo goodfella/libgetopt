@@ -1,6 +1,7 @@
 #include <sstream>
 #include <string>
 #include <cstring>
+#include <ostream>
 #include "libgetopt_string.h"
 #include "cmdline_args.h"
 
@@ -9,6 +10,8 @@
 using namespace libgetopt::unit_tests;
 using std::string;
 using std::stringstream;
+using std::ostream;
+using std::vector;
 
 void cmdline_args::add(char const * const option)
 {
@@ -115,4 +118,23 @@ void cmdline_args::generate_named_param(const char name, const string& arg,
 {
     generate_named_param(name, param);
     param += arg;
+}
+
+namespace libgetopt
+{
+    namespace unit_tests
+    {
+	std::ostream& operator <<(std::ostream& stream, const cmdline_args& args)
+	{
+	    for(vector<char*>::const_iterator i = args.m_args.begin(); i != args.m_args.end(); ++i)
+	    {
+		if( *i != NULL )
+		{
+		    stream << *i << ' ';
+		}
+	    }
+
+	    return stream;
+	}
+    }
 }

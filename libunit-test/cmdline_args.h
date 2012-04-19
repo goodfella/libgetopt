@@ -4,6 +4,7 @@
 #include <vector>
 #include <algorithm>
 #include <string>
+#include <ostream>
 
 #include "libgetopt_string.h"
 
@@ -38,6 +39,8 @@ namespace libgetopt
 		int count() const;
 
 		void clear();
+
+	    friend std::ostream& operator <<(std::ostream& stream, const cmdline_args& args);
 
 	    static void generate_named_param(const std::string& name,
 					     const std::string& arg,
